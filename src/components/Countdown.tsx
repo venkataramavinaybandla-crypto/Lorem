@@ -43,26 +43,17 @@ function Unit({
   value,
   label,
   tone,
-  animate = false,
 }: {
   value: number;
   label: string;
   tone: string;
-  animate?: boolean;
 }) {
-  const text = pad(value);
   return (
     <div className="flex-1 min-w-0 rounded-xl bg-white/70 border border-white/80 px-1 py-2 text-center">
       <div
         className={`text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight tabular-nums leading-none ${tone}`}
       >
-        {animate ? (
-          <span key={text} className="inline-block animate-digit-flip">
-            {text}
-          </span>
-        ) : (
-          text
-        )}
+        {pad(value)}
       </div>
       <div className="mt-1 text-[9px] font-bold uppercase tracking-widest text-[#89726b]">
         {label}
@@ -163,7 +154,7 @@ export default function Countdown({
           <Colon />
           <Unit value={minutes} label="Minutes" tone={numberTone[tone]} />
           <Colon />
-          <Unit value={seconds} label="Seconds" tone={numberTone[tone]} animate />
+          <Unit value={seconds} label="Seconds" tone={numberTone[tone]} />
         </div>
       )}
 

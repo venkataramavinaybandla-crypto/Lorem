@@ -40,8 +40,8 @@ export default function Layout() {
           <span className="font-extrabold text-xl tracking-tight text-[#1d1c15]">Lorem</span>
         </Link>
 
-        {/* Center Search Pill + Desktop Links */}
-        <div className="flex items-center gap-2">
+        {/* Center Search Pill + Desktop Links (desktop only) */}
+        <div className="hidden lg:flex items-center gap-2">
           {/* Quick Search Button */}
           <button
             type="button"
@@ -92,6 +92,18 @@ export default function Layout() {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Mobile search — sits on the right, next to the menu button */}
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            className="lg:hidden flex items-center justify-center p-2 rounded-full bg-white/70 hover:bg-white text-[#56423c] border border-white/80 shadow-sm transition-all active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#9f4122]"
+            aria-label="Search syllabus"
+          >
+            <span className="material-symbols-outlined text-[20px] text-[#9f4122]">
+              search
+            </span>
+          </button>
+
           <Link
             to="/co/CO1"
             className="hidden sm:inline-flex items-center gap-1.5 bg-[#9f4122] text-white font-semibold text-xs px-5 py-2 rounded-full shadow-[0_4px_16px_rgba(159,65,34,0.25)] hover:bg-[#85341a] transition-all hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-[#9f4122]"
