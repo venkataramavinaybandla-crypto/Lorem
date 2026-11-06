@@ -120,14 +120,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Slogan break */}
-      <section className="text-center px-6 max-w-3xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-normal text-[#1d1c15] tracking-tight">
-          Describe the outcome. <br />
-          <span className="font-extrabold text-[#9f4122]">Lorem</span> builds the structure.
-        </h2>
-      </section>
-
       {/* 6 CO Feature Cards */}
       <section className="max-w-6xl mx-auto px-6 space-y-10">
         <div className="flex items-center justify-between pb-2 border-b border-[#89726b]/15">
