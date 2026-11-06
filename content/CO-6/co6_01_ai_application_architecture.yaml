@@ -1,0 +1,74 @@
+part:
+  id: CO6-P01
+  co: CO6
+  title: AI Application Architecture and Platform Engineering
+  order: 1
+  concept_ids:
+  - CO6-P01-C01
+  - CO6-P01-C02
+concepts:
+- id: CO6-P01-C01
+  code: CO6.1.1
+  title: AI application layers and request lifecycle
+  session: 31
+  skilling_exp: 'CO6 practical focus: ai application architecture'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs: []
+  eli5: A GenAI application is a coordinated system of interface, API, orchestration, retrieval, model, and safety guardrails.
+  key_points:
+  - End-to-end request lifecycle spans UI, gateway, context assembly, LLM inference, and validation.
+  - Async streaming and observability are critical for responsive user experiences.
+  - Decoupling orchestration from model providers prevents vendor lock-in.
+  deep_dive: 'Production GenAI platforms decouple responsibilities into distinct architectural tiers: presentation (React/Vite), application API (FastAPI microservices), retrieval engine (Vector stores), model orchestration (evaluation and tracing), and infrastructure deployment (Docker, CI/CD, AWS).'
+  formulas: []
+  common_mistakes:
+  - Tight coupling of frontend clients directly to raw model provider endpoints without backend arbitration.
+  quiz:
+  - type: mcq
+    question: Why should production GenAI architectures place a backend gateway between clients and LLMs?
+    options:
+    - To enforce rate limiting, secret isolation, caching, and guardrail validation
+    - To eliminate the need for HTTP protocols
+    - To convert all text into binary tokens on the client
+    - To avoid using databases
+    answer: 0
+    explanation: Backend gateways safeguard credentials, manage budgets, and execute validation checks.
+  exam_tags:
+  - end-sem
+  - platform-architecture
+  mini_task: Draw the request lifecycle sequence diagram from user query to streaming response.
+- id: CO6-P01-C02
+  code: CO6.1.2
+  title: Observability, Cost Tracking, and Guardrails
+  session: 32
+  skilling_exp: 'CO6 practical focus: platform telemetry'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO6-P01-C01
+  eli5: Monitor tokens, cost, latency, and toxic or harmful outputs in real time to keep the platform reliable.
+  key_points:
+  - Observability captures prompts, completions, latency, and token consumption metrics.
+  - Guardrails validate inputs against injection and outputs against toxicity or hallucinations.
+  - Budget alerting prevents runaway recursive LLM loops.
+  deep_dive: 'Platform engineering for AI requires distributed telemetry across each step of the pipeline. Traces track token latency (TTFT and generation throughput), costs are attributed per user or tenant, and guardrail pipelines inspect inputs and completions synchronously before delivery.'
+  formulas:
+  - Cost = (PromptTokens * Rate_in) + (CompletionTokens * Rate_out)
+  common_mistakes:
+  - Logging unredacted PII or sensitive secrets into platform telemetry traces.
+  quiz:
+  - type: mcq
+    question: What does Time To First Token (TTFT) measure?
+    options:
+    - Latency from user request dispatch to receiving the initial streamed token
+    - Total duration of complete document ingestion
+    - Tokenizer lookup speed per vocabulary word
+    - Vector index rebuild duration
+    answer: 0
+    explanation: TTFT measures initial model responsiveness before streaming the rest of the generation.
+  exam_tags:
+  - end-sem
+  - observability
+  mini_task: Formulate a logging policy for sanitizing customer PII before sending traces to external telemetry.
+

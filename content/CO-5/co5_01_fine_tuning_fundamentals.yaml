@@ -1,0 +1,74 @@
+part:
+  id: CO5-P01
+  co: CO5
+  title: Fine-Tuning and Model Adaptation
+  order: 1
+  concept_ids:
+  - CO5-P01-C01
+  - CO5-P01-C02
+concepts:
+- id: CO5-P01-C01
+  code: CO5.1.1
+  title: 'Adaptation methods: prompting, RAG, and fine-tuning'
+  session: 25
+  skilling_exp: 'CO5 practical focus: fine-tuning fundamentals'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs: []
+  eli5: Understand the trade-offs between prompting, retrieval augmentation, and updating model weights.
+  key_points:
+  - Prompting is fast to iterate with zero training overhead.
+  - RAG connects external, up-to-date knowledge dynamically.
+  - Fine-tuning adapts style, format, and domain behavior permanently into weights.
+  deep_dive: 'Engineering AI systems requires choosing the right adaptation mechanism. Prompting modifies runtime context; RAG provides dynamic information retrieval without retraining; supervised fine-tuning (SFT) internalizes styles, specialized vocabularies, and complex response patterns into model weights.'
+  formulas: []
+  common_mistakes:
+  - Using fine-tuning when simple retrieval or prompt updates would solve dynamic knowledge requirements.
+  quiz:
+  - type: mcq
+    question: Which technique is most appropriate when knowledge updates frequently each day?
+    options:
+    - Retrieval-Augmented Generation (RAG)
+    - Full parameter fine-tuning
+    - LoRA adapter pre-training
+    - Hardcoded prompt templates
+    answer: 0
+    explanation: RAG fetches fresh external records dynamically at query time without retraining.
+  exam_tags:
+  - end-sem
+  - architecture
+  mini_task: Create a decision matrix comparing Cost, Latency, and Knowledge Freshness for Prompting vs RAG vs SFT.
+- id: CO5-P01-C02
+  code: CO5.1.2
+  title: Parameter-Efficient Fine-Tuning (PEFT) and LoRA
+  session: 26
+  skilling_exp: 'CO5 practical focus: low-rank adaptation'
+  btl: Analyze
+  difficulty: Advanced
+  prereqs:
+  - CO5-P01-C01
+  eli5: Instead of training all billions of weights, freeze them and train only two tiny matrices that adjust them.
+  key_points:
+  - LoRA decomposes weight updates into low-rank matrices: delta W = B * A.
+  - Vastly reduces GPU memory footprint and trainable parameter counts by 99%+.
+  - Multiple task adapters can be swapped over a single frozen base model.
+  deep_dive: 'Low-Rank Adaptation freezes the pretrained weights W and introduces trainable rank decomposition matrices A and B where rank r << min(d, k). During inference, B*A can be folded back into W with zero additional inference latency.'
+  formulas:
+  - h = W_0 x + \Delta W x = W_0 x + \frac{\alpha}{r} B A x
+  common_mistakes:
+  - Setting adapter rank r unnecessarily high without observing validation improvements.
+  quiz:
+  - type: mcq
+    question: What does LoRA decompose the weight update matrix into?
+    options:
+    - Two low-rank matrices B and A
+    - Sparse diagonal matrices only
+    - Scalar multipliers
+    - Softmax temperature scaling
+    answer: 0
+    explanation: LoRA represents weight updates as the product of two low-rank matrices.
+  exam_tags:
+  - end-sem
+  - peft
+  mini_task: Calculate parameter savings for a 4096-dim layer with LoRA rank r=8.
+

@@ -1,0 +1,269 @@
+part:
+  id: co3-part-01
+  co: CO3
+  title: Embeddings Fundamentals
+  order: 1
+  concept_ids:
+  - dense-embeddings
+  - vector-similarity-and-distance
+  - embedding-model-selection
+concepts:
+- id: dense-embeddings
+  code: GA-CO3.1.1
+  title: Dense Semantic Embeddings
+  session: 13
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: A dense embedding is a list of numbers that represents a piece of text in a learned vector space. Similar
+    meanings can often have nearby vectors.
+  key_points:
+  - A dense embedding is a fixed-length numerical vector.
+  - An embedding model maps text into vector representations.
+  - Similarity depends on the model, task and chosen distance measure.
+  deep_dive: Dense embeddings represent text as vectors in a continuous numerical space. An embedding model converts
+    a text input, such as a sentence or document chunk, into a fixed-length vector. The dimensions do not usually
+    correspond to individually named human concepts; instead, the model learns a distributed representation useful
+    for its training objective. Texts with related meanings may receive vectors that are close under a chosen similarity
+    measure, even when they do not share many exact words. This makes dense retrieval useful for semantic search.
+    However, embeddings are not a guarantee of semantic understanding or factual correctness. Their behaviour depends
+    on the training data, model, language coverage, input length and preprocessing. A retrieval system should evaluate
+    embeddings on the actual query and document distribution it will serve.
+  formulas:
+  - e = f_θ(text)
+  - e ∈ R^d
+  viz:
+    type: embedding_space
+    description: Inspect how text items are represented as points in an illustrative vector space.
+    params:
+    - name: dimension
+      label: Dimension
+      min: 2
+      max: 8
+      step: 1
+      default: 4
+      unit: dimensions
+    compute:
+      dimension: dimension
+      items:
+      - reset password
+      - change login credentials
+      - weather forecast
+      note: Illustrative semantic positions; not real model output.
+    outcomes:
+    - when: dimension <= 4
+      title: Compact representation
+      explain: A vector has fewer numerical coordinates.
+      severity: info
+    - when: dimension > 4
+      title: Higher-dimensional representation
+      explain: The vector has more coordinates; this alone does not guarantee better retrieval.
+      severity: info
+    combos_to_try:
+    - set:
+        dimension: 4
+      lesson: Encode five related and unrelated sentences with one embedding model and compare their nearest neighbours.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: 'What is a dense embedding? '
+    options:
+    - A numerical vector representing input text
+    - A list of document filenames
+    - A sparse keyword count table only
+    - A database connection string
+    answer: 0
+    explanation: An embedding model maps text to a numerical vector.
+  - type: short_answer
+    question: Why can dense embeddings retrieve related text with different wording?
+    answer: They encode learned semantic patterns into vectors, so related meanings can be close even without exact
+      keyword overlap.
+    explanation: Mention learned representations and vector similarity.
+  - type: application
+    question: A query says 'my account is locked' while a document says 'recover access after sign-in failure'.
+      Why might dense retrieval find it?
+    answer: The embedding model may place the semantically related query and document chunk near each other in vector
+      space.
+    explanation: Explain semantic similarity rather than lexical matching.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Encode five related and unrelated sentences with one embedding model and compare their nearest neighbours.
+- id: vector-similarity-and-distance
+  code: GA-CO3.1.2
+  title: Vector Similarity and Distance
+  session: 13
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: A vector search system needs a rule for comparing vectors. Cosine similarity, dot product and Euclidean
+    distance are common choices.
+  key_points:
+  - Cosine similarity compares vector direction.
+  - Dot product depends on direction and vector magnitudes.
+  - Euclidean distance measures straight-line distance in vector space.
+  deep_dive: Once documents and queries have been embedded, a retrieval system needs a scoring function to rank
+    candidates. Cosine similarity compares the angle between two non-zero vectors and is often used when direction
+    is the main signal. Dot product multiplies corresponding dimensions and sums them; it can be influenced by vector
+    magnitude as well as alignment. Euclidean distance measures the geometric distance between points. These measures
+    can rank candidates differently, especially when vector norms vary. Some embedding models are trained with a
+    particular similarity function or normalisation assumption, so the search metric should be compatible with the
+    model's intended use. Retrieval quality must be measured rather than inferred from the metric name.
+  formulas:
+  - cos(a,b) = (a·b) / (||a|| ||b||)
+  - d(a,b) = √Σ_i(a_i-b_i)^2
+  viz:
+    type: similarity_metric
+    description: Compare cosine similarity and Euclidean distance for simple illustrative vectors.
+    params:
+    - name: angle
+      label: Angle
+      min: 0
+      max: 180
+      step: 5
+      default: 45
+      unit: degrees
+    compute:
+      angle: angle
+      metrics:
+      - cosine similarity
+      - dot product
+      - Euclidean distance
+    outcomes:
+    - when: angle <= 45
+      title: Aligned vectors
+      explain: Cosine similarity is relatively high for unit vectors.
+      severity: info
+    - when: angle >= 135
+      title: Opposing directions
+      explain: Cosine similarity is low or negative for opposing unit vectors.
+      severity: info
+    combos_to_try:
+    - set:
+        angle: 45
+      lesson: Calculate cosine similarity and Euclidean distance for two small two-dimensional vectors.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Which measure focuses on the angle between two non-zero vectors?
+    options:
+    - Cosine similarity
+    - Euclidean distance
+    - Document length
+    - Chunk overlap
+    answer: 0
+    explanation: Cosine similarity normalises by vector norms and compares direction.
+  - type: short_answer
+    question: How does dot product differ from cosine similarity?
+    answer: Dot product is affected by vector magnitudes and alignment; cosine similarity normalises by both vector
+      norms.
+    explanation: Identify the normalisation.
+  - type: application
+    question: Your embedding model outputs normalised vectors. Which ranking metric may be especially convenient,
+      and what should you still verify?
+    answer: Cosine similarity or dot product can be convenient for normalised vectors, but ranking behaviour should
+      still be checked against the model's guidance and retrieval evaluation.
+    explanation: Avoid claiming one metric is universally best.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Calculate cosine similarity and Euclidean distance for two small two-dimensional vectors.
+- id: embedding-model-selection
+  code: GA-CO3.1.3
+  title: Embedding Model Selection and Limits
+  session: 13
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: An embedding model should be selected for the language, content, latency and retrieval task it must support.
+  key_points:
+  - Models differ in language coverage, dimensions, maximum input length and quality.
+  - Query and document embeddings must be compatible.
+  - A model change can require re-embedding the document collection.
+  deep_dive: Embedding model selection is an engineering decision, not simply a leaderboard choice. Relevant properties
+    include supported languages, maximum input length, vector dimension, inference latency, memory requirements,
+    licence and performance on the intended domain. A retrieval pipeline generally needs to encode both documents
+    and queries in a compatible vector space. Using unrelated embedding models for the query and indexed documents
+    can make similarity scores meaningless. If the embedding model changes, existing vectors may no longer be comparable
+    with newly generated query vectors; a re-embedding and index migration may be required. A practical evaluation
+    uses representative course questions, relevant source chunks and distractor chunks, then measures retrieval
+    quality and operational cost.
+  formulas: []
+  viz:
+    type: model_selection
+    description: Compare embedding-model requirements against a course-material search use case.
+    params:
+    - name: language
+      label: Language
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: language profile
+    compute:
+      language: language
+      profiles:
+      - English
+      - Multilingual
+      - Mixed English and Indian languages
+      criteria:
+      - quality
+      - latency
+      - dimension
+      - licence
+      - input limit
+    outcomes:
+    - when: language == 1
+      title: English-first evaluation
+      explain: Test English course queries and documents.
+      severity: info
+    - when: language >= 2
+      title: Multilingual evaluation
+      explain: Include the actual languages and scripts expected in production.
+      severity: info
+    combos_to_try:
+    - set:
+        language: 1
+      lesson: Create a model-selection scorecard with language coverage, latency, vector dimension, licence and
+        retrieval quality.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Why should query and document vectors normally come from compatible embedding models?
+    options:
+    - They must occupy a compatible vector space for meaningful comparison
+    - They must have different dimensions
+    - They must use different tokenizers
+    - They must be stored in separate databases
+    answer: 0
+    explanation: Similarity search assumes comparable representations.
+  - type: short_answer
+    question: What may be required after changing an embedding model?
+    answer: The document collection may need to be re-embedded and the vector index rebuilt or migrated.
+    explanation: Explain compatibility of old and new vector spaces.
+  - type: application
+    question: A course assistant must search English, Telugu and Hindi notes. What should be checked before choosing
+      an embedding model?
+    answer: Evaluate language and script coverage with representative queries and documents in all three languages,
+      then measure retrieval quality.
+    explanation: Base the decision on the actual language mix.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Create a model-selection scorecard with language coverage, latency, vector dimension, licence and retrieval
+    quality.

@@ -1,0 +1,284 @@
+part:
+  id: co1-part-01
+  co: CO1
+  title: Course Orientation, Outside-In Project, and Golden Question Set
+  order: 1
+  concept_ids:
+  - course-outside-in-approach
+  - golden-question-set
+  - architecture-decision-record
+concepts:
+- id: course-outside-in-approach
+  code: GA-CO1.1.1
+  title: Outside-In Project Approach
+  session: 1
+  skilling_exp: 2
+  btl: 1
+  difficulty: 2
+  prereqs: []
+  eli5: Instead of building an AI application from tiny pieces before seeing the result, the outside-in
+    approach starts with a working application and then opens it up layer by layer. It is like seeing
+    a complete machine work before studying its individual parts.
+  key_points:
+  - The course begins with a working, cited course assistant.
+  - Students progressively reconstruct the application and its supporting layers.
+  - The project moves from a logged LLM client at v0.1 toward a secure, governed application at v1.0.
+  - Each module ends with a measured release and evidence for design decisions.
+  deep_dive: 'The course rationale describes an outside-in, project-based path. Students first see a working
+    course assistant with a React and Vite front end, FastAPI microservices, MongoDB and Chroma, and AWS
+    deployment. They then rebuild the layers that power it over the trimester. This approach gives each
+    technical topic a visible purpose: tokenization affects cost, generation settings affect output behaviour,
+    retrieval affects grounding, and platform choices affect operation and governance. The project progresses
+    from v0.1, described as a logged LLM client, to v1.0, a secure, governed and personalised application
+    on AWS. Each module ends in a measured release. The approach is not merely a sequence of coding exercises;
+    it asks students to record evidence and defend architecture decisions. The final v0.1-to-v1.0 record
+    demonstrates how the application changed and why those changes were made.'
+  formulas: []
+  viz:
+    type: process_flow
+    description: Trace the course project from the first logged model request to a deployed, governed
+      assistant.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 5
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      stages:
+      - v0.1 logged LLM client
+      - Transformer generation
+      - RAG
+      - Prompt engineering
+      - Fine-tuning and platform engineering
+      - v1.0 governed application
+    outcomes:
+    - when: stage >= 1 && stage <= 2
+      title: Early project stage
+      explain: The focus is establishing a working model dependency and measuring its behaviour.
+      severity: info
+    - when: stage >= 3 && stage <= 4
+      title: Application capabilities expand
+      explain: Retrieval and controlled prompting add grounding and predictable interfaces.
+      severity: warn
+    - when: stage >= 5
+      title: Production-oriented system
+      explain: The project includes governance, tracing, deployment and operational controls.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Map one visible feature of the course assistant to the module that teaches the layer behind
+        it.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes outside-in project approach?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of outside-in project approach in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which outside-in project approach matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - course-project
+  mini_task: Write a short project map showing how a logged LLM request can evolve into a cited course
+    assistant.
+- id: golden-question-set
+  code: GA-CO1.1.2
+  title: Golden Question Set and Measured Releases
+  session: 1
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - course-outside-in-approach
+  eli5: A golden question set is a fixed collection of representative questions used repeatedly to check
+    whether an AI application improves or gets worse after a change. It works like a consistent test paper
+    used after every revision.
+  key_points:
+  - The set is written in Module I.
+  - The same questions are re-run after every module.
+  - It provides a stable comparison across design changes.
+  - Results should support decisions rather than rely only on impressions.
+  deep_dive: 'The course handout specifies a golden question set written in Module I and re-run after
+    every later module. Its purpose is to create a stable evaluation reference while the application changes.
+    If the model, prompt, retrieval configuration or deployment architecture changes, the same questions
+    can reveal whether the user-visible behaviour improved, regressed or remained similar. A useful set
+    should represent the kinds of questions the course assistant is expected to answer, including questions
+    that are straightforward and questions that expose limitations. The handout does not prescribe a fixed
+    number of questions or a scoring formula, so those details should be chosen and documented by the
+    project team rather than assumed. The important principle is consistency: keep the evaluation questions
+    stable enough that results from different releases can be compared. Record the release, configuration
+    and observations alongside each run so that a change can be traced to evidence.'
+  formulas: []
+  viz:
+    type: test_harness
+    description: Choose a release number and compare a recorded result for the same golden question across
+      releases.
+    params:
+    - name: release
+      label: Release
+      min: 1
+      max: 10
+      step: 1
+      default: 1
+      unit: release
+    compute:
+      release: release
+      comparison: The same golden question is run against each selected release.
+    outcomes:
+    - when: release == 1
+      title: Baseline run
+      explain: The first run establishes the reference behaviour for later comparisons.
+      severity: info
+    - when: release > 1
+      title: Regression comparison
+      explain: Compare the current output and measurements with the baseline before accepting the change.
+      severity: warn
+    combos_to_try:
+    - set:
+        release: 1
+      lesson: Write five representative course-assistant questions and keep their wording unchanged for
+        future runs.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes golden question set and measured releases?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of golden question set and measured releases in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which golden question set and measured releases matters
+      when building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - evaluation
+  mini_task: Create a five-question starter golden set and define what evidence you would record for each
+    run.
+- id: architecture-decision-record
+  code: GA-CO1.1.3
+  title: Architecture Decisions and Evidence
+  session: 1
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - golden-question-set
+  eli5: An architecture decision record is a short explanation of an important technical choice, the alternatives
+    considered, and the evidence behind the final decision. It prevents a project from becoming a collection
+    of unexplained preferences.
+  key_points:
+  - The course expects design choices to be backed by numbers.
+  - Examples include generation defaults, chunk size, prompt version and whether to fine-tune.
+  - Decisions should be recorded as the project evolves.
+  - The final project record should explain the v0.1-to-v1.0 journey.
+  deep_dive: The handout says that each design choice should be backed by numbers and recorded as an architecture
+    decision. In this course, examples include generation defaults, retrieval chunk size, prompt version,
+    and the decision to fine-tune or not. A useful decision record identifies the problem, the options
+    considered, the evidence collected, the selected option and the consequences. Evidence may include
+    quality measurements from the golden question set, token usage, latency, cost or failure observations,
+    depending on the decision. The record should distinguish measured facts from assumptions. For example,
+    a team may prefer one model because it appears faster in a single trial, but a defensible decision
+    requires repeated measurements under comparable conditions. The handout names an architecture decision
+    record (ADR) in the generation module and expects the final v0.1-to-v1.0 record to defend design decisions.
+    This makes decision documentation part of engineering practice, not administrative decoration.
+  formulas: []
+  viz:
+    type: decision_matrix
+    description: Adjust the number of measured criteria considered before choosing between two implementation
+      options.
+    params:
+    - name: criteria
+      label: Criteria
+      min: 1
+      max: 5
+      step: 1
+      default: 3
+      unit: criteria
+    compute:
+      criteria: criteria
+      decision_note: A defensible choice considers multiple criteria and records the evidence used.
+    outcomes:
+    - when: criteria >= 3
+      title: Evidence-based comparison
+      explain: Several criteria are considered rather than relying on a single attractive metric.
+      severity: info
+    - when: criteria < 3
+      title: Narrow comparison
+      explain: The decision may overlook important trade-offs; document missing evidence.
+      severity: warn
+    combos_to_try:
+    - set:
+        criteria: 3
+      lesson: Write an ADR comparing two candidate model providers using task fit, language support, latency,
+        cost and privacy.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes architecture decisions and evidence?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of architecture decisions and evidence in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which architecture decisions and evidence matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - architecture
+  mini_task: Draft a one-page ADR for a model-provider choice using measurable criteria.

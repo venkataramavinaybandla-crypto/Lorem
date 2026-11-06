@@ -1,0 +1,74 @@
+part:
+  id: CO4-P01
+  co: CO4
+  title: Prompt Engineering Fundamentals
+  order: 1
+  concept_ids:
+  - CO4-P01-C01
+  - CO4-P01-C02
+concepts:
+- id: CO4-P01-C01
+  code: CO4.1.1
+  title: System prompts and user prompts
+  session: 19
+  skilling_exp: 'CO4 practical focus: prompt engineering fundamentals'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs: []
+  eli5: Distinguish persistent application-level instructions from the immediate task and data supplied by a user.
+  key_points:
+  - System prompts define persona, constraints, and instructions for safety and tone.
+  - User prompts carry context and the dynamic query for each invocation.
+  - Clear separation prevents accidental instruction overrides.
+  deep_dive: 'System prompts act as persistent instructions across a session, establishing operational rules, role identity, and guardrails. In contrast, user prompts supply the immediate task, dynamic query, or contextual data. Separating system and user channels prevents prompt confusion and mitigates basic instruction override risks.'
+  formulas: []
+  common_mistakes:
+  - Blending developer constraints directly into the user message body.
+  - Assuming system prompts guarantee 100% adherence without structured validations.
+  quiz:
+  - type: mcq
+    question: Which role should contain immutable developer directives and output formatting instructions?
+    options:
+    - System message
+    - User message
+    - Tool message
+    - Assistant message
+    answer: 0
+    explanation: Developer guidance and persistent persona belong in the system role.
+  exam_tags:
+  - mid-term
+  - prompt-design
+  mini_task: Draft a system prompt that enforces JSON-only replies and evaluate against 3 user inputs.
+- id: CO4-P01-C02
+  code: CO4.1.2
+  title: Few-shot prompting and in-context learning
+  session: 20
+  skilling_exp: 'CO4 practical focus: exemplar formatting'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P01-C01
+  eli5: Show the model examples of input and expected output so it learns the desired pattern without training.
+  key_points:
+  - Exemplars provide demonstrations of desired format and reasoning style.
+  - Reduces variance in structured extraction and classification tasks.
+  - Consumes additional context window budget.
+  deep_dive: 'Few-shot prompting leverages the in-context learning capabilities of pretrained transformers by providing exemplary input-output pairs before the target query. This conditions the conditional probability distribution toward the desired output format, tone, or reasoning trajectory without adjusting model weights.'
+  formulas: []
+  common_mistakes:
+  - Using unbalanced class examples in few-shot classification leading to prediction bias.
+  quiz:
+  - type: mcq
+    question: What is the primary benefit of few-shot prompting?
+    options:
+    - Guides output format and style via demonstration without weight updates
+    - Permanently tunes model weights for specific domains
+    - Decreases token consumption in context
+    - Bypasses tokenizer constraints
+    answer: 0
+    explanation: Few-shot prompting demonstrates desired responses within the context window.
+  exam_tags:
+  - mid-term
+  - evaluation
+  mini_task: Construct 3 balanced few-shot exemplars for sentiment classification with reasoning chains.
+

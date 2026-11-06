@@ -1,0 +1,269 @@
+part:
+  id: co2-part-01
+  co: CO2
+  title: Autoregressive Generation and Next-Token Prediction
+  order: 1
+  concept_ids:
+  - autoregressive-generation
+  - next-token-probability-distribution
+  - generation-stopping-conditions
+concepts:
+- id: autoregressive-generation
+  code: GA-CO2.1.1
+  title: Autoregressive Generation
+  session: 1
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: An autoregressive model builds an output one token at a time. It looks at the tokens already seen, predicts
+    what could come next, chooses one token, adds it to the sequence, and repeats.
+  key_points:
+  - 'Generation is sequential: each new token becomes part of the context for later predictions.'
+  - The model conditions on the preceding sequence rather than generating the entire response in one step.
+  - The same model can produce different continuations when its decoding procedure samples among alternatives.
+  deep_dive: 'Autoregressive generation factorises a sequence probability into a product of conditional next-token
+    probabilities. For a sequence of tokens, the model estimates the probability of the first token and then each
+    later token conditioned on all earlier tokens. At inference time, the prompt provides the initial context. The
+    model computes a distribution for the next position, a decoding rule selects a token, and that token is appended
+    to the context. The process continues until a stopping condition is reached, such as an end-of-sequence token
+    or a maximum output length. This explains why generation latency can grow with output length: each step depends
+    on the preceding generated sequence. It also explains why an early token choice can influence the remainder
+    of the answer.'
+  formulas:
+  - P(x_1, …, x_T) = ∏_{t=1}^{T} P(x_t | x_1, …, x_{t-1})
+  viz:
+    type: sequence_generation
+    description: Advance one token at a time and observe how each selected token becomes part of the next context.
+    params:
+    - name: step
+      label: Step
+      min: 1
+      max: 8
+      step: 1
+      default: 1
+      unit: token step
+    compute:
+      step: step
+      sequence:
+      - The
+      - model
+      - predicts
+      - one
+      - token
+      - at
+      - a
+      - time
+    outcomes:
+    - when: step <= 2
+      title: Context is short
+      explain: Only a small prefix is available to condition the next-token distribution.
+      severity: info
+    - when: step >= 3 && step <= 6
+      title: Context is growing
+      explain: Previously generated tokens now influence later predictions.
+      severity: info
+    - when: step >= 7
+      title: Continuation stage
+      explain: The sequence is approaching its illustrative stopping point.
+      severity: info
+    combos_to_try:
+    - set:
+        step: 1
+      lesson: Trace a short prompt through at least five generation steps and mark which tokens are prompt tokens
+        and which are generated tokens.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What does an autoregressive model do at each generation step?
+    options:
+    - Predicts a distribution for the next token given the preceding context
+    - Predicts every future token independently
+    - Replaces the prompt with a fixed response
+    - Selects a random token without using context
+    answer: 0
+    explanation: The next-token distribution is conditioned on the tokens already in the sequence.
+  - type: short_answer
+    question: Explain why an autoregressive model appends each generated token to its context.
+    answer: A correct answer explains that later predictions are conditioned on the expanded prefix.
+    explanation: Mention sequential conditioning and the changing context.
+  - type: application
+    question: A generated answer begins repeating a phrase. Explain how autoregressive generation can allow the
+      repetition to continue.
+    answer: Each repeated token becomes part of the context and can influence subsequent next-token predictions;
+      decoding settings and model behaviour can reinforce the pattern.
+    explanation: Connect sequence feedback to the observed output.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Trace a short prompt through at least five generation steps and mark which tokens are prompt tokens
+    and which are generated tokens.
+- id: next-token-probability-distribution
+  code: GA-CO2.1.2
+  title: Next-Token Probability Distributions
+  session: 2
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - autoregressive-generation
+  eli5: A model does not initially know just one next token. It assigns scores to possible tokens and converts those
+    scores into a probability distribution.
+  key_points:
+  - The output layer produces a score, commonly called a logit, for each vocabulary token.
+  - Softmax converts logits into non-negative probabilities that sum to one.
+  - The highest-probability token is not the only possible selection under sampling.
+  deep_dive: 'For a vocabulary of size V, the model produces V logits for the next position. A logit is an unnormalised
+    score, not itself a probability. Applying softmax turns the scores into a probability distribution: every probability
+    is between zero and one and the total is one. A distribution may place most probability on one token while retaining
+    smaller probabilities for alternatives. Greedy decoding chooses the maximum-probability token; sampling can
+    select another token according to the distribution. The distribution is conditional on the current context and
+    model parameters. It should not be interpreted as a guarantee that the most likely token is factually correct;
+    it describes the model''s learned next-token preference.'
+  formulas:
+  - p_i = exp(z_i) / Σ_j exp(z_j)
+  - Σ_i p_i = 1
+  viz:
+    type: probability_distribution
+    description: Adjust illustrative logits and inspect how softmax produces a normalised distribution.
+    params:
+    - name: peak_logit
+      label: Peak Logit
+      min: 0
+      max: 5
+      step: 0.5
+      default: 2
+      unit: logit
+    compute:
+      peak_logit: peak_logit
+      example_logits:
+      - 2.0
+      - 1.0
+      - 0.0
+      - -1.0
+      note: Illustrative logits only; softmax probabilities depend on all logits.
+    outcomes:
+    - when: peak_logit >= 3
+      title: Sharper preference
+      explain: A larger gap between the leading logit and alternatives concentrates probability.
+      severity: info
+    - when: peak_logit < 3
+      title: More competitive alternatives
+      explain: Several tokens may retain meaningful probability mass.
+      severity: info
+    combos_to_try:
+    - set:
+        peak_logit: 2
+      lesson: Write down four sample logits, apply softmax, and verify that the resulting probabilities sum to one.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What is the main purpose of softmax when applied to logits?
+    options:
+    - Convert scores into a probability distribution
+    - Sort the vocabulary alphabetically
+    - Remove low-frequency vocabulary entries
+    - Turn token IDs into words
+    answer: 0
+    explanation: Softmax normalises scores into probabilities that sum to one.
+  - type: short_answer
+    question: Why is a logit not the same thing as a probability?
+    answer: A logit is an unnormalised score; a probability is a normalised value in [0,1] within a distribution.
+    explanation: Mention normalisation and the sum-to-one property.
+  - type: application
+    question: Two candidate tokens have probabilities 0.55 and 0.30. What does the remaining probability mass represent?
+    answer: It represents the combined probability assigned to all other vocabulary tokens.
+    explanation: Interpret the distribution across the full vocabulary.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Write down four sample logits, apply softmax, and verify that the resulting probabilities sum to one.
+- id: generation-stopping-conditions
+  code: GA-CO2.1.3
+  title: Generation Loop and Stopping Conditions
+  session: 2
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - autoregressive-generation
+  - next-token-probability-distribution
+  eli5: Generation needs a rule for when to stop. It may stop when the model emits an end token or when an application
+    limit is reached.
+  key_points:
+  - An end-of-sequence token can signal that the model considers the response complete.
+  - A maximum-new-token limit caps output length even if no end token appears.
+  - Stopping rules affect response length, latency and cost.
+  deep_dive: A practical generation loop has an initial prompt, repeated next-token prediction, token selection,
+    token appending and a stopping check. Common stopping conditions include an end-of-sequence token, a maximum
+    number of newly generated tokens, or an application-defined stop sequence. These conditions serve different
+    purposes. An end token is learned as part of the model's sequence behaviour, while a maximum token count is
+    an operational guardrail. A stop sequence can be useful for constrained formats but must be chosen carefully
+    so it does not truncate valid content. If no stopping rule is triggered, generation may continue until the configured
+    limit. Applications should record which condition ended a response because unexpectedly short or truncated output
+    can otherwise be difficult to diagnose.
+  formulas: []
+  viz:
+    type: stopping_condition
+    description: Choose a stopping rule and inspect how it changes the length of an illustrative generation.
+    params:
+    - name: max_tokens
+      label: Max Tokens
+      min: 1
+      max: 20
+      step: 1
+      default: 8
+      unit: new tokens
+    compute:
+      max_tokens: max_tokens
+      end_token_available: true
+      stop_sequence_available: false
+    outcomes:
+    - when: max_tokens <= 5
+      title: Short output cap
+      explain: The generation is capped quickly and may be incomplete.
+      severity: info
+    - when: max_tokens > 5
+      title: More room to finish
+      explain: The model has more room, but output can still stop early on an end token.
+      severity: info
+    combos_to_try:
+    - set:
+        max_tokens: 8
+      lesson: Compare an end-token stop with a maximum-token stop and explain which one ended each run.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which condition guarantees a hard upper bound on newly generated tokens?
+    options:
+    - Maximum-new-token limit
+    - A high-probability first token
+    - The prompt length alone
+    - The vocabulary size
+    answer: 0
+    explanation: A configured maximum-new-token count caps generation.
+  - type: short_answer
+    question: Distinguish an end-of-sequence stop from a maximum-token stop.
+    answer: An end token is emitted by the model to signal completion; a maximum-token stop is an external generation
+      limit.
+    explanation: Identify model-emitted versus application-enforced stopping.
+  - type: application
+    question: A response ends mid-sentence at exactly 100 generated tokens. What should you inspect first?
+    answer: Inspect the configured maximum-new-token limit and the recorded finish reason.
+    explanation: Use the exact boundary as evidence of a likely length cap.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Compare an end-token stop with a maximum-token stop and explain which one ended each run.
