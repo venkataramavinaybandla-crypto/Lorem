@@ -1,0 +1,226 @@
+part:
+  id: CO5-P02
+  co: CO5
+  title: Instruction Dataset Engineering
+  order: 2
+  concept_ids:
+  - CO5-P02-C01
+  - CO5-P02-C02
+  - CO5-P02-C03
+concepts:
+- id: CO5-P02-C01
+  code: CO5.2.1
+  title: Instruction-response dataset structure
+  session: 26
+  skilling_exp: 'CO5 practical focus: instruction dataset engineering'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P01-C03
+  eli5: Design examples that clearly represent the task, input and desired response.
+  key_points:
+  - Explain the purpose and boundary of instruction-response dataset structure.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: An instruction dataset commonly contains an instruction or task description, an input when needed,
+    and a target response. The exact representation depends on the model's chat template and training pipeline,
+    so formatting must be consistent with the tokenizer and model family. Each example should teach a behaviour
+    that is relevant to the intended deployment task. Avoid mixing unrelated formats or leaving ambiguous separators
+    between roles. Include representative normal cases, difficult cases and appropriate refusals where those behaviours
+    are required. Before training, inspect rendered examples after applying the model's chat template; a structurally
+    valid JSONL file can still encode the wrong conversational sequence.
+  formulas: []
+  viz:
+    type: dataset record
+    description: instruction; input; response; role; chat template
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming instruction-response dataset structure automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents instruction-response dataset structure?
+    options:
+    - Design examples that clearly represent the task, input and desired response.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Design examples that clearly represent the task, input and desired response.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in instruction-response dataset structure.
+    expected_answer: A correct answer should explain the central idea of instruction-response dataset structure
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply instruction-response dataset structure
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for instruction-response dataset structure. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P02-C02
+  code: CO5.2.2
+  title: Data quality, coverage and diversity
+  session: 26
+  skilling_exp: 'CO5 practical focus: instruction dataset engineering'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P02-C01
+  eli5: Assess correctness, consistency, representativeness and coverage before training.
+  key_points:
+  - Explain the purpose and boundary of data quality, coverage and diversity.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: Training data quality places a practical ceiling on adaptation quality. Incorrect targets can teach
+    incorrect behaviour; inconsistent formatting can make the task harder to learn; duplicated examples can overweight
+    a narrow pattern; and unrepresentative data can create poor performance on real requests. Review examples for
+    correctness, clarity, relevance, privacy and licensing. Measure distributions such as task type, language, length
+    and label frequency. Include difficult and boundary cases rather than only easy demonstrations. Data cleaning
+    should be documented and reversible where possible. Human review is especially important for examples where
+    correctness is difficult to determine automatically.
+  formulas: []
+  viz:
+    type: data quality audit
+    description: correctness; consistency; diversity; duplication; coverage
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming data quality, coverage and diversity automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents data quality, coverage and diversity?
+    options:
+    - Assess correctness, consistency, representativeness and coverage before training.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Assess correctness, consistency, representativeness and coverage before
+      training.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in data quality, coverage and diversity.
+    expected_answer: A correct answer should explain the central idea of data quality, coverage and diversity and
+      connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply data quality, coverage and diversity
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for data quality, coverage and diversity. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P02-C03
+  code: CO5.2.3
+  title: Data preprocessing and training-ready formatting
+  session: 26
+  skilling_exp: 'CO5 practical focus: instruction dataset engineering'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P02-C02
+  eli5: Transform raw examples into a reproducible training representation without losing meaning.
+  key_points:
+  - Explain the purpose and boundary of data preprocessing and training-ready formatting.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: 'Preprocessing may include normalising whitespace, removing malformed records, filtering duplicates,
+    checking required fields and applying the model''s conversation template. Be cautious with aggressive cleaning:
+    punctuation, code formatting, multilingual spelling and domain-specific symbols may carry meaning. Track rejected
+    records and reasons so that filtering does not silently alter the dataset. Validate token lengths against the
+    model''s context and training configuration, and decide how overlength examples will be handled. Store the raw
+    source separately from the processed snapshot. The same preprocessing code and configuration should be reusable
+    when a dataset is revised or an experiment is reproduced.'
+  formulas: []
+  viz:
+    type: preprocessing pipeline
+    description: raw data; validation; deduplication; template; token length
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming data preprocessing and training-ready formatting automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents data preprocessing and training-ready formatting?
+    options:
+    - Transform raw examples into a reproducible training representation without losing meaning.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Transform raw examples into a reproducible training representation without
+      losing meaning.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in data preprocessing and training-ready
+      formatting.
+    expected_answer: A correct answer should explain the central idea of data preprocessing and training-ready formatting
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply data preprocessing and training-ready
+      formatting and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for data preprocessing and training-ready formatting. State
+    the inputs, baseline, two metrics, one likely failure and how you would document the result.

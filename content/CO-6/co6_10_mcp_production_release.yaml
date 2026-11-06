@@ -1,0 +1,230 @@
+part:
+  id: CO6-P10
+  co: CO6
+  title: MCP and Production Release
+  order: 10
+  concept_ids:
+  - CO6-P10-C01
+  - CO6-P10-C02
+  - CO6-P10-C03
+concepts:
+- id: CO6-P10-C01
+  code: CO6.10.1
+  title: Model Context Protocol as an enrichment mechanism
+  session: 40
+  skilling_exp: 'CO6 practical focus: mcp and production release'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P09-C03
+  eli5: Explain how MCP can provide a standardised way to connect an AI application to external tools and context.
+  key_points:
+  - Explain the purpose and boundary of model context protocol as an enrichment mechanism.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: The course syllabus positions MCP as an enrichment mechanism for an AI platform. MCP provides a standardised
+    interaction pattern for exposing tools and context to compatible clients. In an application architecture, an
+    MCP server may expose a narrow set of approved capabilities, while the host application decides which servers
+    are trusted and which operations a user may invoke. Tool descriptions and schemas do not replace authorisation.
+    Validate arguments, restrict available capabilities, apply least privilege and treat returned content as untrusted
+    data. Record which MCP server and tool were used so behaviour can be audited. Add MCP only when it solves a
+    real integration need; it is not a substitute for sound service boundaries.
+  formulas: []
+  viz:
+    type: architecture flow
+    description: Visualise the responsibilities, interfaces and controls involved in model context protocol as an
+      enrichment mechanism.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes model context protocol as an enrichment mechanism?
+    options:
+    - Explain how MCP can provide a standardised way to connect an AI application to external tools and context.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to explain how mcp can provide a standardised way to connect an ai application
+      to external tools and context.
+  - type: short_answer
+    question: Identify one important design consideration for model context protocol as an enrichment mechanism.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply model context protocol as an enrichment
+      mechanism and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for model context protocol as an enrichment
+    mechanism. Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P10-C02
+  code: CO6.10.2
+  title: End-to-end integration, security and acceptance testing
+  session: 40
+  skilling_exp: 'CO6 practical focus: mcp and production release'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P10-C01
+  eli5: Verify the complete user journey and critical safety properties across all platform components.
+  key_points:
+  - Explain the purpose and boundary of end-to-end integration, security and acceptance testing.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Integration testing checks that the frontend, gateway, RAG service, model service, MongoDB, Chroma,
+    tracing and guardrails work together. Test normal requests, missing context, unsupported questions, unauthorised
+    access, malformed payloads, provider timeouts and service outages. Verify that citations refer to retrieved
+    sources, user data remains isolated and sensitive values do not appear in logs. Include container and infrastructure
+    checks in the release pipeline. Acceptance criteria should be measurable and linked to the course outcome, not
+    limited to whether the interface loads. Record test evidence, known issues and the environment in which the
+    checks were performed.
+  formulas: []
+  viz:
+    type: sequence diagram
+    description: Visualise the responsibilities, interfaces and controls involved in end-to-end integration, security
+      and acceptance testing.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes end-to-end integration, security and acceptance testing?
+    options:
+    - Verify the complete user journey and critical safety properties across all platform components.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to verify the complete user journey and critical safety properties across all
+      platform components.
+  - type: short_answer
+    question: Identify one important design consideration for end-to-end integration, security and acceptance testing.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply end-to-end integration, security and
+      acceptance testing and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for end-to-end integration, security and
+    acceptance testing. Identify its inputs, outputs, one trust boundary, one failure case and how you would test
+    it.
+- id: CO6-P10-C03
+  code: CO6.10.3
+  title: Measured v0.1 to v1.0 release and operations record
+  session: 40
+  skilling_exp: 'CO6 practical focus: mcp and production release'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P10-C02
+  eli5: Document platform maturity through staged releases, evidence, risks and rollback procedures.
+  key_points:
+  - Explain the purpose and boundary of measured v0.1 to v1.0 release and operations record.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: A measured release progression should state what capability exists at each version, what evidence supports
+    it and which risks remain. An early v0.1 may demonstrate a working vertical slice; later versions can add retrieval,
+    personalisation, tracing, guardrails, CI and cloud deployment. The final v1.0 record should identify service
+    and prompt versions, infrastructure revision, test results, security findings, operational metrics, cost assumptions
+    and rollback instructions. Define ownership for incidents and ongoing maintenance. Do not label a system production-ready
+    solely because it is deployed. Production readiness requires reliable operation, privacy and security controls,
+    documented limitations and evidence that critical user journeys work under both normal and failure conditions.
+  formulas: []
+  viz:
+    type: decision flow
+    description: Visualise the responsibilities, interfaces and controls involved in measured v0.1 to v1.0 release
+      and operations record.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes measured v0.1 to v1.0 release and operations record?
+    options:
+    - Document platform maturity through staged releases, evidence, risks and rollback procedures.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to document platform maturity through staged releases, evidence, risks and
+      rollback procedures.
+  - type: short_answer
+    question: Identify one important design consideration for measured v0.1 to v1.0 release and operations record.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply measured v0.1 to v1.0 release and operations
+      record and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for measured v0.1 to v1.0 release and operations
+    record. Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.

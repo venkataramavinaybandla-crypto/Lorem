@@ -9,6 +9,7 @@ import StoppingConditionViz from './StoppingConditionViz';
 import EmbeddingSpaceViz from './EmbeddingSpaceViz';
 import SimilarityMetricViz from './SimilarityMetricViz';
 import ModelSelectionViz from './ModelSelectionViz';
+import GenericViz from './GenericViz';
 
 // Explicit mapping from YAML viz.type to corresponding interactive React component
 export const vizRegistry: Record<string, React.ComponentType<VizComponentProps>> = {
@@ -27,27 +28,26 @@ interface VizRendererProps {
   viz?: VizData | Record<string, unknown>;
 }
 
+/** Registered components need object params (they read `param.name`). */
+function hasComponentParams(viz: Record<string, unknown>): boolean {
+  if (!Array.isArray(viz.params)) return true;
+  return viz.params.every((param) => Boolean(param) && typeof param === 'object');
+}
+
 export default function VizRenderer({ viz }: VizRendererProps) {
-  if (!viz || typeof viz !== 'object' || !('type' in viz) || typeof viz.type !== 'string') {
+  if (!viz || typeof viz !== 'object') {
     return null;
   }
 
-  const Component = vizRegistry[viz.type];
+  const definition = viz as Record<string, unknown>;
+  const type = typeof definition.type === 'string' ? definition.type : '';
+  const Component = type ? vizRegistry[type] : undefined;
 
-  // Graceful fallback for unknown / future types
-  if (!Component) {
-    return (
-      <div className="my-4 p-4 rounded-2xl border border-dashed border-[#89726b]/30 bg-white/40 text-center">
-        <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-[#89726b] mb-1">
-          <span className="material-symbols-outlined text-[16px]">hourglass_empty</span>
-          <span>Interactive Visualization</span>
-        </div>
-        <p className="text-[11px] text-[#56423c]">
-          Visualization type <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-[#ddc0b8]">{viz.type}</code> is not available yet.
-        </p>
-      </div>
-    );
+  // Dedicated interactive component when one exists and the data matches its shape
+  if (Component && hasComponentParams(definition)) {
+    return <Component viz={viz as VizData} />;
   }
 
-  return <Component viz={viz as VizData} />;
+  // Complete generic rendering for every other visualization definition
+  return <GenericViz viz={definition} />;
 }

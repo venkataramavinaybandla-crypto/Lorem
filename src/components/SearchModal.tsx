@@ -55,7 +55,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   const handleSelect = (item: SearchResult) => {
     onClose();
-    navigate(`/co/${item.coId}#${item.concept.id}`);
+    navigate(`/co/${item.coId}#${item.anchorId}`);
   };
 
   if (!isOpen) return null;
@@ -124,7 +124,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               const isSelected = idx === selectedIndex;
               return (
                 <button
-                  key={`${item.coId}-${item.concept.id}-${idx}`}
+                  key={`${item.coId}-${item.anchorId}-${idx}`}
                   type="button"
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(idx)}
@@ -140,7 +140,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                         {item.coId}
                       </span>
                       <span className="text-xs font-bold text-[#1d1c15] truncate">
-                        {item.concept.title}
+                        {item.title}
                       </span>
                     </div>
                     <span className="text-[10px] font-mono text-[#89726b] shrink-0">

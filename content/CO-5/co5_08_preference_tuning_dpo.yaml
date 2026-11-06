@@ -1,0 +1,226 @@
+part:
+  id: CO5-P08
+  co: CO5
+  title: Preference Tuning and DPO
+  order: 8
+  concept_ids:
+  - CO5-P08-C01
+  - CO5-P08-C02
+  - CO5-P08-C03
+concepts:
+- id: CO5-P08-C01
+  code: CO5.8.1
+  title: Preference data and chosen-rejected pairs
+  session: 32
+  skilling_exp: 'CO5 practical focus: preference tuning and dpo'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO5-P07-C03
+  eli5: Represent human or curated preferences as comparisons between alternative responses.
+  key_points:
+  - Explain the purpose and boundary of preference data and chosen-rejected pairs.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: Preference datasets commonly pair a prompt with a preferred response and a less-preferred response.
+    The labels express a relative preference under a defined criterion, such as helpfulness, correctness or style.
+    They do not necessarily establish that the preferred response is objectively true. Data collection should define
+    the rating instructions, annotator guidance, disagreement handling and privacy controls. Inspect pairs for ambiguous
+    prompts, inconsistent labels and accidental preference for verbosity or tone over correctness. Keep preference
+    data separate from the shared test set and document its provenance and limitations. Keep the evaluation protocol
+    stable across runs, inspect representative outputs, and record the exact revisions used so another learner can
+    reproduce the comparison and understand its limitations.
+  formulas: []
+  viz:
+    type: preference pair
+    description: prompt; chosen response; rejected response; preference criterion
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming preference data and chosen-rejected pairs automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents preference data and chosen-rejected pairs?
+    options:
+    - Represent human or curated preferences as comparisons between alternative responses.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Represent human or curated preferences as comparisons between alternative
+      responses.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in preference data and chosen-rejected pairs.
+    expected_answer: A correct answer should explain the central idea of preference data and chosen-rejected pairs
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply preference data and chosen-rejected
+      pairs and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for preference data and chosen-rejected pairs. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P08-C02
+  code: CO5.8.2
+  title: Direct Preference Optimization concept
+  session: 32
+  skilling_exp: 'CO5 practical focus: preference tuning and dpo'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO5-P08-C01
+  eli5: Explain how DPO uses preference pairs to optimise a policy relative to a reference model.
+  key_points:
+  - Explain the purpose and boundary of direct preference optimization concept.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: 'Direct Preference Optimization is a preference-tuning method that trains a policy using chosen and
+    rejected response pairs, with a reference policy contributing to the objective. Rather than requiring a separately
+    trained reward model and an online reinforcement-learning loop in the same way as some RLHF pipelines, DPO directly
+    optimises a preference-based objective. Its behaviour depends on the quality of preference data, the reference
+    model, beta or related configuration and training setup. DPO is not simply supervised learning on preferred
+    answers alone: the rejected alternative is part of the comparison. Evaluate the resulting model on independent
+    task and safety tests.'
+  formulas: []
+  viz:
+    type: DPO comparison
+    description: policy model; reference model; chosen; rejected; preference loss
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming direct preference optimization concept automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents direct preference optimization concept?
+    options:
+    - Explain how DPO uses preference pairs to optimise a policy relative to a reference model.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Explain how DPO uses preference pairs to optimise a policy relative to a
+      reference model.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in direct preference optimization concept.
+    expected_answer: A correct answer should explain the central idea of direct preference optimization concept
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply direct preference optimization concept
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for direct preference optimization concept. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P08-C03
+  code: CO5.8.3
+  title: TRL preference-tuning demonstration
+  session: 32
+  skilling_exp: 'CO5 practical focus: preference tuning and dpo'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO5-P08-C02
+  eli5: Plan a controlled DPO demonstration and inspect its outputs and limitations.
+  key_points:
+  - Explain the purpose and boundary of trl preference-tuning demonstration.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: A DPO demonstration using TRL should begin with a compatible model and preference dataset in the expected
+    format. Verify that each record contains the prompt, chosen response and rejected response, then run a small
+    training smoke test before a full experiment. Record the model and tokenizer revisions, dataset snapshot, beta,
+    batch settings, precision and hardware. Compare the adapted model with its starting checkpoint using the same
+    held-out evaluation set. Inspect both preference-aligned behaviours and possible regressions such as verbosity,
+    refusal changes or reduced factuality. Treat the demonstration as evidence about one configuration, not proof
+    that DPO is universally superior.
+  formulas: []
+  viz:
+    type: DPO experiment
+    description: TRL; preference dataset; reference policy; evaluation; regression
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming trl preference-tuning demonstration automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents trl preference-tuning demonstration?
+    options:
+    - Plan a controlled DPO demonstration and inspect its outputs and limitations.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Plan a controlled DPO demonstration and inspect its outputs and limitations.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in trl preference-tuning demonstration.
+    expected_answer: A correct answer should explain the central idea of trl preference-tuning demonstration and
+      connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply trl preference-tuning demonstration
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for trl preference-tuning demonstration. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.

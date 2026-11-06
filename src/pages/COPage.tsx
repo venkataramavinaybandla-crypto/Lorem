@@ -1,15 +1,26 @@
-import { useParams, Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { getCO } from '../content';
 import { coTitles, coDescriptions } from '../coTitles';
 import CodeBlock from '../components/CodeBlock';
+import GenericBlock from '../components/GenericBlock';
 import VizRenderer from '../components/viz/VizRenderer';
-import { useState } from 'react';
 import { useProgress } from '../utils/useProgress';
 
 export default function COPage() {
   const { id } = useParams<{ id: string }>();
   const co = getCO(id ?? '');
   const { toggleConcept, isConceptCompleted, getCOProgress } = useProgress();
+  const { hash } = useLocation();
+  const [activeOrder, setActiveOrder] = useState<number | null>(null);
+  const partRefs = useRef(new Map<number, HTMLElement>());
+
+  // Deep links from search results (#concept-id or #part-N)
+  useEffect(() => {
+    if (!hash) return;
+    const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [hash, co?.id]);
 
   if (!co) {
     return (
@@ -39,6 +50,23 @@ export default function COPage() {
   const totalConcepts = conceptIds.length;
   const conceptsText = `${totalConcepts} ${totalConcepts === 1 ? 'concept' : 'concepts'}`;
   const progress = getCOProgress(conceptIds);
+
+  const presentOrders = co.parts.map((part) => part.part.order);
+  const active = activeOrder ?? presentOrders[0];
+  const activeIndex = active === undefined ? -1 : presentOrders.indexOf(active);
+  const canPrev = activeIndex > 0;
+  const canNext = activeIndex >= 0 && activeIndex < presentOrders.length - 1;
+
+  const goToIndex = (index: number) => {
+    const order = presentOrders[index];
+    if (order === undefined) return;
+    setActiveOrder(order);
+    partRefs.current.get(order)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const contentFolder = co.id.startsWith('CO')
+    ? `CO-${co.id.slice(2)}`
+    : 'content';
 
   return (
     <div className="space-y-12">
@@ -92,14 +120,156 @@ export default function COPage() {
         </div>
       </div>
 
+      {/* Parts Navigator — every target slot is always visible */}
+      <nav
+        aria-label={`${co.id} parts navigator`}
+        className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/80 p-5 shadow-[0_4px_24px_rgba(159,65,34,0.03)] space-y-4"
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="text-sm font-bold text-[#1d1c15] tracking-tight">Parts Navigator</h2>
+            <span className="text-[11px] font-mono text-[#89726b]">
+              {partCount} of {Math.max(co.partsTarget, partCount)} parts present
+            </span>
+            {co.emptySlots.length > 0 && (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#ff8a65]/20 text-[#752305] border border-[#ff8a65]/30 uppercase">
+                {co.emptySlots.length} missing
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => goToIndex(activeIndex - 1)}
+              disabled={!canPrev}
+              aria-label="Previous part"
+              className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-white/80 bg-white/70 text-[#56423c] shadow-sm transition-all hover:bg-white hover:text-[#9f4122] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white/70 disabled:hover:text-[#56423c] focus-visible:outline-2 focus-visible:outline-[#9f4122]"
+            >
+              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+              Prev
+            </button>
+            <button
+              type="button"
+              onClick={() => goToIndex(activeIndex + 1)}
+              disabled={!canNext}
+              aria-label="Next part"
+              className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-xs font-semibold border border-white/80 bg-white/70 text-[#56423c] shadow-sm transition-all hover:bg-white hover:text-[#9f4122] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white/70 disabled:hover:text-[#56423c] focus-visible:outline-2 focus-visible:outline-[#9f4122]"
+            >
+              Next
+              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <ol className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+          {co.partSlots.map((slot) => {
+            const part = co.parts.find((candidate) => candidate.part.order === slot);
+
+            if (!part) {
+              return (
+                <li key={slot}>
+                  <div
+                    aria-disabled="true"
+                    title={`Part ${slot} has no YAML file yet`}
+                    className="h-full rounded-2xl border border-dashed border-[#89726b]/30 bg-white/30 px-3 py-2.5"
+                  >
+                    <div className="text-[10px] font-mono font-bold text-[#89726b]">
+                      PART {slot}
+                    </div>
+                    <div className="text-[11px] text-[#89726b] leading-snug">Not added yet</div>
+                  </div>
+                </li>
+              );
+            }
+
+            const isActive = active === part.part.order;
+
+            return (
+              <li key={slot}>
+                <button
+                  type="button"
+                  onClick={() => goToIndex(presentOrders.indexOf(part.part.order))}
+                  aria-current={isActive ? 'true' : undefined}
+                  className={`w-full h-full text-left rounded-2xl border px-3 py-2.5 transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-[#9f4122] ${
+                    isActive
+                      ? 'bg-[#9f4122] border-[#9f4122] text-white shadow-md'
+                      : 'bg-white/80 border-white/80 text-[#1d1c15] shadow-sm hover:bg-white hover:border-[#ff8a65]/40'
+                  }`}
+                >
+                  <div
+                    className={`text-[10px] font-mono font-bold ${
+                      isActive ? 'text-white/80' : 'text-[#9f4122]'
+                    }`}
+                  >
+                    PART {slot}
+                  </div>
+                  <div className="text-[11px] font-semibold leading-snug line-clamp-2">
+                    {part.part.title}
+                  </div>
+                  <div
+                    className={`text-[10px] font-mono mt-1 ${
+                      isActive ? 'text-white/70' : 'text-[#89726b]'
+                    }`}
+                  >
+                    {part.concepts.length}{' '}
+                    {part.concepts.length === 1 ? 'concept' : 'concepts'}
+                  </div>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+
+        {co.emptySlots.length > 0 && (
+          <div className="pt-3 border-t border-[#89726b]/10 space-y-1">
+            <p className="text-[11px] font-bold text-[#89726b] uppercase tracking-widest">
+              Empty part slots
+            </p>
+            <p className="text-[11px] text-[#56423c] leading-relaxed">
+              {co.id}:{' '}
+              <span className="font-mono text-[#752305]">
+                {co.emptySlots.map((slot) => `part ${slot}`).join(', ')}
+              </span>
+              {' — '}
+              expected as{' '}
+              <span className="font-mono text-[#56423c]">
+                content/{contentFolder}/{co.id.toLowerCase()}_
+                {String(co.emptySlots[0]).padStart(2, '0')}_*.yaml
+              </span>{' '}
+              and so on.
+            </p>
+          </div>
+        )}
+      </nav>
+
       {/* Parts Sections */}
       <div className="space-y-12">
+        {co.parts.length === 0 && (
+          <div className="rounded-3xl border border-dashed border-[#89726b]/30 bg-white/40 p-8 text-center space-y-2">
+            <p className="text-sm font-semibold text-[#1d1c15]">
+              No YAML files loaded for {co.id} yet
+            </p>
+            <p className="text-xs text-[#56423c]">
+              Add files under content/{contentFolder}/ and they will appear here automatically.
+            </p>
+          </div>
+        )}
+
         {co.parts.map((part) => {
           const cCount = part.concepts.length;
           const cText = `${cCount} ${cCount === 1 ? 'concept' : 'concepts'}`;
 
           return (
-            <section key={part.part.id} className="space-y-5">
+            <section
+              key={part.part.id}
+              id={`part-${part.part.order}`}
+              ref={(element) => {
+                if (element) partRefs.current.set(part.part.order, element);
+                else partRefs.current.delete(part.part.order);
+              }}
+              className="space-y-5 scroll-mt-28"
+            >
               <div className="flex items-center justify-between pb-3 border-b border-[#89726b]/20">
                 <div className="flex items-center gap-3">
                   <span className="bg-[#ff8a65]/20 text-[#752305] text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider font-mono">
@@ -114,7 +284,27 @@ export default function COPage() {
                 </span>
               </div>
 
+              {part.loadError && (
+                <div className="p-4 rounded-2xl border border-[#ba1a1a]/20 bg-[#ba1a1a]/5">
+                  <GenericBlock label="File could not be rendered" value={part.loadError} />
+                  <p className="text-[10px] font-mono text-[#89726b] mt-2">
+                    {part.sourcePath}
+                  </p>
+                </div>
+              )}
+
               <div className="space-y-5">
+                {part.concepts.length === 0 && !part.loadError && (
+                  <div className="rounded-3xl border border-dashed border-[#89726b]/30 bg-white/40 p-6 text-center space-y-1">
+                    <p className="text-xs font-semibold text-[#1d1c15]">
+                      This part has no concepts yet
+                    </p>
+                    <p className="text-[11px] text-[#56423c]">
+                      {part.sourcePath} was loaded but contains no concept entries.
+                    </p>
+                  </div>
+                )}
+
                 {part.concepts.map((concept) => (
                   <ConceptCard
                     key={concept.id}
@@ -132,6 +322,16 @@ export default function COPage() {
   );
 }
 
+function formatQuizAnswer(quiz: import('../content').QuizItem): string {
+  if (typeof quiz.answer === 'number') {
+    const option = quiz.options?.[quiz.answer];
+    return option
+      ? `${String.fromCharCode(65 + quiz.answer)}. ${option}`
+      : String(quiz.answer);
+  }
+  return quiz.answer;
+}
+
 function ConceptCard({
   concept,
   isDone,
@@ -142,11 +342,12 @@ function ConceptCard({
   onToggleDone: () => void;
 }) {
   const [expanded, setExpanded] = useState(true);
+  const extraFields = Object.entries(concept.extra);
 
   return (
     <div
       id={concept.id}
-      className={`rounded-3xl border transition-all ${
+      className={`rounded-3xl border transition-all scroll-mt-28 ${
         isDone
           ? 'bg-white/90 border-[#d6ed7a] shadow-[0_4px_20px_rgba(85,101,0,0.06)]'
           : 'border-white/80 bg-white/60 backdrop-blur-xl shadow-[0_4px_24px_rgba(159,65,34,0.03)] hover:bg-white/70'
@@ -185,19 +386,31 @@ function ConceptCard({
               </span>
             )}
 
-            {concept.session && (
+            {concept.session !== '' && (
               <span className="px-2.5 py-0.5 rounded-full font-mono text-[10px] bg-white/80 text-[#56423c] border border-[#ddc0b8]">
                 Session {concept.session}
               </span>
             )}
 
-            {concept.difficulty && (
+            {concept.difficulty !== undefined && (
               <span className="px-2.5 py-0.5 rounded-full font-mono text-[10px] bg-white/80 text-[#56423c] border border-[#ddc0b8]">
                 Difficulty: {concept.difficulty}
               </span>
             )}
 
-            {concept.exam_tags?.map((tag) => (
+            {concept.btl !== undefined && (
+              <span className="px-2.5 py-0.5 rounded-full font-mono text-[10px] bg-white/80 text-[#56423c] border border-[#ddc0b8]">
+                BTL: {concept.btl}
+              </span>
+            )}
+
+            {concept.skilling_exp !== undefined && (
+              <span className="px-2.5 py-0.5 rounded-full font-mono text-[10px] bg-white/80 text-[#56423c] border border-[#ddc0b8]">
+                Skilling Exp: {concept.skilling_exp}
+              </span>
+            )}
+
+            {concept.exam_tags.map((tag) => (
               <span
                 key={tag}
                 className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#d6ed7a]/50 text-[#3f4c00] border border-[#d6ed7a] uppercase"
@@ -240,7 +453,7 @@ function ConceptCard({
       {expanded && (
         <div className="px-6 pb-6 pt-2 border-t border-[#89726b]/10 space-y-6 text-xs text-[#56423c]">
           {/* Key Points */}
-          {concept.key_points && concept.key_points.length > 0 && (
+          {concept.key_points.length > 0 && (
             <div className="space-y-2">
               <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-[#9f4122]">
                 Key Takeaways
@@ -268,8 +481,27 @@ function ConceptCard({
             </div>
           )}
 
+          {/* Prerequisites */}
+          {concept.prereqs && concept.prereqs.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-[#89726b]">
+                Prerequisites
+              </h4>
+              <div className="flex flex-wrap items-center gap-2">
+                {concept.prereqs.map((prereq) => (
+                  <span
+                    key={prereq}
+                    className="px-2.5 py-0.5 rounded-full font-mono text-[10px] bg-white/80 text-[#56423c] border border-[#ddc0b8]"
+                  >
+                    {prereq}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Formulas */}
-          {concept.formulas && concept.formulas.length > 0 && (
+          {concept.formulas.length > 0 && (
             <div className="space-y-2">
               <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-[#89726b]">
                 Formulas
@@ -290,7 +522,7 @@ function ConceptCard({
           )}
 
           {/* Common Mistakes */}
-          {concept.common_mistakes && concept.common_mistakes.length > 0 && (
+          {concept.common_mistakes.length > 0 && (
             <div className="space-y-2">
               <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-[#ba1a1a]">
                 Common Misconceptions &amp; Mistakes
@@ -324,7 +556,7 @@ function ConceptCard({
           )}
 
           {/* Quiz Preview */}
-          {concept.quiz && concept.quiz.length > 0 && (
+          {concept.quiz.length > 0 && (
             <div className="space-y-3 pt-2">
               <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-[#89726b]">
                 Self-Assessment Quiz ({concept.quiz.length} {concept.quiz.length === 1 ? 'question' : 'questions'})
@@ -355,15 +587,39 @@ function ConceptCard({
                       </div>
                     )}
 
+                    {q.answer !== '' && q.answer !== undefined && (
+                      <div className="text-[11px] text-[#56423c] leading-relaxed">
+                        <span className="font-bold text-[#9f4122]">Answer: </span>
+                        {formatQuizAnswer(q)}
+                      </div>
+                    )}
+
                     {q.explanation && (
                       <div className="text-[11px] text-[#56423c] pt-2 border-t border-[#89726b]/10 leading-relaxed">
                         <span className="font-bold text-[#9f4122]">Explanation: </span>
                         {q.explanation}
                       </div>
                     )}
+
+                    {Object.entries(q.extra).length > 0 && (
+                      <div className="pt-2 border-t border-[#89726b]/10 space-y-3">
+                        {Object.entries(q.extra).map(([key, value]) => (
+                          <GenericBlock key={key} label={key} value={value} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Any field without a dedicated renderer, rendered generically */}
+          {extraFields.length > 0 && (
+            <div className="space-y-4 pt-2 border-t border-[#89726b]/10">
+              {extraFields.map(([key, value]) => (
+                <GenericBlock key={key} label={key} value={value} />
+              ))}
             </div>
           )}
         </div>

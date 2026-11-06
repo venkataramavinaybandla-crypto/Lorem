@@ -1,0 +1,256 @@
+part:
+  id: co3-part-02
+  co: CO3
+  title: Sparse vs Dense Retrieval
+  order: 2
+  concept_ids:
+  - sparse-representations
+  - bm25-ranking
+  - hybrid-retrieval
+concepts:
+- id: sparse-representations
+  code: GA-CO3.2.1
+  title: Sparse Representations and TF-IDF
+  session: 14
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: Sparse retrieval represents documents using mostly-zero term-weight vectors. TF-IDF gives weight to terms
+    based on their frequency and distinctiveness.
+  key_points:
+  - Sparse vectors have values for a limited set of vocabulary terms.
+  - Term frequency reflects occurrence within a document.
+  - Inverse document frequency downweights terms common across many documents.
+  deep_dive: 'Sparse representations map text into a vocabulary-indexed feature space. Most documents contain only
+    a small fraction of all possible terms, so most vector coordinates are zero. TF-IDF combines term frequency
+    with inverse document frequency: a term receives more weight when it appears in a document but is relatively
+    uncommon across the collection. This can make distinctive terms useful for retrieval. Sparse methods are often
+    strong when exact terminology, identifiers, names or technical phrases matter. They can struggle when a query
+    and relevant document use different wording. Preprocessing choices such as tokenisation, case handling and stop-word
+    removal affect the representation and should be documented.'
+  formulas:
+  - tfidf(t,d) = tf(t,d) × idf(t)
+  - idf(t) ≈ log(N / df(t))
+  viz:
+    type: tfidf_weights
+    description: Adjust document frequency and observe how term distinctiveness changes.
+    params:
+    - name: df
+      label: Df
+      min: 1
+      max: 100
+      step: 1
+      default: 10
+      unit: document frequency
+    compute:
+      df: df
+      documents: 100
+      term: retrieval
+    outcomes:
+    - when: df <= 10
+      title: More distinctive term
+      explain: A term occurring in fewer documents may receive higher IDF.
+      severity: info
+    - when: df > 50
+      title: Common term
+      explain: A term occurring in many documents receives lower IDF.
+      severity: info
+    combos_to_try:
+    - set:
+        df: 10
+      lesson: Calculate a simplified TF-IDF weight for a term and compare a rare term with a common term.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What does inverse document frequency generally do?
+    options:
+    - Downweights terms appearing in many documents
+    - Counts only the number of paragraphs
+    - Embeds text into a dense vector
+    - Measures answer latency
+    answer: 0
+    explanation: Common terms are less distinctive across the collection.
+  - type: short_answer
+    question: Why are sparse text vectors called sparse?
+    answer: Most coordinates are zero because a document contains only a small subset of the full vocabulary.
+    explanation: Mention vocabulary-wide feature space.
+  - type: application
+    question: A query contains an exact course code such as 25CS2207E. Why might sparse retrieval be useful?
+    answer: Exact-term matching can retrieve documents containing the same distinctive identifier.
+    explanation: Connect lexical matching to identifiers.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Calculate a simplified TF-IDF weight for a term and compare a rare term with a common term.
+- id: bm25-ranking
+  code: GA-CO3.2.2
+  title: BM25 Ranking
+  session: 14
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: BM25 is a probabilistic lexical ranking function that scores documents using query-term matches, term frequency
+    saturation and document-length normalisation.
+  key_points:
+  - BM25 ranks documents using query-term evidence.
+  - Term frequency has diminishing returns rather than growing without bound.
+  - Document length normalisation helps avoid favouring long documents solely because they contain more terms.
+  deep_dive: 'BM25 is a widely used sparse retrieval ranking function. It scores documents based on how query terms
+    occur in each document, while accounting for how informative those terms are across the collection. Its term-frequency
+    component saturates: repeated occurrences can increase relevance, but each additional occurrence contributes
+    less than the previous one. BM25 also includes document-length normalisation so that long documents are not
+    automatically favoured simply because they contain more words. Parameters such as k1 and b control aspects of
+    term-frequency saturation and length normalisation. BM25 is particularly useful for exact words, technical vocabulary
+    and identifiers, but it does not inherently understand synonyms or paraphrases.'
+  formulas:
+  - BM25(q,d) = Σ_{t∈q} IDF(t) · [ f(t,d)(k1+1) / (f(t,d)+k1(1-b+b·|d|/avgdl)) ]
+  viz:
+    type: bm25_controls
+    description: Explore the effect of term frequency and document length on a BM25-style score.
+    params:
+    - name: k1
+      label: K1
+      min: 0.5
+      max: 2.5
+      step: 0.1
+      default: 1.2
+      unit: k1
+    - name: b
+      label: B
+      min: 0
+      max: 1
+      step: 0.1
+      default: 0.75
+      unit: b
+    compute:
+      k1: k1
+      b: b
+      note: Use the formula in the deep dive for hand calculations.
+    outcomes:
+    - when: k1 >= 1.5
+      title: Higher saturation scale
+      explain: Term frequency can continue contributing over a wider range.
+      severity: info
+    - when: b >= 0.5
+      title: Stronger length normalisation
+      explain: Document length has a larger influence in the normalisation term.
+      severity: info
+    combos_to_try:
+    - set:
+        k1: 1.2
+      lesson: Compare two documents with the same query-term frequency but different lengths using the BM25 formula.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Which feature is associated with BM25?
+    options:
+    - Term-frequency saturation and document-length normalisation
+    - Dense neural embeddings only
+    - Image patch encoding
+    - Autoregressive decoding
+    answer: 0
+    explanation: BM25 includes both effects in its ranking function.
+  - type: short_answer
+    question: Why does BM25 use document-length normalisation?
+    answer: To reduce the bias toward long documents that naturally contain more terms.
+    explanation: Explain length-related term opportunity.
+  - type: application
+    question: A search query includes a rare API class name. Why can BM25 perform well?
+    answer: The exact rare term can receive strong lexical weight and match documents containing that identifier.
+    explanation: Relate rare terms to IDF.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Compare two documents with the same query-term frequency but different lengths using the BM25 formula.
+- id: hybrid-retrieval
+  code: GA-CO3.2.3
+  title: Hybrid Sparse and Dense Retrieval
+  session: 14
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: Hybrid retrieval combines lexical matching and semantic vector retrieval so the system can benefit from
+    both exact terms and meaning-based similarity.
+  key_points:
+  - Sparse retrieval is useful for exact terms and identifiers.
+  - Dense retrieval can match paraphrases and related meanings.
+  - Hybrid ranking requires a deliberate score-combination or rank-fusion method.
+  deep_dive: Lexical and semantic retrieval have complementary strengths. Sparse methods such as BM25 can identify
+    exact names, codes and phrases. Dense embeddings can retrieve paraphrases whose wording differs from the query.
+    Hybrid retrieval combines both result sets or their scores. Since BM25 scores and vector similarities may have
+    different scales, directly adding raw scores can be unreliable without calibration. Rank fusion methods can
+    combine result positions rather than assuming score scales are comparable. Hybrid retrieval should be evaluated
+    against sparse-only and dense-only baselines on the same query set. The best approach depends on the domain,
+    query vocabulary and quality of the embedding model.
+  formulas: []
+  viz:
+    type: hybrid_retrieval
+    description: Compare the result sets returned by sparse and dense retrieval before combining them.
+    params:
+    - name: weight
+      label: Weight
+      min: 0
+      max: 1
+      step: 0.1
+      default: 0.5
+      unit: dense weight
+    compute:
+      weight: weight
+      methods:
+      - sparse only
+      - dense only
+      - hybrid fusion
+    outcomes:
+    - when: weight <= 0.3
+      title: Sparse-leaning combination
+      explain: Lexical ranking contributes more strongly in this illustrative weighting.
+      severity: info
+    - when: weight >= 0.7
+      title: Dense-leaning combination
+      explain: Semantic ranking contributes more strongly in this illustrative weighting.
+      severity: info
+    combos_to_try:
+    - set:
+        weight: 0.5
+      lesson: 'Create ten queries: include paraphrases, exact technical terms and identifiers; compare sparse, dense
+        and hybrid retrieval.'
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Why combine sparse and dense retrieval?
+    options:
+    - They can complement exact-term matching and semantic matching
+    - They always return identical rankings
+    - Hybrid retrieval removes the need for evaluation
+    - Dense retrieval stores raw documents
+    answer: 0
+    explanation: The two retrieval styles can address different query types.
+  - type: short_answer
+    question: Why should raw BM25 and cosine scores not automatically be added together?
+    answer: Their scales and distributions may differ, so the combination needs calibration or a rank-fusion approach.
+    explanation: Mention score comparability.
+  - type: application
+    question: A query uses an exact variable name that is absent from semantically similar paraphrases. Which retrieval
+      signal may help most?
+    answer: Sparse lexical retrieval can match the exact variable name.
+    explanation: Explain exact-term matching.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: 'Create ten queries: include paraphrases, exact technical terms and identifiers; compare sparse, dense
+    and hybrid retrieval.'

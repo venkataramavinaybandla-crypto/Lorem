@@ -1,0 +1,220 @@
+part:
+  id: CO4-P03
+  co: CO4
+  title: Zero-Shot and Few-Shot Learning
+  order: 3
+  concept_ids:
+  - CO4-P03-C01
+  - CO4-P03-C02
+  - CO4-P03-C03
+concepts:
+- id: CO4-P03-C01
+  code: CO4.3.1
+  title: Zero-shot prompting
+  session: 21
+  skilling_exp: 'CO4 practical focus: zero-shot and few-shot learning'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P02-C03
+  eli5: Ask the model to perform a task using instructions without demonstration examples.
+  key_points:
+  - Define the purpose and boundary of zero-shot prompting.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Zero-shot prompting gives the model a task description and any necessary context but does not provide
+    worked examples of the desired behaviour. It is quick to author, inexpensive in prompt length and useful when
+    the task is familiar or the output contract is already clear. Its weakness is that subtle labels, edge cases
+    and formatting conventions may be interpreted inconsistently. A zero-shot baseline should be measured on a fixed
+    golden set before adding examples. Inspect both aggregate results and individual failures. If errors cluster
+    around a particular distinction, improve the instruction or add carefully selected examples rather than adding
+    examples indiscriminately.
+  formulas: []
+  viz:
+    type: Zero-shot flow
+    description: task instruction; context; model response; evaluation
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Treating one successful demonstration as proof that zero-shot performance is reliable.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes zero-shot prompting?
+    options:
+    - It applies ask the model to perform a task using instructions without demonstration examples. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because ask the model to perform a task using instructions without demonstration
+      examples. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying zero-shot prompting.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to zero-shot prompting.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply zero-shot prompting to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for zero-shot prompting, define expected behaviour, and record one failure
+    mode and one safeguard.
+- id: CO4-P03-C02
+  code: CO4.3.2
+  title: Few-shot examples and example selection
+  session: 21
+  skilling_exp: 'CO4 practical focus: zero-shot and few-shot learning'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P03-C01
+  eli5: Use a small, representative set of input-output demonstrations to shape behaviour.
+  key_points:
+  - Define the purpose and boundary of few-shot examples and example selection.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Few-shot prompting places examples in context so the model can infer the expected pattern, label definitions
+    or response format. Example quality matters more than raw quantity. Select examples that cover common cases,
+    meaningful edge cases and distinctions the model often confuses. Keep examples correct, concise and consistent
+    with the current output contract. Avoid examples that reveal private data or encode accidental bias. Separate
+    examples from the new input using clear delimiters. Compare zero-shot and few-shot variants on the same test
+    set, and watch for overfitting to the examples or increased prompt cost.
+  formulas: []
+  viz:
+    type: Few-shot construction
+    description: representative example; edge case; label consistency; delimiter
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Choosing only easy examples that fail to represent real inputs.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes few-shot examples and example selection?
+    options:
+    - It applies use a small, representative set of input-output demonstrations to shape behaviour. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because use a small, representative set of input-output demonstrations to
+      shape behaviour. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying few-shot examples and example selection.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to few-shot examples and example selection.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply few-shot examples and example selection
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for few-shot examples and example selection, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P03-C03
+  code: CO4.3.3
+  title: Quantitative comparison of prompting strategies
+  session: 21
+  skilling_exp: 'CO4 practical focus: zero-shot and few-shot learning'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P03-C02
+  eli5: Compare zero-shot and few-shot designs using fixed data and explicit metrics.
+  key_points:
+  - Define the purpose and boundary of quantitative comparison of prompting strategies.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: A fair comparison changes one prompting factor at a time while keeping the model, decoding settings
+    and evaluation set fixed. Define task-specific measures such as exact-match accuracy, macro-F1, schema validity
+    or human-rated quality. Also record latency, input tokens and estimated cost because a quality gain may not
+    justify the operational expense. Report sample size, scoring method and examples of failures. If results vary
+    across repeated runs, include that variability rather than presenting a single lucky result. The decision should
+    explain which strategy is preferred for which task conditions and when the simpler baseline remains adequate.
+  formulas: []
+  viz:
+    type: Prompt experiment
+    description: baseline; controlled variable; metric; latency; cost
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Comparing prompt variants on different test questions or changing multiple variables at once.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes quantitative comparison of prompting strategies?
+    options:
+    - It applies compare zero-shot and few-shot designs using fixed data and explicit metrics. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because compare zero-shot and few-shot designs using fixed data and explicit
+      metrics. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying quantitative comparison of prompting strategies.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to quantitative comparison of prompting strategies.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply quantitative comparison of prompting
+      strategies to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for quantitative comparison of prompting strategies, define expected behaviour,
+    and record one failure mode and one safeguard.

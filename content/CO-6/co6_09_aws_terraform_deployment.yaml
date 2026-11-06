@@ -1,0 +1,226 @@
+part:
+  id: CO6-P09
+  co: CO6
+  title: AWS and Terraform Deployment
+  order: 9
+  concept_ids:
+  - CO6-P09-C01
+  - CO6-P09-C02
+  - CO6-P09-C03
+concepts:
+- id: CO6-P09-C01
+  code: CO6.9.1
+  title: Terraform and infrastructure as code
+  session: 39
+  skilling_exp: 'CO6 practical focus: aws and terraform deployment'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P08-C03
+  eli5: Describe cloud infrastructure declaratively so environments can be reviewed and recreated.
+  key_points:
+  - Explain the purpose and boundary of terraform and infrastructure as code.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Terraform expresses infrastructure as configuration and tracks managed resources through state. A plan
+    previews intended changes before apply, helping reviewers identify unexpected replacement or deletion. Keep
+    state protected because it can contain sensitive infrastructure details, and use an appropriate remote backend
+    and locking approach for team workflows. Separate reusable modules from environment-specific configuration where
+    that improves clarity. Do not commit credentials or state files to source control. Review provider versions
+    and pin dependencies intentionally. Infrastructure as code improves repeatability but still requires careful
+    change review, access control, backups and drift detection.
+  formulas: []
+  viz:
+    type: architecture flow
+    description: Visualise the responsibilities, interfaces and controls involved in terraform and infrastructure
+      as code.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes terraform and infrastructure as code?
+    options:
+    - Describe cloud infrastructure declaratively so environments can be reviewed and recreated.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to describe cloud infrastructure declaratively so environments can be reviewed
+      and recreated.
+  - type: short_answer
+    question: Identify one important design consideration for terraform and infrastructure as code.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply terraform and infrastructure as code
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for terraform and infrastructure as code.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P09-C02
+  code: CO6.9.2
+  title: AWS VPC, IAM, ECR and EC2 foundations
+  session: 39
+  skilling_exp: 'CO6 practical focus: aws and terraform deployment'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P09-C01
+  eli5: Understand the core AWS resources named in the course deployment outcome.
+  key_points:
+  - Explain the purpose and boundary of aws vpc, iam, ecr and ec2 foundations.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: The course handout identifies VPC, IAM, ECR and EC2 as deployment building blocks. A VPC provides network
+    isolation and routing boundaries. IAM roles and policies define which identities and services may perform actions,
+    and should follow least privilege. ECR stores container images for deployment, while EC2 provides virtual machine
+    compute for running workloads. These resources must be connected through network rules, instance roles, image-pull
+    permissions and deployment configuration. Avoid broad wildcard permissions and public exposure by default. Choose
+    network placement and access paths deliberately, and record the rationale for each security boundary.
+  formulas: []
+  viz:
+    type: sequence diagram
+    description: Visualise the responsibilities, interfaces and controls involved in aws vpc, iam, ecr and ec2 foundations.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes aws vpc, iam, ecr and ec2 foundations?
+    options:
+    - Understand the core AWS resources named in the course deployment outcome.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to understand the core aws resources named in the course deployment outcome.
+  - type: short_answer
+    question: Identify one important design consideration for aws vpc, iam, ecr and ec2 foundations.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply aws vpc, iam, ecr and ec2 foundations
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for aws vpc, iam, ecr and ec2 foundations.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P09-C03
+  code: CO6.9.3
+  title: Deploying and operating the platform on AWS
+  session: 39
+  skilling_exp: 'CO6 practical focus: aws and terraform deployment'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P09-C02
+  eli5: Plan deployment, configuration, monitoring, rollback and cost controls for the running application.
+  key_points:
+  - Explain the purpose and boundary of deploying and operating the platform on aws.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: A deployment plan should describe how container images are built, tagged, stored in ECR and started
+    on the selected compute environment. Configure services through managed environment settings and secure secret
+    storage rather than embedding credentials in images. Define health checks, logs, metrics, backups and update
+    procedures. Use staged releases where practical and retain a known-good image for rollback. Monitor instance
+    utilisation, network behaviour, service latency and cloud costs. A successful deployment command is not the
+    same as an operational production service; verify end-to-end user flows, access boundaries, failure handling
+    and recovery procedures after deployment.
+  formulas: []
+  viz:
+    type: decision flow
+    description: Visualise the responsibilities, interfaces and controls involved in deploying and operating the
+      platform on aws.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes deploying and operating the platform on aws?
+    options:
+    - Plan deployment, configuration, monitoring, rollback and cost controls for the running application.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to plan deployment, configuration, monitoring, rollback and cost controls for
+      the running application.
+  - type: short_answer
+    question: Identify one important design consideration for deploying and operating the platform on aws.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply deploying and operating the platform
+      on aws and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for deploying and operating the platform
+    on aws. Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.

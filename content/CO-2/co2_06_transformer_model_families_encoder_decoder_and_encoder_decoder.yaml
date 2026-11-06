@@ -1,0 +1,266 @@
+part:
+  id: co2-part-06
+  co: CO2
+  title: 'Transformer Model Families: Encoder, Decoder and Encoder–Decoder'
+  order: 6
+  concept_ids:
+  - encoder-only-models-bert
+  - decoder-only-models-gpt
+  - encoder-decoder-models-t5
+concepts:
+- id: encoder-only-models-bert
+  code: GA-CO2.6.1
+  title: 'Encoder-Only Models: BERT'
+  session: 1
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: An encoder-only Transformer builds contextual representations of an input sequence. BERT is a well-known
+    encoder-only family.
+  key_points:
+  - Encoder-only models commonly use bidirectional self-attention over the input.
+  - BERT is associated with masked-language modelling pre-training.
+  - Encoder representations are useful for understanding and classification tasks.
+  deep_dive: 'Encoder-only models process an input sequence using bidirectional self-attention, allowing each position
+    to use context from both directions. BERT is a representative encoder-only architecture. Its original pre-training
+    objective includes masked language modelling: selected input tokens are masked and the model learns to predict
+    them using surrounding context. This supports contextual representations useful for classification, token labelling
+    and sentence-level tasks after suitable task adaptation. An encoder-only model is not the same as a standard
+    autoregressive decoder: its attention is not generally restricted to a left-to-right causal pattern for the
+    masked-language objective. It is therefore important to select an architecture based on the task rather than
+    assuming all Transformer models generate text in the same way.'
+  formulas: []
+  viz:
+    type: architecture_comparison
+    description: Select a model family and inspect its attention pattern and common task orientation.
+    params:
+    - name: family
+      label: Family
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: family
+    compute:
+      family: family
+      families:
+      - 'Encoder-only: BERT'
+      - 'Decoder-only: GPT'
+      - 'Encoder-decoder: T5'
+    outcomes:
+    - when: family == 1
+      title: Encoder-only
+      explain: Bidirectional input encoding is suited to representation and understanding tasks.
+      severity: info
+    - when: family == 2
+      title: Decoder-only
+      explain: Causal generation is suited to left-to-right text generation.
+      severity: info
+    - when: family == 3
+      title: Encoder-decoder
+      explain: An input encoder conditions an output decoder for sequence-to-sequence tasks.
+      severity: info
+    combos_to_try:
+    - set:
+        family: 1
+      lesson: Explain why BERT's bidirectional input representation is useful for classifying a sentence.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which attention pattern is commonly associated with BERT's encoder?
+    options:
+    - Bidirectional self-attention
+    - Causal-only self-attention
+    - No attention
+    - Cross-attention only
+    answer: 0
+    explanation: BERT's encoder uses bidirectional context.
+  - type: short_answer
+    question: What is masked language modelling?
+    answer: Some input tokens are masked and the model learns to predict the missing tokens using context.
+    explanation: Mention the masked input and prediction objective.
+  - type: application
+    question: Would an encoder-only BERT-style model be the default choice for left-to-right open-ended generation?
+      Explain.
+    answer: Not usually; a decoder-only causal model is the standard fit for autoregressive next-token generation.
+    explanation: Contrast the attention pattern and task.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Explain why BERT's bidirectional input representation is useful for classifying a sentence.
+- id: decoder-only-models-gpt
+  code: GA-CO2.6.2
+  title: 'Decoder-Only Models: GPT'
+  session: 2
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - encoder-only-models-bert
+  eli5: A decoder-only Transformer predicts text from left to right. GPT-style models use causal attention to avoid
+    seeing future tokens.
+  key_points:
+  - Decoder-only models use causal self-attention for autoregressive generation.
+  - Each position predicts a next-token distribution from its preceding context.
+  - They are commonly used for completion, dialogue and generative text tasks.
+  deep_dive: 'Decoder-only models stack Transformer decoder-style blocks with causal self-attention. At each position,
+    the model can use the current and preceding tokens but not future target tokens. This matches the autoregressive
+    objective: predict the next token from the prefix. At inference time, a prompt is processed and the model repeatedly
+    predicts and appends tokens. GPT-style models are widely used for text completion, dialogue, summarisation and
+    other generation tasks. The phrase decoder-only distinguishes the architecture from an encoder–decoder system;
+    it does not mean the model lacks attention or feed-forward layers. It is important to understand the causal
+    mask as a structural constraint that aligns training with left-to-right generation.'
+  formulas: []
+  viz:
+    type: causal_generation
+    description: Inspect which positions a decoder-only model may use when predicting each next token.
+    params:
+    - name: position
+      label: Position
+      min: 1
+      max: 5
+      step: 1
+      default: 3
+      unit: position
+    compute:
+      position: position
+      sequence:
+      - A
+      - model
+      - generates
+      - one
+      - token
+    outcomes:
+    - when: position <= 2
+      title: Short prefix
+      explain: Only a small preceding context is available.
+      severity: info
+    - when: position >= 3
+      title: Expanded prefix
+      explain: More preceding tokens are available for the next prediction.
+      severity: info
+    combos_to_try:
+    - set:
+        position: 3
+      lesson: Trace a GPT-style model predicting the fourth token and list the tokens it is allowed to attend to.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Why does a GPT-style decoder use causal attention?
+    options:
+    - To prevent access to future tokens
+    - To read only the final token
+    - To remove token embeddings
+    - To force all tokens to have equal probabilities
+    answer: 0
+    explanation: Causal masking preserves the left-to-right prediction constraint.
+  - type: short_answer
+    question: Describe the autoregressive objective used by a decoder-only language model.
+    answer: It learns to predict each token conditioned on the preceding tokens in the sequence.
+    explanation: Use conditional next-token prediction.
+  - type: application
+    question: A prompt contains 20 tokens and the model generates 5 more. How many autoregressive prediction steps
+      are required for those new tokens?
+    answer: Five prediction steps, one for each generated token.
+    explanation: Relate each generated token to one next-token step.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Trace a GPT-style model predicting the fourth token and list the tokens it is allowed to attend to.
+- id: encoder-decoder-models-t5
+  code: GA-CO2.6.3
+  title: 'Encoder–Decoder Models: T5'
+  session: 3
+  skilling_exp: 3
+  btl: 4
+  difficulty: 3
+  prereqs:
+  - encoder-only-models-bert
+  - decoder-only-models-gpt
+  eli5: An encoder–decoder model first encodes an input sequence and then generates an output sequence conditioned
+    on that encoded input.
+  key_points:
+  - The encoder builds contextual representations of the input.
+  - The decoder generates output tokens and can attend to encoder representations.
+  - T5 frames many language tasks as text-to-text transformations.
+  deep_dive: 'Encoder–decoder Transformers contain two coordinated components. The encoder reads the source sequence
+    and builds contextual representations. The decoder generates the target sequence autoregressively and uses cross-attention
+    to access the encoder''s output. T5 is a representative encoder–decoder model family that frames tasks such
+    as translation, summarisation and question answering as text-to-text transformations. This architecture is useful
+    when an input sequence must be transformed into a related output sequence. Its information flow differs from
+    encoder-only representation learning and decoder-only continuation: the decoder is conditioned on a separately
+    encoded source. Students should compare these families by attention pattern, information flow and task fit.'
+  formulas: []
+  viz:
+    type: encoder_decoder_flow
+    description: Follow a source sequence through encoding, cross-attention and target generation.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 5
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      stages:
+      - Source input
+      - Encoder representations
+      - Decoder query
+      - Cross-attention to encoder
+      - Target token generated
+    outcomes:
+    - when: stage <= 2
+      title: Input encoding
+      explain: The source sequence is converted into contextual representations.
+      severity: info
+    - when: stage >= 3
+      title: Conditional decoding
+      explain: The decoder generates output using its prefix and encoded source.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Compare BERT, GPT and T5 in a table with columns for architecture, attention pattern and a suitable
+        task.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which component allows a T5 decoder to use the encoded source sequence?
+    options:
+    - Cross-attention
+    - Tokenisation
+    - Layer normalisation alone
+    - A vocabulary lookup
+    answer: 0
+    explanation: Cross-attention connects decoder queries to encoder representations.
+  - type: short_answer
+    question: How does an encoder–decoder model differ from a decoder-only model?
+    answer: An encoder–decoder model separately encodes the source and uses decoder cross-attention to condition
+      output generation; a decoder-only model generates from a causal sequence context.
+    explanation: Mention the separate encoder and cross-attention.
+  - type: application
+    question: Which architecture family is a natural fit for translating a source sentence into a target sentence,
+      and why?
+    answer: Encoder–decoder, because it encodes the source sentence and generates a target sequence conditioned
+      on it.
+    explanation: Connect the source-to-target task to the architecture.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Compare BERT, GPT and T5 in a table with columns for architecture, attention pattern and a suitable
+    task.

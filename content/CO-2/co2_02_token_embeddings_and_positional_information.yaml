@@ -1,0 +1,260 @@
+part:
+  id: co2-part-02
+  co: CO2
+  title: Token Embeddings and Positional Information
+  order: 2
+  concept_ids:
+  - token-embeddings
+  - embedding-dimension-and-geometry
+  - positional-information
+concepts:
+- id: token-embeddings
+  code: GA-CO2.2.1
+  title: Token Embeddings
+  session: 1
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: An embedding turns a token ID into a list of numbers. The model uses these vectors as its numerical representation
+    of tokens.
+  key_points:
+  - A tokenizer maps text into token IDs; an embedding table maps IDs to vectors.
+  - Embedding vectors are learned model parameters.
+  - The vector is a representation used in computation, not a human-readable definition.
+  deep_dive: Neural networks operate on numerical tensors rather than raw text strings. After tokenisation, each
+    token ID indexes a row in an embedding matrix. If the vocabulary contains V tokens and the hidden dimension
+    is d, the embedding matrix has shape V by d. Looking up a token produces a d-dimensional vector. During training,
+    these vectors are adjusted along with other model parameters so that the network can perform its objective.
+    Similarity between embedding vectors can sometimes reflect learned relationships, but an embedding should not
+    be treated as a fixed dictionary meaning. The representation is contextualised later by the Transformer layers;
+    the initial embedding alone does not capture the complete meaning of a token in a sentence.
+  formulas:
+  - E ∈ R^(V×d)
+  - e_i = E[i]
+  viz:
+    type: embedding_lookup
+    description: Select a token ID and inspect the corresponding row of an illustrative embedding matrix.
+    params:
+    - name: token_id
+      label: Token Id
+      min: 0
+      max: 9
+      step: 1
+      default: 3
+      unit: token ID
+    compute:
+      token_id: token_id
+      vocabulary_size: 10
+      embedding_dimension: 4
+    outcomes:
+    - when: token_id < 10
+      title: Valid lookup
+      explain: The ID indexes a row in the embedding table.
+      severity: info
+    - when: token_id >= 10
+      title: Out of range
+      explain: An ID outside the vocabulary cannot be looked up in this table.
+      severity: info
+    combos_to_try:
+    - set:
+        token_id: 3
+      lesson: Draw a 5-token vocabulary with 3-dimensional embeddings and show the shape of its embedding matrix.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: If a vocabulary has V tokens and embedding dimension d, what is the embedding matrix shape?
+    options:
+    - V × d
+    - d × d
+    - V + d
+    - V / d
+    answer: 0
+    explanation: Each of the V tokens has one vector of length d.
+  - type: short_answer
+    question: Explain the difference between a token ID and its embedding.
+    answer: A token ID is an integer index; its embedding is the learned numerical vector retrieved using that index.
+    explanation: Distinguish discrete identifier from vector representation.
+  - type: application
+    question: Why can a model not directly use a word such as 'attention' as a numeric tensor input?
+    answer: The text must first be tokenised into IDs and mapped to numerical vectors suitable for tensor computation.
+    explanation: Describe the tokenisation-to-embedding pipeline.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Draw a 5-token vocabulary with 3-dimensional embeddings and show the shape of its embedding matrix.
+- id: embedding-dimension-and-geometry
+  code: GA-CO2.2.2
+  title: Embedding Dimensions and Vector Geometry
+  session: 2
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - token-embeddings
+  eli5: An embedding dimension is the number of values in each token vector. Geometry gives a way to compare vectors
+    numerically.
+  key_points:
+  - A d-dimensional embedding contains d scalar components.
+  - Dot product and cosine similarity can compare vector direction or alignment.
+  - Geometric closeness is a learned property and depends on the model and representation.
+  deep_dive: The embedding dimension controls the width of each token representation. A vector with dimension d
+    contains d learned values. Vector operations such as dot products and cosine similarity can be used to compare
+    representations. Cosine similarity focuses on the angle between two non-zero vectors, while a dot product is
+    also affected by vector magnitudes. In language models, representations evolve through layers, so comparisons
+    at different layers can reflect different information. It is risky to assume that every pair of semantically
+    related words will always be close in every embedding space. The geometry is shaped by training objectives,
+    data and model architecture.
+  formulas:
+  - cos(θ) = (a · b) / (||a|| ||b||)
+  viz:
+    type: vector_similarity
+    description: Change the angle between two illustrative vectors and observe cosine similarity.
+    params:
+    - name: angle
+      label: Angle
+      min: 0
+      max: 180
+      step: 5
+      default: 60
+      unit: degrees
+    compute:
+      angle: angle
+      similarity: cos(angle)
+      note: Assumes unit-length vectors.
+    outcomes:
+    - when: angle <= 30
+      title: Strong directional alignment
+      explain: The vectors point in similar directions.
+      severity: info
+    - when: angle >= 150
+      title: Opposing directions
+      explain: The vectors point in nearly opposite directions.
+      severity: info
+    combos_to_try:
+    - set:
+        angle: 60
+      lesson: Calculate cosine similarity for two pairs of short vectors and explain why magnitude and direction
+        are different.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: For unit-length vectors, what does cosine similarity primarily measure?
+    options:
+    - The angle-based directional similarity
+    - The number of vector elements
+    - The sum of vocabulary IDs
+    - The sequence length
+    answer: 0
+    explanation: For unit vectors, cosine similarity is the cosine of the angle between them.
+  - type: short_answer
+    question: How does embedding dimension affect the shape of a token representation?
+    answer: It determines how many scalar components are stored in each token vector.
+    explanation: State that each token has a vector of length d.
+  - type: application
+    question: Two vectors have the same direction but different magnitudes. Which similarity measure is less affected
+      by that magnitude difference?
+    answer: Cosine similarity, because it normalises by both vector norms.
+    explanation: Explain its normalisation.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Calculate cosine similarity for two pairs of short vectors and explain why magnitude and direction
+    are different.
+- id: positional-information
+  code: GA-CO2.2.3
+  title: Positional Information
+  session: 3
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - token-embeddings
+  eli5: Token embeddings identify token content, but a Transformer also needs information about where tokens occur
+    in a sequence.
+  key_points:
+  - Self-attention alone does not automatically encode sequence order.
+  - Positional information is combined with token representations or otherwise supplied to the architecture.
+  - Position can affect how the model interprets the same tokens in different orders.
+  deep_dive: 'A Transformer processes a sequence using attention operations that compare token representations.
+    Without an order signal, the attention operation by itself does not distinguish all permutations of the same
+    set of token representations. Positional information supplies sequence location so that the model can use order.
+    In one common design, a position vector is combined with each token embedding before the first Transformer block.
+    Other designs use relative-position information or position-dependent modifications within attention. The course-level
+    requirement is to understand why position matters: ''dog bites person'' and ''person bites dog'' contain the
+    same words but express different relations. Positional information helps the network represent those differences.'
+  formulas: []
+  viz:
+    type: position_sequence
+    description: Reorder the same tokens and inspect how their position labels change.
+    params:
+    - name: swap
+      label: Swap
+      min: 0
+      max: 1
+      step: 1
+      default: 0
+      unit: order option
+    compute:
+      swap: swap
+      tokens:
+      - the
+      - student
+      - reads
+      - books
+      positions:
+      - 0
+      - 1
+      - 2
+      - 3
+    outcomes:
+    - when: swap == 0
+      title: Original order
+      explain: Each token is paired with its original position.
+      severity: info
+    - when: swap == 1
+      title: Reordered sequence
+      explain: The token-position associations change after reordering.
+      severity: info
+    combos_to_try:
+    - set:
+        swap: 0
+      lesson: Use a four-token sentence, reverse its order, and explain why token content alone is insufficient
+        to preserve meaning.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Why is positional information needed in a Transformer?
+    options:
+    - To provide information about token order
+    - To increase vocabulary size
+    - To convert logits into probabilities
+    - To remove the attention mechanism
+    answer: 0
+    explanation: Position signals help the model distinguish sequence order.
+  - type: short_answer
+    question: What limitation would arise if a sequence model used token content but no order information?
+    answer: It could fail to distinguish sequences containing the same tokens in different orders.
+    explanation: Give a simple reordered-sentence example.
+  - type: application
+    question: Explain why 'the dog chased the cat' and 'the cat chased the dog' should not be represented as identical
+      ordered inputs.
+    answer: The token order changes the subject-object relationship and therefore the meaning.
+    explanation: Connect positions to relational meaning.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Use a four-token sentence, reverse its order, and explain why token content alone is insufficient to
+    preserve meaning.

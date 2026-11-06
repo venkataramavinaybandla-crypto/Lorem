@@ -1,0 +1,228 @@
+part:
+  id: CO5-P10
+  co: CO5
+  title: Learned Model Router and Release v0.5
+  order: 10
+  concept_ids:
+  - CO5-P10-C01
+  - CO5-P10-C02
+  - CO5-P10-C03
+concepts:
+- id: CO5-P10-C01
+  code: CO5.10.1
+  title: Model routing problem and feature design
+  session: 34
+  skilling_exp: 'CO5 practical focus: learned model router and release v0.5'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO5-P09-C03
+  eli5: Explain how a router selects an appropriate model or method for an incoming request.
+  key_points:
+  - Explain the purpose and boundary of model routing problem and feature design.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: A model router selects among available models or execution paths based on request characteristics and
+    system constraints. Features might include task category, language, required context, complexity, privacy level,
+    latency target or estimated cost. The routing policy should be based on validated signals and permitted choices,
+    not on unrestricted model-generated decisions. Define the available routes and fallback behaviour first. A router
+    can reduce cost or improve quality when different routes have complementary strengths, but it adds classification
+    error, monitoring and maintenance. Measure end-to-end system outcomes, not only whether the router predicts
+    a route label correctly.
+  formulas: []
+  viz:
+    type: router architecture
+    description: request features; candidate routes; policy; fallback
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming model routing problem and feature design automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents model routing problem and feature design?
+    options:
+    - Explain how a router selects an appropriate model or method for an incoming request.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Explain how a router selects an appropriate model or method for an incoming
+      request.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in model routing problem and feature design.
+    expected_answer: A correct answer should explain the central idea of model routing problem and feature design
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply model routing problem and feature
+      design and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for model routing problem and feature design. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P10-C02
+  code: CO5.10.2
+  title: Router training, validation and monitoring
+  session: 34
+  skilling_exp: 'CO5 practical focus: learned model router and release v0.5'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO5-P10-C01
+  eli5: Train and assess a routing policy without leaking test information or hiding costly mistakes.
+  key_points:
+  - Explain the purpose and boundary of router training, validation and monitoring.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: A learned router needs labelled examples that associate request features with a suitable route under
+    a documented objective. Labels may be derived from controlled comparisons, but they should account for quality
+    thresholds, latency, cost and safety constraints rather than simply choosing the highest-scoring model. Split
+    router data into training and validation partitions and keep the shared final test set untouched. Evaluate route
+    accuracy as well as downstream answer quality, cost and latency. Monitor route distribution, fallback frequency,
+    error rates and shifts in request patterns after deployment. Include a safe default when confidence is low or
+    a route is unavailable.
+  formulas: []
+  viz:
+    type: router evaluation
+    description: features; route labels; held-out split; downstream metrics
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming router training, validation and monitoring automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents router training, validation and monitoring?
+    options:
+    - Train and assess a routing policy without leaking test information or hiding costly mistakes.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Train and assess a routing policy without leaking test information or hiding
+      costly mistakes.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in router training, validation and monitoring.
+    expected_answer: A correct answer should explain the central idea of router training, validation and monitoring
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply router training, validation and
+      monitoring and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for router training, validation and monitoring. State the
+    inputs, baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P10-C03
+  code: CO5.10.3
+  title: Decision record and release v0.5
+  session: 34
+  skilling_exp: 'CO5 practical focus: learned model router and release v0.5'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO5-P10-C02
+  eli5: Document the selected adaptation strategy, router evidence, risks and release criteria.
+  key_points:
+  - Explain the purpose and boundary of decision record and release v0.5.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: 'Release v0.5 should include the dataset card, shared test-set version, prompting and RAG baselines,
+    fine-tuning configurations, LoRA and QLoRA resource measurements, and DPO demonstration results where available.
+    The decision record should compare accuracy, latency and cost, describe the learned router and its fallback
+    behaviour, and identify known limitations. State which model and adapter versions are deployed, how they can
+    be rolled back and what monitoring will detect degradation. The release should be evidence-led: if an approach
+    does not improve the target workload enough to justify its cost, document that conclusion rather than forcing
+    a fine-tuning result. A complete experiment record should also state assumptions that affect interpretation,
+    including the source and revision of the base model, dataset snapshot, preprocessing choices, hardware constraints
+    and evaluation exclusions. Keep these details alongside the result so the recommendation is auditable.'
+  formulas: []
+  viz:
+    type: release checklist
+    description: dataset card; baselines; router; ADR; rollback; monitoring
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming decision record and release v0.5 automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents decision record and release v0.5?
+    options:
+    - Document the selected adaptation strategy, router evidence, risks and release criteria.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Document the selected adaptation strategy, router evidence, risks and release
+      criteria.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in decision record and release v0.5.
+    expected_answer: A correct answer should explain the central idea of decision record and release v0.5 and connect
+      it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply decision record and release v0.5
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for decision record and release v0.5. State the inputs, baseline,
+    two metrics, one likely failure and how you would document the result.

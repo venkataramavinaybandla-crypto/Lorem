@@ -1,0 +1,252 @@
+part:
+  id: co2-part-04
+  co: CO2
+  title: Self-Attention and Multi-Head Attention
+  order: 4
+  concept_ids:
+  - self-attention
+  - causal-and-bidirectional-attention
+  - multi-head-attention
+concepts:
+- id: self-attention
+  code: GA-CO2.4.1
+  title: Self-Attention
+  session: 1
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Self-attention lets tokens in one sequence use information from other tokens in that same sequence to build
+    contextual representations.
+  key_points:
+  - Queries, keys and values are derived from the same input sequence in self-attention.
+  - Each token can gather information from other permitted positions.
+  - The attention pattern depends on learned projections and the input context.
+  deep_dive: In self-attention, the query, key and value projections all come from the same sequence representation.
+    Each position compares its query with keys from positions it is allowed to attend to, then combines the corresponding
+    values. The result is a new representation for every position that incorporates information from the sequence.
+    In an encoder, attention may be bidirectional across the input sequence. In a causal decoder, a mask restricts
+    each position to itself and earlier positions so that future tokens cannot leak into next-token prediction.
+    Self-attention is therefore a core operation, while the masking rule determines which relationships are available
+    during a particular model task.
+  formulas: []
+  viz:
+    type: self_attention_map
+    description: Inspect a small attention matrix and identify which source positions contribute to each output
+      position.
+    params:
+    - name: token_count
+      label: Token Count
+      min: 2
+      max: 6
+      step: 1
+      default: 4
+      unit: tokens
+    compute:
+      token_count: token_count
+      causal_mask: true
+      matrix: illustrative lower-triangular allowed-position map
+    outcomes:
+    - when: causal_mask == true
+      title: Causal visibility
+      explain: Each position can attend only to itself and earlier positions.
+      severity: info
+    - when: causal_mask == false
+      title: Bidirectional visibility
+      explain: Positions may use information from both earlier and later positions.
+      severity: info
+    combos_to_try:
+    - set:
+        token_count: 4
+      lesson: Draw a 4-by-4 causal attention visibility matrix and explain why its upper triangle is masked.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: In self-attention, where do Q, K and V originate?
+    options:
+    - From projections of the same input sequence
+    - From three unrelated datasets
+    - Only from the final vocabulary layer
+    - From the output text after decoding
+    answer: 0
+    explanation: Self-attention projects the same sequence representations into Q, K and V.
+  - type: short_answer
+    question: What makes self-attention different from attention between two separate sequences?
+    answer: In self-attention, queries, keys and values are derived from the same sequence; cross-attention uses
+      separate source and query sequences.
+    explanation: Identify the shared source of Q, K and V.
+  - type: application
+    question: Why must a decoder-only language model use a causal mask during training?
+    answer: It prevents a position from accessing future target tokens when learning to predict the next token.
+    explanation: Connect masking to prevention of future-token leakage.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Draw a 4-by-4 causal attention visibility matrix and explain why its upper triangle is masked.
+- id: causal-and-bidirectional-attention
+  code: GA-CO2.4.2
+  title: Causal and Bidirectional Attention
+  session: 2
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - self-attention
+  eli5: A bidirectional attention layer can use tokens on both sides of a position. Causal attention blocks access
+    to future positions.
+  key_points:
+  - Encoder-style BERT attention is bidirectional within its input.
+  - Autoregressive decoder attention uses a causal mask.
+  - The mask changes which context is available, not the basic Q-K-V idea.
+  deep_dive: Attention masks define the visibility pattern between query positions and key positions. Bidirectional
+    self-attention allows a token to use surrounding tokens on both sides, which is useful for building representations
+    of a complete input. Causal self-attention restricts a token to positions at or before itself. This restriction
+    supports autoregressive generation because the model must predict the next token without seeing it in advance.
+    A triangular causal mask is a common representation of this rule. Confusing the two patterns leads to incorrect
+    descriptions of encoder-only and decoder-only architectures. The underlying attention calculation remains related,
+    but the permitted information flow differs.
+  formulas: []
+  viz:
+    type: mask_comparison
+    description: Switch between bidirectional and causal visibility and inspect the allowed attention cells.
+    params:
+    - name: mode
+      label: Mode
+      min: 1
+      max: 2
+      step: 1
+      default: 1
+      unit: mask mode
+    compute:
+      mode: mode
+      labels:
+      - causal
+      - bidirectional
+      sequence_length: 4
+    outcomes:
+    - when: mode == 1
+      title: Causal mask
+      explain: Future positions are hidden from each query position.
+      severity: info
+    - when: mode == 2
+      title: Bidirectional mask
+      explain: All positions in the input can be visible to each other.
+      severity: info
+    combos_to_try:
+    - set:
+        mode: 1
+      lesson: Compare the visibility of token 2 in causal and bidirectional attention for a four-token sequence.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which attention pattern is required for standard autoregressive next-token prediction?
+    options:
+    - Causal attention
+    - Unrestricted bidirectional attention
+    - No attention
+    - Random attention
+    answer: 0
+    explanation: Causal attention prevents access to future target tokens.
+  - type: short_answer
+    question: Why is bidirectional attention useful for an encoder model?
+    answer: It allows each input position to use both preceding and following context when building a representation.
+    explanation: Mention context from both directions.
+  - type: application
+    question: A decoder training implementation accidentally removes its causal mask. What failure can result?
+    answer: The model can access future target tokens during training, causing information leakage and invalid next-token
+      learning.
+    explanation: Explain why the training setup no longer matches autoregressive inference.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Compare the visibility of token 2 in causal and bidirectional attention for a four-token sequence.
+- id: multi-head-attention
+  code: GA-CO2.4.3
+  title: Multi-Head Attention
+  session: 3
+  skilling_exp: 3
+  btl: 4
+  difficulty: 3
+  prereqs:
+  - self-attention
+  - causal-and-bidirectional-attention
+  eli5: Multi-head attention runs several attention operations in parallel. Each head can learn a different way
+    to combine information.
+  key_points:
+  - Each head has its own learned query, key and value projections.
+  - Head outputs are concatenated and passed through an output projection.
+  - The number of heads and head dimension determine the internal layout.
+  deep_dive: Multi-head attention extends a single attention operation by using multiple learned projection sets,
+    called heads. Each head computes attention using its own queries, keys and values, potentially capturing different
+    relationships or feature patterns. The head outputs are concatenated and transformed by a final linear projection.
+    In a common design, the model hidden dimension is divided across heads so that the concatenated result returns
+    to the original width. More heads do not automatically guarantee better quality; they change model capacity
+    and computation and must be evaluated in the context of the full architecture. The main conceptual benefit is
+    that the model can combine multiple attention patterns rather than relying on one single weighting pattern.
+  formulas:
+  - MultiHead(Q,K,V) = Concat(head_1,…,head_h)W^O
+  viz:
+    type: multi_head_layout
+    description: Adjust the number of heads and inspect the illustrative per-head dimension.
+    params:
+    - name: heads
+      label: Heads
+      min: 1
+      max: 16
+      step: 1
+      default: 8
+      unit: heads
+    compute:
+      heads: heads
+      hidden_dimension: 512
+      head_dimension: 512 / heads when evenly divided
+    outcomes:
+    - when: heads == 1
+      title: Single attention head
+      explain: Only one attention pattern is computed.
+      severity: info
+    - when: heads > 1
+      title: Parallel attention heads
+      explain: Multiple learned attention patterns are computed and combined.
+      severity: info
+    combos_to_try:
+    - set:
+        heads: 8
+      lesson: For hidden dimension 512, calculate the per-head dimension for 8 heads and explain why concatenation
+        restores the model width.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What happens to the outputs of multiple attention heads?
+    options:
+    - They are concatenated and passed through an output projection
+    - They are averaged before Q, K and V are computed
+    - They replace token IDs
+    - They are used only during tokenisation
+    answer: 0
+    explanation: The concatenated head outputs are projected to form the multi-head output.
+  - type: short_answer
+    question: Why use multiple attention heads instead of one?
+    answer: Multiple heads allow the model to learn different attention patterns or relationships in parallel.
+    explanation: Avoid claiming each head has a guaranteed human-readable role.
+  - type: application
+    question: A model has hidden dimension 512 and 8 equally sized heads. What is each head's dimension?
+    answer: 512 divided by 8 equals 64 dimensions per head.
+    explanation: Show the division and state the assumption of equal head sizes.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: For hidden dimension 512, calculate the per-head dimension for 8 heads and explain why concatenation
+    restores the model width.

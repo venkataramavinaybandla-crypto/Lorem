@@ -1,0 +1,229 @@
+part:
+  id: CO6-P08
+  co: CO6
+  title: Containerisation and CI/CD
+  order: 8
+  concept_ids:
+  - CO6-P08-C01
+  - CO6-P08-C02
+  - CO6-P08-C03
+concepts:
+- id: CO6-P08-C01
+  code: CO6.8.1
+  title: Docker and docker-compose service packaging
+  session: 38
+  skilling_exp: 'CO6 practical focus: containerisation and ci/cd'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P07-C03
+  eli5: Package services and their dependencies into reproducible containers for local and deployed environments.
+  key_points:
+  - Explain the purpose and boundary of docker and docker-compose service packaging.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Docker images package an application with its runtime dependencies, while docker-compose can define
+    a multi-service local environment such as gateway, RAG service, model service, MongoDB and supporting components.
+    Use explicit image versions and configuration through environment variables or secret mechanisms. Keep persistent
+    data in appropriate volumes rather than inside ephemeral containers. Define health checks and dependency readiness,
+    and avoid assuming that container start order means a service is ready. Containers improve reproducibility but
+    do not automatically make an application secure; image contents, permissions, networking and secrets still require
+    deliberate controls.
+  formulas: []
+  viz:
+    type: architecture flow
+    description: Visualise the responsibilities, interfaces and controls involved in docker and docker-compose service
+      packaging.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes docker and docker-compose service packaging?
+    options:
+    - Package services and their dependencies into reproducible containers for local and deployed environments.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to package services and their dependencies into reproducible containers for
+      local and deployed environments.
+  - type: short_answer
+    question: Identify one important design consideration for docker and docker-compose service packaging.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply docker and docker-compose service packaging
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for docker and docker-compose service packaging.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P08-C02
+  code: CO6.8.2
+  title: Hardened images and container security
+  session: 38
+  skilling_exp: 'CO6 practical focus: containerisation and ci/cd'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P08-C01
+  eli5: Reduce container attack surface through minimal images, least privilege and dependency hygiene.
+  key_points:
+  - Explain the purpose and boundary of hardened images and container security.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Hardened container images use only necessary packages, run as non-root where possible, avoid embedding
+    secrets and keep dependencies patched. Pin base images and review image provenance. Use read-only filesystems
+    and restricted capabilities when compatible with the application. Scan images for known vulnerabilities and
+    establish a process for prioritising and fixing findings. Avoid copying development tools or local credentials
+    into production images. A vulnerability scanner can report known issues but cannot prove an image is secure;
+    combine automated scanning with configuration review and runtime controls. Document the configuration and assumptions
+    used, retain representative test evidence, and repeat the check after relevant service, model or infrastructure
+    changes. This makes the behaviour easier to reproduce and the operational limits easier to communicate.
+  formulas: []
+  viz:
+    type: sequence diagram
+    description: Visualise the responsibilities, interfaces and controls involved in hardened images and container
+      security.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes hardened images and container security?
+    options:
+    - Reduce container attack surface through minimal images, least privilege and dependency hygiene.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to reduce container attack surface through minimal images, least privilege
+      and dependency hygiene.
+  - type: short_answer
+    question: Identify one important design consideration for hardened images and container security.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply hardened images and container security
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for hardened images and container security.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P08-C03
+  code: CO6.8.3
+  title: GitHub Actions CI and security scanning
+  session: 38
+  skilling_exp: 'CO6 practical focus: containerisation and ci/cd'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P08-C02
+  eli5: Automate tests, image checks and infrastructure scans before changes are released.
+  key_points:
+  - Explain the purpose and boundary of github actions ci and security scanning.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: A CI pipeline can run linting, unit and integration tests, schema checks, container builds and security
+    scans on pull requests. The course handout specifically names Trivy and tfsec/checkov for image and infrastructure
+    checks. Store credentials as protected CI secrets and grant workflows only the permissions they need. Pin or
+    review third-party actions and avoid printing secrets in logs. Define release gates for critical test failures
+    and serious vulnerabilities, with documented exceptions where necessary. CI should produce traceable build artefacts
+    and test reports. Passing scans are evidence of checks performed, not proof that the system has no vulnerabilities.
+  formulas: []
+  viz:
+    type: decision flow
+    description: Visualise the responsibilities, interfaces and controls involved in github actions ci and security
+      scanning.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes github actions ci and security scanning?
+    options:
+    - Automate tests, image checks and infrastructure scans before changes are released.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to automate tests, image checks and infrastructure scans before changes are
+      released.
+  - type: short_answer
+    question: Identify one important design consideration for github actions ci and security scanning.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply github actions ci and security scanning
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for github actions ci and security scanning.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.

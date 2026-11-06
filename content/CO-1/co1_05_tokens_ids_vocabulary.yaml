@@ -1,0 +1,285 @@
+part:
+  id: co1-part-05
+  co: CO1
+  title: Tokens, Token IDs, Vocabulary, and Context Limits
+  order: 5
+  concept_ids:
+  - text-to-token-sequence
+  - token-ids-and-vocabulary
+  - context-window-and-token-counts
+concepts:
+- id: text-to-token-sequence
+  code: GA-CO1.5.1
+  title: Text and Token Sequences
+  session: 5
+  skilling_exp: 2
+  btl: 1
+  difficulty: 2
+  prereqs: []
+  eli5: A model does not usually read a sentence as one indivisible piece. A tokenizer splits text into
+    tokens, which may be whole words, word pieces, punctuation or other text units.
+  key_points:
+  - Tokenisation converts text into a sequence of tokens.
+  - A token is not always the same as a word.
+  - Punctuation and partial words can be token units.
+  - The resulting sequence is what the model processes.
+  deep_dive: Before text is processed by a language model, it is converted into a sequence of tokens using
+    a tokenizer. A token may correspond to a complete word, part of a word, punctuation or another unit
+    defined by the tokenizer's vocabulary. Therefore, counting words is not a reliable way to determine
+    token usage. The same sentence can be segmented differently by different tokenizers, and unusual spellings,
+    code, numbers or multilingual text may produce unexpected token boundaries. Tokenisation is a practical
+    bridge between human-readable text and the model's numerical input representation. The course handout
+    places tokens, IDs and vocabulary at the centre of the CO-1 learning outcome. Students should be able
+    to explain the sequence from raw text to token units and recognise that token counts influence context
+    usage and, in many hosted services, cost. The exact segmentation should be inspected with the tokenizer
+    associated with the model rather than estimated from word count alone.
+  formulas: []
+  viz:
+    type: token_boundary_viewer
+    description: Compare a sentence's word boundaries with a conceptual token segmentation.
+    params:
+    - name: example
+      label: Example
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: example
+    compute:
+      example: example
+      illustration: A tokenizer may split a word into multiple subword tokens or keep it as one token.
+    outcomes:
+    - when: example >= 1
+      title: Common word example
+      explain: A familiar word may be represented by one token or several, depending on the tokenizer.
+      severity: info
+    - when: example == 2
+      title: Rare or compound form
+      explain: Less common forms may be split into multiple pieces.
+      severity: info
+    - when: example == 3
+      title: Mixed text
+      explain: Numbers, punctuation and mixed-language strings may have different segmentation patterns.
+      severity: warn
+    combos_to_try:
+    - set:
+        example: 1
+      lesson: Take a short sentence and mark possible word boundaries separately from token boundaries.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes text and token sequences?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of text and token sequences in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which text and token sequences matters when building an
+      LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Explain why a 10-word sentence is not guaranteed to contain exactly 10 tokens.
+- id: token-ids-and-vocabulary
+  code: GA-CO1.5.2
+  title: Token IDs and Vocabulary
+  session: 5
+  skilling_exp: 2
+  btl: 1
+  difficulty: 2
+  prereqs:
+  - text-to-token-sequence
+  eli5: A vocabulary is the tokenizer's collection of known token units. Each token has an integer ID
+    so the model can work with numerical sequences instead of text strings.
+  key_points:
+  - A vocabulary contains token entries recognised by a tokenizer.
+  - Each token maps to an integer token ID.
+  - Token IDs are model input symbols, not semantic scores.
+  - The tokenizer and model vocabulary must be compatible.
+  deep_dive: After text is segmented into tokens, each token is mapped to an integer identifier. The set
+    of token entries and their mappings is the tokenizer vocabulary. The ID is a symbol used to represent
+    a token in the model's numerical input sequence; it should not be interpreted as a measure of importance,
+    frequency or meaning. For example, token ID 125 is not inherently more meaningful than token ID 900.
+    The mapping is defined by the tokenizer and must be compatible with the model that consumes it. If
+    an application uses a tokenizer that does not match the model, the resulting IDs may represent different
+    pieces of text and the model input can be incorrect. The handout explicitly names tokens, IDs and
+    vocabulary as CO-1 recall topics. Students should be able to describe the mapping from text to tokens
+    to IDs and explain why tokenizer compatibility matters when integrating a model client.
+  formulas: []
+  viz:
+    type: token_id_mapping
+    description: Inspect a conceptual mapping from token strings to integer IDs.
+    params:
+    - name: items
+      label: Items
+      min: 1
+      max: 6
+      step: 1
+      default: 3
+      unit: entries
+    compute:
+      items: items
+      mapping: Each token string maps to one vocabulary ID.
+    outcomes:
+    - when: items <= 3
+      title: Small vocabulary sample
+      explain: A small example is enough to demonstrate the mapping, but not to represent a full model
+        vocabulary.
+      severity: info
+    - when: items > 3
+      title: Larger mapping sample
+      explain: More token entries illustrate that the vocabulary is a lookup structure.
+      severity: info
+    combos_to_try:
+    - set:
+        items: 3
+      lesson: Create a five-entry token-to-ID mapping and explain why IDs are tokenizer-specific.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes token ids and vocabulary?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of token ids and vocabulary in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which token ids and vocabulary matters when building an
+      LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Show the text → token → ID conversion for a short sample string.
+- id: context-window-and-token-counts
+  code: GA-CO1.5.3
+  title: Context Window and Token Limits
+  session: 5
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - token-ids-and-vocabulary
+  eli5: The context window is the amount of tokenised information a model can handle in one request or
+    generation context. If the prompt and requested output exceed the available limit, the request may
+    need to be shortened or redesigned.
+  key_points:
+  - Context limits are measured in tokens rather than ordinary words.
+  - Input and output can both consume context capacity.
+  - The applicable limit depends on the model and provider.
+  - Token counting should happen before a request is sent.
+  deep_dive: A model's context window is the amount of tokenised information it can consider within a
+    request or generation sequence, according to the model's documented limits. The context can include
+    system instructions, user messages, conversation history, retrieved material and generated output,
+    depending on the interface and model. It is therefore not safe to treat the full context capacity
+    as available for the user's prompt alone. Input and output token budgets may be constrained separately
+    by a provider or API. If a request exceeds the applicable limit, it may be rejected, truncated or
+    require a smaller context design. The handout includes context limits in CO-1 because they affect
+    token economics and feature budgeting. A client should count or estimate tokens using the relevant
+    tokenizer, reserve space for the expected output and handle limit errors explicitly. The exact maximum
+    is model-specific and can change, so it should be read from current provider or model documentation
+    rather than hard-coded as a universal value.
+  formulas: []
+  viz:
+    type: capacity_gauge
+    description: Adjust input and output token budgets and observe whether their sum fits the available
+      context.
+    params:
+    - name: available
+      label: Available
+      min: 1000
+      max: 128000
+      step: 1000
+      default: 8000
+      unit: tokens
+    - name: input
+      label: Input
+      min: 0
+      max: 128000
+      step: 100
+      default: 6500
+      unit: tokens
+    - name: output
+      label: Output
+      min: 0
+      max: 128000
+      step: 100
+      default: 1500
+      unit: tokens
+    compute:
+      used: input + output
+      remaining: available - input - output
+    outcomes:
+    - when: input + output <= available
+      title: Within budget
+      explain: The combined token allocation fits the selected budget.
+      severity: info
+    - when: input + output > available
+      title: Budget exceeded
+      explain: Reduce input, reserve less output or select a model with a suitable documented limit.
+      severity: fail
+    combos_to_try:
+    - set:
+        available: 8000
+        input: 6500
+        output: 1500
+      lesson: Calculate remaining context capacity for a request with a given input and output reservation.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes context window and token limits?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of context window and token limits in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which context window and token limits matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - practical
+  mini_task: Prepare a token budget for a long conversation and explain which components consume it.

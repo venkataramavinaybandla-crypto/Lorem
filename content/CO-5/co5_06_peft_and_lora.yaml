@@ -1,0 +1,220 @@
+part:
+  id: CO5-P06
+  co: CO5
+  title: Parameter-Efficient Fine-Tuning and LoRA
+  order: 6
+  concept_ids:
+  - CO5-P06-C01
+  - CO5-P06-C02
+  - CO5-P06-C03
+concepts:
+- id: CO5-P06-C01
+  code: CO5.6.1
+  title: Parameter-Efficient Fine-Tuning overview
+  session: 30
+  skilling_exp: 'CO5 practical focus: parameter-efficient fine-tuning and lora'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO5-P05-C03
+  eli5: Explain why PEFT adapts a model while training a smaller subset of parameters.
+  key_points:
+  - Explain the purpose and boundary of parameter-efficient fine-tuning overview.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: Parameter-Efficient Fine-Tuning methods reduce the number of parameters that must be updated or stored
+    during adaptation. Instead of changing every base-model weight, a PEFT method introduces or selects a smaller
+    set of trainable parameters. This can reduce optimiser memory, checkpoint size and training cost, making adaptation
+    more feasible on constrained hardware. The base model remains important and must be available at inference,
+    and adapter compatibility depends on the exact base model and configuration. PEFT is not a guarantee of equal
+    quality to full fine-tuning; evaluate it on the target task and document the trade-offs.
+  formulas: []
+  viz:
+    type: PEFT architecture
+    description: frozen base; trainable adapter; optimiser state; checkpoint
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming parameter-efficient fine-tuning overview automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents parameter-efficient fine-tuning overview?
+    options:
+    - Explain why PEFT adapts a model while training a smaller subset of parameters.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Explain why PEFT adapts a model while training a smaller subset of parameters.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in parameter-efficient fine-tuning overview.
+    expected_answer: A correct answer should explain the central idea of parameter-efficient fine-tuning overview
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply parameter-efficient fine-tuning
+      overview and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for parameter-efficient fine-tuning overview. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P06-C02
+  code: CO5.6.2
+  title: Low-Rank Adaptation mechanics
+  session: 30
+  skilling_exp: 'CO5 practical focus: parameter-efficient fine-tuning and lora'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO5-P06-C01
+  eli5: Describe how LoRA represents weight updates through low-rank matrices.
+  key_points:
+  - Explain the purpose and boundary of low-rank adaptation mechanics.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: LoRA commonly freezes an original weight matrix and learns a low-rank update represented by two smaller
+    matrices. If the original projection has dimensions d by k, the update can be represented using matrices with
+    rank r, where r is much smaller than the original dimensions. This reduces trainable parameter count. The adapter
+    update is scaled by a factor involving alpha and rank, and is applied to selected layers such as attention projections.
+    Rank, target modules, alpha and dropout are configuration choices. A higher rank may increase capacity and memory
+    use, but does not automatically produce better generalisation; compare configurations empirically.
+  formulas: []
+  viz:
+    type: LoRA weight update
+    description: W; A; B; rank r; scaling alpha/r
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming low-rank adaptation mechanics automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents low-rank adaptation mechanics?
+    options:
+    - Describe how LoRA represents weight updates through low-rank matrices.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Describe how LoRA represents weight updates through low-rank matrices.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in low-rank adaptation mechanics.
+    expected_answer: A correct answer should explain the central idea of low-rank adaptation mechanics and connect
+      it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply low-rank adaptation mechanics and
+      how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for low-rank adaptation mechanics. State the inputs, baseline,
+    two metrics, one likely failure and how you would document the result.
+- id: CO5-P06-C03
+  code: CO5.6.3
+  title: Adapter training, saving and inference
+  session: 30
+  skilling_exp: 'CO5 practical focus: parameter-efficient fine-tuning and lora'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO5-P06-C02
+  eli5: Manage LoRA adapters as versioned artefacts compatible with their base model.
+  key_points:
+  - Explain the purpose and boundary of adapter training, saving and inference.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: A LoRA training workflow loads a compatible base model, attaches adapter modules to selected layers,
+    trains the adapter parameters and saves the adapter separately or merges it when appropriate. Keep a record
+    of the base model identifier and revision, tokenizer, adapter configuration, training dataset revision and inference
+    settings. An adapter trained against one base model revision may not work correctly with another. At inference,
+    load the matching base and adapter, then test output quality, memory and latency. Retain the original model
+    as a baseline and document how to disable or roll back the adapter if it causes regressions.
+  formulas: []
+  viz:
+    type: adapter lifecycle
+    description: base model; adapter; configuration; save; load; rollback
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming adapter training, saving and inference automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents adapter training, saving and inference?
+    options:
+    - Manage LoRA adapters as versioned artefacts compatible with their base model.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Manage LoRA adapters as versioned artefacts compatible with their base model.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in adapter training, saving and inference.
+    expected_answer: A correct answer should explain the central idea of adapter training, saving and inference
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply adapter training, saving and inference
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for adapter training, saving and inference. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.

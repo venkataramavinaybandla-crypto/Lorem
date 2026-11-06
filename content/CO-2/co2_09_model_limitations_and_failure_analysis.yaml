@@ -1,0 +1,275 @@
+part:
+  id: co2-part-09
+  co: CO2
+  title: Model Limitations and Failure Analysis
+  order: 9
+  concept_ids:
+  - hallucination-and-grounding
+  - repetition-and-incoherence
+  - context-and-configuration-failures
+concepts:
+- id: hallucination-and-grounding
+  code: GA-CO2.9.1
+  title: Hallucination and Grounding
+  session: 1
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: A hallucination is an output that sounds plausible but is unsupported or incorrect. Fluency alone does not
+    prove truth.
+  key_points:
+  - A language model predicts likely continuations; it does not automatically verify every claim.
+  - Hallucinations can include invented facts, citations or details.
+  - Evidence, retrieval and evaluation can reduce some risks but do not guarantee correctness.
+  deep_dive: 'Generative models can produce fluent statements that are factually incorrect or unsupported. This
+    behaviour is often called hallucination. It can occur when the prompt is ambiguous, the model lacks relevant
+    information, the context is misleading or the generation process favours a plausible continuation over a verified
+    answer. A grounded application supplies trusted evidence and checks whether the response is supported by that
+    evidence. However, adding context does not eliminate all errors: the model may misread sources, combine unrelated
+    facts or cite evidence that does not support a claim. Applications should distinguish supported answers, uncertain
+    answers and cases where the system should decline.'
+  formulas: []
+  viz:
+    type: grounding_check
+    description: Classify sample answer claims as supported, contradicted or unsupported by the supplied evidence.
+    params:
+    - name: evidence
+      label: Evidence
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: evidence state
+    compute:
+      evidence: evidence
+      states:
+      - Supported
+      - Contradicted
+      - Not present in evidence
+    outcomes:
+    - when: evidence == 1
+      title: Supported claim
+      explain: The evidence directly supports the claim.
+      severity: info
+    - when: evidence == 2
+      title: Contradicted claim
+      explain: The evidence conflicts with the claim.
+      severity: info
+    - when: evidence == 3
+      title: Unsupported claim
+      explain: The supplied evidence does not establish the claim.
+      severity: info
+    combos_to_try:
+    - set:
+        evidence: 1
+      lesson: Write one supported and one unsupported answer to a short source passage and explain how a reviewer
+        would tell them apart.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What is a hallucination in a generative AI response?
+    options:
+    - A plausible-sounding but incorrect or unsupported claim
+    - Any response longer than one paragraph
+    - A response with a low token count
+    - A model using an embedding vector
+    answer: 0
+    explanation: Hallucination concerns factual support or correctness.
+  - type: short_answer
+    question: Why is fluency not sufficient evidence of factual correctness?
+    answer: A model can generate plausible language without verifying that its claims are supported by reliable
+      evidence.
+    explanation: Separate linguistic quality from factual support.
+  - type: application
+    question: A model invents a course policy that is absent from the provided handout. How should the application
+      respond?
+    answer: It should avoid presenting the invented policy as fact, identify the lack of supporting evidence and
+      ask for clarification or decline.
+    explanation: Emphasise source support and safe uncertainty.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Write one supported and one unsupported answer to a short source passage and explain how a reviewer
+    would tell them apart.
+- id: repetition-and-incoherence
+  code: GA-CO2.9.2
+  title: Repetition and Incoherent Generation
+  session: 2
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - hallucination-and-grounding
+  eli5: Generation can repeat phrases, lose coherence or drift away from the prompt. These are observable output
+    failures that should be classified and measured.
+  key_points:
+  - Repetition may occur when a model repeatedly selects similar continuations.
+  - Incoherence can arise from weak context use, model limitations or unsuitable decoding settings.
+  - Failure labels should describe observable behaviour, not guess at an unverified cause.
+  deep_dive: Not every poor generation is a hallucination. A response may repeat a phrase, contradict itself, drift
+    from the requested topic, stop abruptly or become grammatically incoherent. These failure categories are useful
+    because they describe different symptoms and may require different diagnostics. Repetition can be influenced
+    by model behaviour and decoding settings; incoherence may relate to context, training or sampling. A robust
+    evaluation set should include examples that expose each failure mode. When diagnosing an individual failure,
+    record the prompt, model identifier, decoding settings and output rather than immediately attributing the problem
+    to one parameter.
+  formulas: []
+  viz:
+    type: failure_classifier
+    description: Choose an observed output symptom and classify it using a consistent failure taxonomy.
+    params:
+    - name: failure
+      label: Failure
+      min: 1
+      max: 5
+      step: 1
+      default: 1
+      unit: failure type
+    compute:
+      failure: failure
+      labels:
+      - Unsupported claim
+      - Repeated phrase
+      - Topic drift
+      - Contradiction
+      - Abrupt truncation
+    outcomes:
+    - when: failure == 1
+      title: Factual support failure
+      explain: The claim lacks evidence or conflicts with trusted information.
+      severity: info
+    - when: failure == 2
+      title: Repetition failure
+      explain: The output repeats words or phrases unnecessarily.
+      severity: info
+    - when: failure >= 3
+      title: Coherence or completion failure
+      explain: The output drifts, contradicts itself or stops unexpectedly.
+      severity: info
+    combos_to_try:
+    - set:
+        failure: 1
+      lesson: Create five short generated-output examples, each illustrating a different failure category.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: A response repeats the same sentence several times. Which failure category best describes it?
+    options:
+    - Repetition
+    - Hallucination by definition
+    - Successful grounding
+    - Correct stopping
+    answer: 0
+    explanation: The observable symptom is repeated content.
+  - type: short_answer
+    question: Why should an evaluator classify the observed failure before changing generation settings?
+    answer: Different symptoms can have different causes; classification helps choose a targeted diagnostic and
+      avoid unsupported fixes.
+    explanation: Mention symptom-to-diagnostic mapping.
+  - type: application
+    question: A response is relevant at first but gradually moves to unrelated topics. What failure label fits best?
+    answer: Topic drift or loss of coherence.
+    explanation: Use an observable label rather than assuming a cause.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Create five short generated-output examples, each illustrating a different failure category.
+- id: context-and-configuration-failures
+  code: GA-CO2.9.3
+  title: Context and Configuration Failures
+  session: 3
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - repetition-and-incoherence
+  eli5: Some failures come from missing or excessive context, unsuitable limits or mismatched generation settings
+    rather than the model alone.
+  key_points:
+  - A model cannot use information that was not included in its available context.
+  - Long prompts can consume context budget and may obscure important instructions.
+  - Incorrect generation limits or sampling settings can produce truncation or unstable output.
+  deep_dive: 'Model behaviour is shaped by the input context and generation configuration. If a required fact is
+    absent from the prompt and not reliably represented in model knowledge, the model may guess. If a prompt is
+    too long, important information can be crowded out or exceed the context limit. If the maximum output length
+    is too small, the response may be truncated. Sampling settings can also change diversity and consistency. A
+    useful diagnosis checks the full request path: prompt content, token count, model context limit, system instructions,
+    decoding parameters and finish reason. This avoids treating every failure as a defect in the model weights.'
+  formulas: []
+  viz:
+    type: failure_diagnosis
+    description: Map a visible symptom to possible context or configuration checks before proposing a change.
+    params:
+    - name: symptom
+      label: Symptom
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: symptom
+    compute:
+      symptom: symptom
+      labels:
+      - Missing required fact
+      - Prompt exceeds context
+      - Output truncated
+      - Unstable variation
+    outcomes:
+    - when: symptom == 1
+      title: Context coverage
+      explain: Check whether the required fact was supplied in the context.
+      severity: info
+    - when: symptom == 2
+      title: Input budget
+      explain: Check token count and model context limit.
+      severity: info
+    - when: symptom == 3
+      title: Output limit
+      explain: Check maximum output tokens and finish reason.
+      severity: info
+    - when: symptom == 4
+      title: Sampling configuration
+      explain: Check temperature, top-k/top-p and repeatability conditions.
+      severity: info
+    combos_to_try:
+    - set:
+        symptom: 1
+      lesson: For each of four symptoms, list one diagnostic measurement you would collect before changing the model.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: A response is cut off at the configured output limit. What is the most direct first check?
+    options:
+    - Maximum output tokens and finish reason
+    - Embedding dimension
+    - Number of attention heads
+    - Tokenizer vocabulary order
+    answer: 0
+    explanation: The output cap and finish reason directly explain a length-based stop.
+  - type: short_answer
+    question: Why should an engineer inspect the prompt context before blaming the model?
+    answer: The model can only condition on available context; required information may be missing, truncated or
+      obscured.
+    explanation: Mention context availability and limits.
+  - type: application
+    question: A system answers differently across repeated runs with sampling enabled. What should be recorded to
+      analyse the variation?
+    answer: Record model/version, prompt, temperature, top-k/top-p, seed if supported, and the exact outputs.
+    explanation: List the conditions needed for a reproducible comparison.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: For each of four symptoms, list one diagnostic measurement you would collect before changing the model.

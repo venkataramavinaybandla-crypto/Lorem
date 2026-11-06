@@ -1,0 +1,226 @@
+part:
+  id: CO5-P03
+  co: CO5
+  title: Dataset Cards and Evaluation Sets
+  order: 3
+  concept_ids:
+  - CO5-P03-C01
+  - CO5-P03-C02
+  - CO5-P03-C03
+concepts:
+- id: CO5-P03-C01
+  code: CO5.3.1
+  title: Dataset cards and documentation
+  session: 27
+  skilling_exp: 'CO5 practical focus: dataset cards and evaluation sets'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P02-C03
+  eli5: Document dataset purpose, provenance, composition, limitations and intended use.
+  key_points:
+  - Explain the purpose and boundary of dataset cards and documentation.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: A dataset card explains what a dataset contains and how it should be used. It should identify the purpose,
+    source and collection method, licence or permission basis, languages, fields, size, filtering and preprocessing
+    steps. It should also describe intended and out-of-scope uses, known representation gaps, privacy considerations
+    and quality limitations. A dataset card does not prove that data is lawful or unbiased; it makes assumptions
+    visible so reviewers can assess them. Update the card when the dataset changes materially, and link each experiment
+    to the exact dataset revision used. Keep the evaluation protocol stable across runs, inspect representative
+    outputs, and record the exact revisions used so another learner can reproduce the comparison and understand
+    its limitations.
+  formulas: []
+  viz:
+    type: dataset card
+    description: provenance; licence; composition; limitations; intended use
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming dataset cards and documentation automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents dataset cards and documentation?
+    options:
+    - Document dataset purpose, provenance, composition, limitations and intended use.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Document dataset purpose, provenance, composition, limitations and intended
+      use.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in dataset cards and documentation.
+    expected_answer: A correct answer should explain the central idea of dataset cards and documentation and connect
+      it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply dataset cards and documentation
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for dataset cards and documentation. State the inputs, baseline,
+    two metrics, one likely failure and how you would document the result.
+- id: CO5-P03-C02
+  code: CO5.3.2
+  title: Train, validation and test splits
+  session: 27
+  skilling_exp: 'CO5 practical focus: dataset cards and evaluation sets'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P03-C01
+  eli5: Separate data roles so model development and final evaluation remain trustworthy.
+  key_points:
+  - Explain the purpose and boundary of train, validation and test splits.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: Training examples update model parameters. Validation examples support choices such as training duration,
+    hyperparameters and checkpoint selection. The test set is reserved for an unbiased final estimate and should
+    not be repeatedly used to tune the system. Split related or near-duplicate records carefully; otherwise, almost
+    identical examples can appear in both training and test data and inflate scores. For grouped or time-dependent
+    data, use group-aware or chronological splitting when appropriate. Record split identifiers and random seeds
+    where possible so that experiments can be compared fairly. Keep the evaluation protocol stable across runs,
+    inspect representative outputs, and record the exact revisions used so another learner can reproduce the comparison
+    and understand its limitations.
+  formulas: []
+  viz:
+    type: data split diagram
+    description: training; validation; test; leakage; grouping
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming train, validation and test splits automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents train, validation and test splits?
+    options:
+    - Separate data roles so model development and final evaluation remain trustworthy.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Separate data roles so model development and final evaluation remain trustworthy.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in train, validation and test splits.
+    expected_answer: A correct answer should explain the central idea of train, validation and test splits and connect
+      it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply train, validation and test splits
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for train, validation and test splits. State the inputs, baseline,
+    two metrics, one likely failure and how you would document the result.
+- id: CO5-P03-C03
+  code: CO5.3.3
+  title: Shared test set and leakage prevention
+  session: 27
+  skilling_exp: 'CO5 practical focus: dataset cards and evaluation sets'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P03-C02
+  eli5: Keep one fixed evaluation set when comparing prompting, RAG and fine-tuned models.
+  key_points:
+  - Explain the purpose and boundary of shared test set and leakage prevention.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: The CO5 practical outcome requires a shared test set for comparing prompting and RAG baselines with
+    adapted models. Every approach should receive equivalent test questions and be scored using the same task definitions.
+    Keep test answers and labels out of training data, prompt examples and router training. Watch for indirect leakage
+    through duplicated documents, cached outputs or manual tuning based on test failures. If the test set must change,
+    version it and explain why scores across revisions may not be directly comparable. Preserve a separate diagnostic
+    set for iterative debugging so the final shared test remains meaningful.
+  formulas: []
+  viz:
+    type: evaluation protocol
+    description: shared test; fixed labels; leakage check; versioning
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming shared test set and leakage prevention automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents shared test set and leakage prevention?
+    options:
+    - Keep one fixed evaluation set when comparing prompting, RAG and fine-tuned models.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Keep one fixed evaluation set when comparing prompting, RAG and fine-tuned
+      models.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in shared test set and leakage prevention.
+    expected_answer: A correct answer should explain the central idea of shared test set and leakage prevention
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply shared test set and leakage prevention
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for shared test set and leakage prevention. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.

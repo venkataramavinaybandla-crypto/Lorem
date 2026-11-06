@@ -1,0 +1,287 @@
+part:
+  id: co1-part-09
+  co: CO1
+  title: Provider-Agnostic LLM Client
+  order: 9
+  concept_ids:
+  - llm-client-responsibilities
+  - provider-abstraction-and-normalisation
+  - client-errors-and-observability
+concepts:
+- id: llm-client-responsibilities
+  code: GA-CO1.9.1
+  title: Responsibilities of an LLM Client
+  session: 9
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: An LLM client is the application component that sends requests to a model and receives responses.
+    It should provide a consistent interface, capture usage and latency, and handle errors without spreading
+    provider-specific code everywhere.
+  key_points:
+  - The CO-1 outcome requires a provider-agnostic LLM client.
+  - The client wraps model-provider interaction behind an application interface.
+  - It should capture token usage, latency, cost and request outcome.
+  - Provider-specific differences should be isolated.
+  deep_dive: 'The course outcome requires students to build a provider-agnostic LLM client that logs tokens,
+    latency and cost. A client is the boundary between the application and the model service. It accepts
+    an application-level request, translates it into the selected provider''s request format, sends it,
+    interprets the response and returns a consistent result to the rest of the application. Provider-agnostic
+    design means application code should not need to know every provider-specific field or response shape.
+    Instead, provider adapters handle those differences behind a common interface. The client should also
+    record operational measurements: input and output tokens, elapsed time, estimated or reported cost,
+    and whether the request succeeded. Error handling is part of the boundary because external calls can
+    fail, time out or be rate-limited. The handout identifies the v0.1 project as a logged LLM client,
+    making this component the first practical engineering milestone in the course.'
+  formulas: []
+  viz:
+    type: client-architecture
+    description: Trace a request through a common client interface and a provider-specific adapter.
+    params:
+    - name: provider
+      label: Provider
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: provider
+    compute:
+      provider: provider
+      stages:
+      - Application request
+      - Common client interface
+      - Provider adapter
+      - Provider API
+      - Normalised response and metrics
+    outcomes:
+    - when: provider >= 1 && provider <= 3
+      title: Provider adapter selected
+      explain: The application can keep a common request contract while the adapter handles provider details.
+      severity: info
+    combos_to_try:
+    - set:
+        provider: 1
+      lesson: Draw an interface with a request method and a normalised response structure.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes responsibilities of an llm client?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of responsibilities of an llm client in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which responsibilities of an llm client matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - practical
+  mini_task: Specify the responsibilities of a provider-agnostic client in a short design note.
+- id: provider-abstraction-and-normalisation
+  code: GA-CO1.9.2
+  title: Provider Abstraction and Response Normalisation
+  session: 9
+  skilling_exp: 3
+  btl: 3
+  difficulty: 2
+  prereqs:
+  - llm-client-responsibilities
+  eli5: Provider abstraction hides differences between model services behind one application interface.
+    Response normalisation converts provider-specific responses into a common structure that the rest
+    of the application can use.
+  key_points:
+  - Different providers can use different request and response schemas.
+  - A common interface reduces provider-specific coupling.
+  - Adapters translate requests and normalise responses.
+  - Provider identity and model identity should remain observable.
+  deep_dive: 'A provider-agnostic client needs a stable application-facing contract even when providers
+    expose different APIs. One provider may name a field differently, return usage information in a different
+    location or represent errors using its own response structure. A provider adapter translates the common
+    application request into the provider''s expected format and maps the returned result into a normalised
+    response. A normalised response may contain generated text, model and provider identifiers, input
+    and output token counts, latency, request status and a structured error when applicable. Normalisation
+    should not erase important information: provider and model identity must remain available for tracing,
+    billing and comparison. The application should also avoid assuming that every provider supports identical
+    features. If a capability is unavailable, the adapter should report that clearly rather than silently
+    pretending it was applied. This design allows the application to compare or switch providers with
+    fewer changes while keeping provider-specific behaviour explicit and testable.'
+  formulas: []
+  viz:
+    type: adapter-selection
+    description: Switch between provider adapters while keeping the application request contract unchanged.
+    params:
+    - name: adapter
+      label: Adapter
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: adapter
+    compute:
+      adapter: adapter
+      labels:
+      - Provider A adapter
+      - Provider B adapter
+      - Local model adapter
+      common_contract: Application request → adapter → normalised response
+    outcomes:
+    - when: adapter >= 1 && adapter <= 3
+      title: Adapter selected
+      explain: Provider-specific translation occurs behind the shared application contract.
+      severity: info
+    combos_to_try:
+    - set:
+        adapter: 1
+      lesson: Define a normalised response schema with text, provider, model, usage, latency and status
+        fields.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes provider abstraction and response normalisation?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of provider abstraction and response normalisation in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which provider abstraction and response normalisation matters
+      when building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - practical
+  mini_task: Write pseudocode for two provider adapters implementing the same client interface.
+- id: client-errors-and-observability
+  code: GA-CO1.9.3
+  title: Client Error Handling and Request Observability
+  session: 9
+  skilling_exp: 3
+  btl: 3
+  difficulty: 2
+  prereqs:
+  - provider-abstraction-and-normalisation
+  eli5: Observability means recording enough information to understand what happened during a request.
+    A useful LLM client records request timing, token usage, cost and errors so that failures and unexpected
+    expenses can be investigated.
+  key_points:
+  - Measure latency for each request.
+  - Record input and output token usage when available.
+  - Estimate or capture request cost with stated assumptions.
+  - Classify failures and avoid blind or unlimited retries.
+  deep_dive: A model client is not complete if it only returns generated text. The CO-1 outcome explicitly
+    requires logging tokens, latency and cost, while the handout also highlights provider failure rates
+    and rate limits. Latency can be measured as elapsed time between sending a request and receiving the
+    response. Token usage should be taken from provider-reported usage where available, with tokenizer-based
+    estimates identified as estimates. Cost can be calculated from usage and the applicable price schedule,
+    while recording the model and pricing assumptions used. Errors should be classified, for example as
+    timeout, rate limit, authentication failure, provider error or invalid request. Retry behaviour should
+    be bounded and should respect the error type; repeated retries can increase cost and worsen rate limiting.
+    Logs should contain operational metadata but should avoid exposing secrets or unnecessary sensitive
+    prompt content. These measurements let a team compare providers and diagnose whether a problem is
+    related to quality, speed, cost or availability.
+  formulas: []
+  viz:
+    type: request_trace
+    description: Adjust request and response times and inspect the elapsed latency alongside usage and
+      status.
+    params:
+    - name: latency_ms
+      label: Latency Ms
+      min: 0
+      max: 120000
+      step: 100
+      default: 1250
+      unit: milliseconds
+    - name: status
+      label: Status
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: status
+    compute:
+      latency_seconds: latency_ms / 1000
+      status_labels:
+      - Success
+      - Rate limited
+      - Failed
+    outcomes:
+    - when: status == 1
+      title: Request succeeded
+      explain: Record usage and latency for the completed request.
+      severity: info
+    - when: status == 2
+      title: Rate limited
+      explain: Respect the provider's limit and retry only according to a bounded policy.
+      severity: warn
+    - when: status == 3
+      title: Request failed
+      explain: Record the failure category and provide a safe application-level response.
+      severity: fail
+    combos_to_try:
+    - set:
+        latency_ms: 1250
+        status: 1
+      lesson: Design a log record for one model request without storing API secrets.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes client error handling and request observability?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of client error handling and request observability in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which client error handling and request observability matters
+      when building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - practical
+  mini_task: Create a sample request log containing provider, model, tokens, latency, cost and status.

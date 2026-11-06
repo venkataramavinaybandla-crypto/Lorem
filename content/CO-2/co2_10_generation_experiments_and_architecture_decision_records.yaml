@@ -1,0 +1,268 @@
+part:
+  id: co2-part-10
+  co: CO2
+  title: Generation Experiments and Architecture Decision Records
+  order: 10
+  concept_ids:
+  - controlled-generation-experiments
+  - generation-metrics-and-comparison
+  - architecture-decision-record
+concepts:
+- id: controlled-generation-experiments
+  code: GA-CO2.10.1
+  title: Controlled Generation Experiments
+  session: 1
+  skilling_exp: 3
+  btl: 4
+  difficulty: 3
+  prereqs: []
+  eli5: A controlled experiment changes one factor at a time while keeping other conditions stable, so the effect
+    can be measured more fairly.
+  key_points:
+  - Use the same prompts and evaluation criteria across configurations.
+  - Change one setting at a time when isolating its effect.
+  - Repeat runs when sampling introduces variability.
+  deep_dive: Generation defaults should be selected using measured evidence rather than intuition alone. A controlled
+    experiment uses a fixed evaluation set, a stable model version and consistent prompts. To isolate the effect
+    of temperature, for example, hold top-k, top-p and all other settings constant while changing temperature. When
+    sampling is stochastic, multiple runs may be needed to estimate variability. Evaluation criteria should include
+    task quality and operational measures such as latency and token usage. The experiment should record its configuration
+    and results so another person can reproduce or challenge the conclusion. A small, well-controlled comparison
+    is more useful than changing many settings simultaneously and guessing which change caused an outcome.
+  formulas: []
+  viz:
+    type: experiment_design
+    description: Select an experimental variable and identify which conditions must remain fixed.
+    params:
+    - name: variable
+      label: Variable
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: variable
+    compute:
+      variable: variable
+      labels:
+      - Temperature
+      - Top-k
+      - Top-p
+      - Maximum output tokens
+      fixed_conditions:
+      - Model version
+      - Prompt set
+      - Evaluation rubric
+    outcomes:
+    - when: variable >= 1 && variable <= 4
+      title: Single variable selected
+      explain: Keep other settings fixed to isolate the selected factor.
+      severity: info
+    combos_to_try:
+    - set:
+        variable: 1
+      lesson: Design a three-configuration experiment to compare temperature values while keeping the model and
+        prompts fixed.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What is the main reason to change one generation setting at a time in a controlled experiment?
+    options:
+    - To isolate the effect of that setting
+    - To guarantee the highest score
+    - To remove the need for evaluation
+    - To make prompts longer
+    answer: 0
+    explanation: Changing one factor at a time improves causal interpretability.
+  - type: short_answer
+    question: Why should the same prompt set be used across generation configurations?
+    answer: It controls prompt difficulty and content so observed differences are more attributable to the configuration
+      change.
+    explanation: Mention fair comparison.
+  - type: application
+    question: A team changes temperature, top-p and maximum tokens simultaneously and quality improves. Why is the
+      result hard to interpret?
+    answer: The team cannot tell which change caused the improvement because multiple variables changed together.
+    explanation: Explain confounding.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Design a three-configuration experiment to compare temperature values while keeping the model and prompts
+    fixed.
+- id: generation-metrics-and-comparison
+  code: GA-CO2.10.2
+  title: Generation Metrics and Comparison
+  session: 2
+  skilling_exp: 3
+  btl: 4
+  difficulty: 3
+  prereqs:
+  - controlled-generation-experiments
+  eli5: Generation configurations should be compared with metrics that reflect the task, such as correctness, relevance,
+    diversity, latency and token usage.
+  key_points:
+  - No single metric captures every aspect of generation quality.
+  - Use task-specific rubrics and representative examples alongside aggregate measurements.
+  - Latency and token usage are operational measures that complement quality evaluation.
+  deep_dive: Evaluation should match the purpose of the application. A factual question-answering task may prioritise
+    correctness and evidence support, while a creative task may also value diversity and style. Relevance, completeness,
+    coherence and instruction following can be scored using a consistent rubric. Operational measures such as latency
+    and input/output token counts reveal cost and performance trade-offs. Aggregate scores should be accompanied
+    by examples because averages can hide severe failures on particular prompts. When comparing configurations,
+    use the same evaluation set and clearly state the scoring procedure. If human raters are involved, provide a
+    rubric and consider agreement between raters.
+  formulas: []
+  viz:
+    type: metric_dashboard
+    description: Compare two illustrative generation configurations across quality and operational dimensions.
+    params:
+    - name: configuration
+      label: Configuration
+      min: 1
+      max: 2
+      step: 1
+      default: 1
+      unit: configuration
+    compute:
+      configuration: configuration
+      metrics:
+      - Correctness
+      - Relevance
+      - Diversity
+      - Latency
+      - Token usage
+      note: Use measured values from actual runs; no universal default is implied.
+    outcomes:
+    - when: configuration == 1
+      title: Configuration A
+      explain: Evaluate the first configuration using the same task rubric.
+      severity: info
+    - when: configuration == 2
+      title: Configuration B
+      explain: Compare the second configuration under identical evaluation conditions.
+      severity: info
+    combos_to_try:
+    - set:
+        configuration: 1
+      lesson: Build a small comparison table with at least two quality measures and two operational measures.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which metric is an operational measure rather than a direct quality rubric score?
+    options:
+    - Latency
+    - Factual correctness
+    - Instruction following
+    - Relevance
+    answer: 0
+    explanation: Latency measures response time.
+  - type: short_answer
+    question: Why should aggregate generation scores be accompanied by example outputs?
+    answer: Averages can hide specific failure cases, uneven performance and trade-offs across prompts.
+    explanation: Mention qualitative inspection of examples.
+  - type: application
+    question: Configuration A is more diverse but slower and less factually reliable. How should a factual assistant
+      choose between A and B?
+    answer: Prioritise factual reliability and task requirements, then document whether the diversity benefit justifies
+      any operational or quality trade-off.
+    explanation: Tie metric choice to application purpose.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Build a small comparison table with at least two quality measures and two operational measures.
+- id: architecture-decision-record
+  code: GA-CO2.10.3
+  title: Architecture Decision Record for Generation Defaults
+  session: 3
+  skilling_exp: 3
+  btl: 4
+  difficulty: 3
+  prereqs:
+  - controlled-generation-experiments
+  - generation-metrics-and-comparison
+  eli5: An Architecture Decision Record (ADR) documents a technical choice, its context, alternatives, evidence
+    and consequences.
+  key_points:
+  - An ADR states the decision and the problem it addresses.
+  - It records alternatives considered and measured evidence.
+  - It documents consequences, limitations and conditions for revisiting the decision.
+  deep_dive: 'An Architecture Decision Record makes a generation configuration decision reviewable. A useful ADR
+    states the context and requirement, such as choosing defaults for a factual course assistant. It lists alternatives,
+    including the model and decoding settings tested. It records the evaluation method and measured results, then
+    explains why the selected option best satisfies the requirements. It should also document consequences: expected
+    quality, latency and cost, known limitations and risks. An ADR is not a claim that the selected setting is universally
+    optimal. It is a transparent decision for a defined application, dataset and measurement period. If the model,
+    prompts or requirements change, the decision may need to be revisited.'
+  formulas: []
+  viz:
+    type: adr_structure
+    description: Fill the key sections of an ADR and connect each decision to evidence.
+    params:
+    - name: section
+      label: Section
+      min: 1
+      max: 6
+      step: 1
+      default: 1
+      unit: ADR section
+    compute:
+      section: section
+      sections:
+      - Context
+      - Decision drivers
+      - Alternatives
+      - Evidence
+      - Decision
+      - Consequences and revisit trigger
+    outcomes:
+    - when: section <= 3
+      title: Decision framing
+      explain: The problem, requirements and alternatives are being defined.
+      severity: info
+    - when: section >= 4
+      title: Evidence and commitment
+      explain: Measured results support the selected option and its consequences are recorded.
+      severity: info
+    combos_to_try:
+    - set:
+        section: 1
+      lesson: Draft a one-page ADR selecting generation defaults for a factual assistant using a hypothetical but
+        clearly labelled evaluation table.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which item belongs in an Architecture Decision Record?
+    options:
+    - Alternatives considered and evidence supporting the decision
+    - Only the final parameter value with no context
+    - A list of unrelated code comments
+    - The model's vocabulary in alphabetical order
+    answer: 0
+    explanation: An ADR captures context, alternatives, evidence, decision and consequences.
+  - type: short_answer
+    question: Why is an ADR more useful than simply writing down a temperature value?
+    answer: It records the context, alternatives, evidence, rationale and consequences so the decision can be reviewed
+      and revisited.
+    explanation: Mention traceability and rationale.
+  - type: application
+    question: A new model version changes the measured results behind an existing generation ADR. What should the
+      team do?
+    answer: Re-run the evaluation under the new model version and update or supersede the ADR if the evidence changes
+      the decision.
+    explanation: Connect model change to re-evaluation.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Draft a one-page ADR selecting generation defaults for a factual assistant using a hypothetical but
+    clearly labelled evaluation table.

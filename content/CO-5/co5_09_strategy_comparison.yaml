@@ -1,0 +1,225 @@
+part:
+  id: CO5-P09
+  co: CO5
+  title: Comparing Adaptation Strategies
+  order: 9
+  concept_ids:
+  - CO5-P09-C01
+  - CO5-P09-C02
+  - CO5-P09-C03
+concepts:
+- id: CO5-P09-C01
+  code: CO5.9.1
+  title: Fair comparison across prompting, RAG and fine-tuning
+  session: 33
+  skilling_exp: 'CO5 practical focus: comparing adaptation strategies'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO5-P08-C03
+  eli5: Design an experiment that gives each approach the same task and evaluation conditions.
+  key_points:
+  - Explain the purpose and boundary of fair comparison across prompting, rag and fine-tuning.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: A fair comparison uses the same shared test questions, labels, scoring rubric and evaluation procedure
+    for prompting, RAG and fine-tuned systems. Each method may require different operational components, but those
+    components must be documented. For RAG, record corpus and retrieval configuration; for prompting, record prompt
+    and model settings; for fine-tuning, record base model, adapter or checkpoint and training data. Prevent test
+    leakage into prompt examples, retrieved corpora where inappropriate, training data and router labels. Compare
+    not only aggregate scores but also per-category errors and failure examples. The result should support an engineering
+    decision rather than merely rank methods.
+  formulas: []
+  viz:
+    type: comparison experiment
+    description: same test set; method configuration; leakage; metrics
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming fair comparison across prompting, rag and fine-tuning automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents fair comparison across prompting, rag and fine-tuning?
+    options:
+    - Design an experiment that gives each approach the same task and evaluation conditions.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Design an experiment that gives each approach the same task and evaluation
+      conditions.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in fair comparison across prompting, rag
+      and fine-tuning.
+    expected_answer: A correct answer should explain the central idea of fair comparison across prompting, rag and
+      fine-tuning and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply fair comparison across prompting,
+      rag and fine-tuning and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for fair comparison across prompting, rag and fine-tuning.
+    State the inputs, baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P09-C02
+  code: CO5.9.2
+  title: Quality, latency, cost and resource accounting
+  session: 33
+  skilling_exp: 'CO5 practical focus: comparing adaptation strategies'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO5-P09-C01
+  eli5: Interpret multiple metrics together when selecting an adaptation method.
+  key_points:
+  - Explain the purpose and boundary of quality, latency, cost and resource accounting.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: Quality may include task accuracy, F1, groundedness, citation support, refusal correctness or human-rated
+    usefulness. Latency should include the relevant end-to-end path and may be reported with median and tail percentiles.
+    Cost should include model tokens, retrieval and embedding services, storage, training compute and ongoing operations.
+    For fine-tuning, amortise training cost across expected usage when making a deployment comparison, while stating
+    the assumed volume. Track GPU memory and throughput for local model workflows. No single metric captures the
+    whole decision; define minimum quality and safety thresholds first, then compare feasible methods on operational
+    constraints.
+  formulas: []
+  viz:
+    type: multi-metric scorecard
+    description: quality; p50/p95 latency; inference cost; training cost; memory
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming quality, latency, cost and resource accounting automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents quality, latency, cost and resource accounting?
+    options:
+    - Interpret multiple metrics together when selecting an adaptation method.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Interpret multiple metrics together when selecting an adaptation method.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in quality, latency, cost and resource accounting.
+    expected_answer: A correct answer should explain the central idea of quality, latency, cost and resource accounting
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply quality, latency, cost and resource
+      accounting and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for quality, latency, cost and resource accounting. State
+    the inputs, baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P09-C03
+  code: CO5.9.3
+  title: Failure analysis and method selection
+  session: 33
+  skilling_exp: 'CO5 practical focus: comparing adaptation strategies'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO5-P09-C02
+  eli5: Choose an approach based on error patterns and the source of the task's difficulty.
+  key_points:
+  - Explain the purpose and boundary of failure analysis and method selection.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: Different approaches address different failure causes. If the model lacks current facts, retrieval
+    may help; if the output format is inconsistent, prompting or structured decoding may be sufficient; if a stable
+    task behaviour remains poor despite good examples and context, fine-tuning may be worth testing. Retrieval can
+    fail through missing documents or poor ranking; fine-tuning can fail through noisy data, overfitting or forgetting;
+    prompting can fail through ambiguity or context limits. Inspect errors by category before changing methods.
+    Document the selected approach, alternatives rejected, assumptions and evidence that would trigger reconsideration.
+  formulas: []
+  viz:
+    type: failure diagnosis tree
+    description: error category; root cause; candidate method; evidence
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming failure analysis and method selection automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents failure analysis and method selection?
+    options:
+    - Choose an approach based on error patterns and the source of the task's difficulty.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Choose an approach based on error patterns and the source of the task''s
+      difficulty.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in failure analysis and method selection.
+    expected_answer: A correct answer should explain the central idea of failure analysis and method selection and
+      connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply failure analysis and method selection
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for failure analysis and method selection. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.

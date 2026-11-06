@@ -1,0 +1,251 @@
+part:
+  id: co3-part-07
+  co: CO3
+  title: Vector Indexing and Search
+  order: 7
+  concept_ids:
+  - hnsw-indexing
+  - ivf-indexing
+  - atlas-vector-search-and-pgvector
+concepts:
+- id: hnsw-indexing
+  code: GA-CO3.7.1
+  title: HNSW Approximate Nearest Neighbour Indexing
+  session: 19
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: HNSW is a graph-based approximate nearest neighbour index designed to find close vectors efficiently.
+  key_points:
+  - HNSW organises vectors in a navigable graph.
+  - Search explores graph connections to find approximate neighbours.
+  - Search parameters can trade recall, latency and memory.
+  deep_dive: HNSW, or Hierarchical Navigable Small World, is a graph-based approximate nearest neighbour method.
+    It builds layered graph structures that allow search to navigate from coarse connections toward nearby vectors.
+    Approximate search can reduce query time compared with exhaustively comparing every vector, especially for large
+    collections. The trade-off is that search may not always return the exact nearest neighbours. Index construction
+    and query parameters influence memory use, build time, latency and recall. A retrieval application should measure
+    recall against an exact or trusted baseline using its own vector collection. The handout specifically expects
+    students to analyse the recall–latency trade-off rather than simply name HNSW.
+  formulas: []
+  viz:
+    type: hnsw_tradeoff
+    description: Explore the conceptual trade-off between search effort, recall and latency.
+    params:
+    - name: effort
+      label: Effort
+      min: 1
+      max: 10
+      step: 1
+      default: 5
+      unit: search effort
+    compute:
+      effort: effort
+      metrics:
+      - recall
+      - latency
+      - memory
+      note: Illustrative relationship, not a benchmark result.
+    outcomes:
+    - when: effort <= 3
+      title: Lower search effort
+      explain: May reduce latency but can miss more true neighbours.
+      severity: info
+    - when: effort >= 7
+      title: Higher search effort
+      explain: May improve recall while requiring more search work.
+      severity: info
+    combos_to_try:
+    - set:
+        effort: 5
+      lesson: Compare HNSW retrieval with an exact nearest-neighbour baseline and record recall and latency.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What kind of structure does HNSW use?
+    options:
+    - A navigable graph with hierarchical layers
+    - A document-frequency table
+    - A language-model decoder
+    - A relational join tree only
+    answer: 0
+    explanation: HNSW is a graph-based approximate nearest neighbour method.
+  - type: short_answer
+    question: Why is HNSW called approximate nearest neighbour search?
+    answer: It aims to find very close vectors efficiently but may not return the exact nearest neighbours every
+      time.
+    explanation: Mention speed and possible recall loss.
+  - type: application
+    question: An HNSW configuration is faster but misses more relevant vectors than exact search. What trade-off
+      does this show?
+    answer: A latency-versus-recall trade-off.
+    explanation: Describe both metrics.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Compare HNSW retrieval with an exact nearest-neighbour baseline and record recall and latency.
+- id: ivf-indexing
+  code: GA-CO3.7.2
+  title: IVF Indexing
+  session: 19
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: IVF partitions a vector collection into clusters or lists and searches selected lists rather than scanning
+    every vector.
+  key_points:
+  - IVF groups vectors into coarse clusters.
+  - Search probes selected clusters to reduce candidate comparisons.
+  - The number of probed lists affects recall and latency.
+  deep_dive: Inverted File (IVF) indexing uses a coarse clustering step to partition a vector collection into groups.
+    At query time, the query vector is compared with cluster representatives and search focuses on selected lists.
+    This reduces the number of candidate vectors examined, which can improve latency for large collections. If too
+    few lists are probed, a relevant vector may lie in an unsearched cluster and be missed. Probing more lists can
+    improve recall but increases search work. IVF therefore exposes a measurable trade-off controlled by index configuration
+    and query-time search parameters. Its effectiveness depends on collection size, vector distribution and tuning.
+  formulas: []
+  viz:
+    type: ivf_search
+    description: Change the number of probed clusters and inspect the candidate-search trade-off.
+    params:
+    - name: probes
+      label: Probes
+      min: 1
+      max: 20
+      step: 1
+      default: 5
+      unit: probed lists
+    compute:
+      probes: probes
+      total_lists: 20
+      note: Illustrative index with 20 coarse lists.
+    outcomes:
+    - when: probes <= 5
+      title: Narrow search
+      explain: Fewer lists are searched, potentially lowering latency and recall.
+      severity: info
+    - when: probes >= 15
+      title: Broad search
+      explain: More lists are searched, potentially improving recall with added work.
+      severity: info
+    combos_to_try:
+    - set:
+        probes: 5
+      lesson: Explain how increasing the number of probed IVF lists can affect recall and latency.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What does IVF use to organise a vector collection?
+    options:
+    - Coarse clusters or inverted lists
+    - Only exact text terms
+    - A causal attention mask
+    - A token vocabulary
+    answer: 0
+    explanation: IVF partitions the vector space into searchable lists.
+  - type: short_answer
+    question: What does the IVF probe count control?
+    answer: It controls how many selected lists or clusters are searched for candidate vectors.
+    explanation: Mention the recall-latency effect.
+  - type: application
+    question: An IVF index has poor recall with a very small probe count. What controlled change can you test?
+    answer: Increase the number of probed lists and measure the resulting recall and latency.
+    explanation: Recommend measured tuning.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Explain how increasing the number of probed IVF lists can affect recall and latency.
+- id: atlas-vector-search-and-pgvector
+  code: GA-CO3.7.3
+  title: Atlas Vector Search and pgvector
+  session: 19
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Atlas Vector Search and pgvector are vector-search options associated with different data-platform ecosystems;
+    selection depends on architecture requirements.
+  key_points:
+  - MongoDB Atlas Vector Search integrates vector search with MongoDB Atlas data workflows.
+  - pgvector adds vector capabilities to PostgreSQL.
+  - The choice should consider existing data platform, operations, filters and measured performance.
+  deep_dive: 'The course handout names MongoDB Atlas Vector Search and pgvector as vector-search technologies students
+    should recognise. Atlas Vector Search provides vector search within the MongoDB Atlas ecosystem, while pgvector
+    adds vector data types and similarity-search capabilities to PostgreSQL. They are not interchangeable with every
+    deployment setup: operational environment, database choice, filtering requirements, index support, data volume
+    and team experience matter. In the specific CO-3 project architecture, MongoDB is the system of record and Chroma
+    is the vector store. Atlas Vector Search and pgvector are useful comparison points, not a reason to silently
+    replace the required Chroma component. A fair comparison should use the same dataset and evaluation queries.'
+  formulas: []
+  viz:
+    type: vector_platforms
+    description: Compare vector search options by data platform integration and operational constraints.
+    params:
+    - name: platform
+      label: Platform
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: platform
+    compute:
+      platform: platform
+      options:
+      - Chroma
+      - MongoDB Atlas Vector Search
+      - PostgreSQL with pgvector
+    outcomes:
+    - when: platform == 1
+      title: Chroma
+      explain: Use as the specified vector store in this CO-3 build.
+      severity: info
+    - when: platform >= 2
+      title: Alternative platform
+      explain: Compare integration and operational fit without changing the required project design.
+      severity: info
+    combos_to_try:
+    - set:
+        platform: 1
+      lesson: Create a comparison table for Chroma, Atlas Vector Search and pgvector, including data platform and
+        operational considerations.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Which vector store is specified for the CO-3 project architecture?
+    options:
+    - Chroma
+    - pgvector
+    - Elasticsearch only
+    - BERT
+    answer: 0
+    explanation: The course outcome specifies Chroma as the vector store.
+  - type: short_answer
+    question: What is one architectural distinction between Atlas Vector Search and pgvector?
+    answer: Atlas Vector Search belongs to the MongoDB Atlas ecosystem; pgvector provides vector capabilities in
+      PostgreSQL.
+    explanation: Name their respective data platforms.
+  - type: application
+    question: Your team already operates PostgreSQL. What should be evaluated before choosing pgvector over the
+      course's Chroma design?
+    answer: Compare operational fit, filtering, index behaviour, measured retrieval quality and project requirements;
+      document the deviation from the specified architecture.
+    explanation: Keep evaluation evidence central.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Create a comparison table for Chroma, Atlas Vector Search and pgvector, including data platform and
+    operational considerations.

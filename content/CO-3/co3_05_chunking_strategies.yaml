@@ -1,0 +1,259 @@
+part:
+  id: co3-part-05
+  co: CO3
+  title: Chunking Strategies
+  order: 5
+  concept_ids:
+  - chunking-fundamentals
+  - chunk-overlap-and-boundaries
+  - chunk-size-selection
+concepts:
+- id: chunking-fundamentals
+  code: GA-CO3.5.1
+  title: Chunking Fundamentals
+  session: 17
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Chunking divides long documents into smaller passages so they can be embedded, indexed and retrieved at
+    a useful level of detail.
+  key_points:
+  - A chunk should contain enough context to be meaningful.
+  - Very large chunks can mix unrelated topics and exceed embedding limits.
+  - Very small chunks can lose context and fragment explanations.
+  deep_dive: Vector retrieval usually operates on document chunks rather than entire long files. Chunking divides
+    source text into passages that can be embedded and retrieved individually. A useful chunk should be large enough
+    to preserve a coherent idea but small enough to avoid mixing unrelated sections or overwhelming the embedding
+    model. Fixed-size chunking is simple but can split a sentence, table or heading from its explanation. Structure-aware
+    chunking uses document boundaries such as headings, paragraphs or sections. The right strategy depends on source
+    format, query style and downstream context budget. Chunking choices should be evaluated using retrieval metrics
+    and inspected examples rather than chosen by intuition alone.
+  formulas: []
+  viz:
+    type: chunk_size
+    description: Compare small, medium and large chunk sizes and inspect their trade-offs.
+    params:
+    - name: chunk_size
+      label: Chunk Size
+      min: 100
+      max: 1500
+      step: 50
+      default: 500
+      unit: tokens
+    compute:
+      chunk_size: chunk_size
+      tradeoffs:
+      - context completeness
+      - topic purity
+      - embedding input limit
+      - retrieval precision
+    outcomes:
+    - when: chunk_size <= 300
+      title: Smaller chunks
+      explain: More focused passages but greater risk of losing surrounding context.
+      severity: info
+    - when: chunk_size > 800
+      title: Larger chunks
+      explain: More context per result but greater risk of mixing topics.
+      severity: info
+    combos_to_try:
+    - set:
+        chunk_size: 500
+      lesson: Split one course section using two chunk sizes and compare whether each chunk remains understandable.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What is the main purpose of chunking in a RAG pipeline?
+    options:
+    - Divide long source material into retrievable passages
+    - Convert all documents into one huge string
+    - Remove the need for embeddings
+    - Generate citations without metadata
+    answer: 0
+    explanation: Chunking creates units for embedding and retrieval.
+  - type: short_answer
+    question: What is one risk of chunks that are too small?
+    answer: They may lose context needed to understand a statement or its relationship to surrounding content.
+    explanation: Mention fragmented meaning.
+  - type: application
+    question: A chunk contains the final sentence of one topic and the first half of another. What chunking issue
+      does this show?
+    answer: The chunk boundary failed to preserve coherent semantic or structural units.
+    explanation: Suggest structure-aware splitting.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Split one course section using two chunk sizes and compare whether each chunk remains understandable.
+- id: chunk-overlap-and-boundaries
+  code: GA-CO3.5.2
+  title: Chunk Overlap and Boundary Handling
+  session: 17
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Overlap repeats a small region between adjacent chunks so that information near a boundary is less likely
+    to be separated from its context.
+  key_points:
+  - Overlap can preserve continuity across chunk boundaries.
+  - Excessive overlap creates duplicate content and increases storage and retrieval redundancy.
+  - Prefer natural boundaries where possible.
+  deep_dive: Chunk overlap means that adjacent chunks share some text. If a sentence or explanation crosses a chunk
+    boundary, overlap can make the relevant context available in more than one chunk. This may improve retrieval
+    when a query targets content near the boundary. However, overlap increases the number of tokens embedded and
+    stored, can produce near-duplicate retrieval results and may crowd the context window with repeated text. Natural
+    boundaries such as paragraphs and headings should be respected where possible. Overlap is a parameter to test,
+    not a universal fixed percentage. The best value depends on chunk size, source structure and retrieval metrics.
+  formulas: []
+  viz:
+    type: overlap_effect
+    description: Adjust overlap and inspect the balance between continuity and duplicated text.
+    params:
+    - name: overlap
+      label: Overlap
+      min: 0
+      max: 200
+      step: 10
+      default: 50
+      unit: tokens
+    compute:
+      overlap: overlap
+      chunk_size: 500
+      note: Overlap should remain smaller than chunk size.
+    outcomes:
+    - when: overlap == 0
+      title: No overlap
+      explain: Adjacent chunks share no text, so boundary context may be lost.
+      severity: info
+    - when: overlap >= 100
+      title: High overlap
+      explain: Continuity increases but duplicated content and storage also grow.
+      severity: info
+    combos_to_try:
+    - set:
+        overlap: 50
+      lesson: Compare zero overlap, modest overlap and high overlap on the same document and inspect duplicate retrievals.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What is the main benefit of chunk overlap?
+    options:
+    - Preserving context across adjacent chunk boundaries
+    - Reducing all storage to zero
+    - Increasing the embedding dimension
+    - Replacing metadata
+    answer: 0
+    explanation: Shared text can preserve continuity around boundaries.
+  - type: short_answer
+    question: Why can excessive overlap be harmful?
+    answer: It increases duplicate content, storage and the chance that retrieval returns redundant chunks.
+    explanation: Mention redundancy and resource cost.
+  - type: application
+    question: A key definition is split between two chunks and retrieval returns only the second half. What change
+      could help?
+    answer: Use more suitable chunk boundaries or modest overlap, then measure whether the complete definition is
+      retrieved.
+    explanation: Recommend a controlled adjustment.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Compare zero overlap, modest overlap and high overlap on the same document and inspect duplicate retrievals.
+- id: chunk-size-selection
+  code: GA-CO3.5.3
+  title: Choosing Chunk Size by Measurement
+  session: 17
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Chunk size should be selected by testing retrieval quality and operational consequences on representative
+    queries.
+  key_points:
+  - Chunk size affects semantic focus and context completeness.
+  - The selected size should be measured using a fixed query set.
+  - Chunk size interacts with overlap and top-k.
+  deep_dive: Chunk size influences how many concepts are represented in each indexed unit. Small chunks can make
+    retrieval precise but may omit definitions or qualifications. Large chunks preserve more context but can dilute
+    relevance and use more context tokens when retrieved. The right size is therefore a measured trade-off. A useful
+    experiment creates several chunking configurations while holding the embedding model, query set and retrieval
+    method constant. It measures Hit Rate@k and MRR and also records chunk count, index size, latency and context
+    token usage. The chosen configuration should be justified using the needs of the RAG application, not a single
+    universal chunk-size rule.
+  formulas: []
+  viz:
+    type: chunk_experiment
+    description: Compare chunk-size candidates using retrieval and operational measurements.
+    params:
+    - name: candidate
+      label: Candidate
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: candidate
+    compute:
+      candidate: candidate
+      sizes:
+      - 200
+      - 400
+      - 600
+      - 800
+      metrics:
+      - Hit Rate@k
+      - MRR
+      - latency
+      - index size
+      - context tokens
+    outcomes:
+    - when: candidate <= 2
+      title: Smaller chunk candidates
+      explain: Check whether precision improves while context completeness remains adequate.
+      severity: info
+    - when: candidate >= 3
+      title: Larger chunk candidates
+      explain: Check whether context completeness improves without harming ranking or latency.
+      severity: info
+    combos_to_try:
+    - set:
+        candidate: 1
+      lesson: Run a chunk-size sweep on the same labelled query set and select a configuration using both quality
+        and cost.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What is the best way to choose chunk size for a course RAG service?
+    options:
+    - Measure candidate sizes on a representative labelled query set
+    - Always choose the largest size
+    - Always choose zero overlap
+    - Choose based only on file size
+    answer: 0
+    explanation: Chunk size should be selected from retrieval evidence.
+  - type: short_answer
+    question: Why should chunk-size experiments keep other variables fixed?
+    answer: To isolate the effect of chunk size instead of confounding it with model, query or retrieval changes.
+    explanation: Explain controlled comparison.
+  - type: application
+    question: A 200-token chunk has high precision but often omits the full explanation; an 800-token chunk includes
+      it but ranks less precisely. What should be tested next?
+    answer: Test intermediate sizes and overlap values using the same evaluation set, then compare Hit Rate@k, MRR
+      and context cost.
+    explanation: Describe a measured search for a balanced configuration.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Run a chunk-size sweep on the same labelled query set and select a configuration using both quality
+    and cost.

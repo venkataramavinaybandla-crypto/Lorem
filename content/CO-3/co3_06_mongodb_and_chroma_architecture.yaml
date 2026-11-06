@@ -1,0 +1,260 @@
+part:
+  id: co3-part-06
+  co: CO3
+  title: MongoDB and Chroma Architecture
+  order: 6
+  concept_ids:
+  - mongodb-system-of-record
+  - chroma-vector-store
+  - data-consistency-and-reindexing
+concepts:
+- id: mongodb-system-of-record
+  code: GA-CO3.6.1
+  title: MongoDB as the System of Record
+  session: 18
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: MongoDB stores authoritative document and chunk records, including text and metadata, while vector storage
+    supports similarity search.
+  key_points:
+  - The system of record preserves authoritative content and metadata.
+  - Chunk IDs link source records to vector entries.
+  - Updates and deletions need a defined consistency workflow.
+  deep_dive: In the course architecture, MongoDB is the system of record for course material and associated metadata.
+    It stores authoritative document and chunk records, including source identity, text, page or section details
+    and version information. Chroma is used as the vector store for embeddings and similarity search. Stable IDs
+    connect the records across these systems. This separation means that the vector index can be rebuilt from the
+    authoritative records if needed. The ingestion workflow must handle updates and deletions so that stale vectors
+    do not continue to appear in search results. MongoDB should not be treated as merely a place to keep a copy
+    of a vector result; it is the durable source from which the retrieval corpus is managed.
+  formulas: []
+  viz:
+    type: storage_roles
+    description: Compare which fields belong in the authoritative document record and which are needed for vector
+      search.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      steps:
+      - Source document
+      - MongoDB document/chunk record
+      - Embedding generation
+      - Chroma vector entry
+    outcomes:
+    - when: stage <= 2
+      title: Authoritative storage
+      explain: Source text and metadata are persisted as records.
+      severity: info
+    - when: stage >= 3
+      title: Search representation
+      explain: Embeddings and vector index entries are created for retrieval.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Design MongoDB document and chunk records with stable IDs, source version and citation metadata.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: In the stated CO-3 architecture, which system is the system of record?
+    options:
+    - MongoDB
+    - Chroma
+    - The LLM response
+    - The browser cache
+    answer: 0
+    explanation: The course outcome explicitly assigns MongoDB this role.
+  - type: short_answer
+    question: Why retain original chunk text in MongoDB when Chroma stores embeddings?
+    answer: The original text and metadata are needed to reconstruct context, cite sources and rebuild the vector
+      index.
+    explanation: Mention source text, metadata and rebuildability.
+  - type: application
+    question: A source document is deleted. What should happen to its associated Chroma entries?
+    answer: The ingestion lifecycle should delete or deactivate the corresponding vector entries using their stable
+      source or chunk IDs.
+    explanation: Explain stale-index prevention.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Design MongoDB document and chunk records with stable IDs, source version and citation metadata.
+- id: chroma-vector-store
+  code: GA-CO3.6.2
+  title: Chroma as the Vector Store
+  session: 18
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Chroma stores embedding vectors with associated IDs and metadata and supports similarity-based retrieval.
+  key_points:
+  - Chroma collections organise related vector records.
+  - Each vector entry should have a stable ID and useful metadata.
+  - Retrieved IDs can be used to fetch authoritative text from MongoDB.
+  deep_dive: Chroma is used in the course architecture as the vector store. A collection groups related embeddings
+    and their associated identifiers and metadata. During ingestion, each chunk is embedded and added to the collection
+    with a stable ID. At query time, the query is embedded and Chroma searches for nearby vectors, returning candidate
+    IDs, distances or similarity information and metadata depending on the API. The application can then use those
+    IDs to retrieve authoritative chunk text and citation details from MongoDB. This design keeps the source record
+    separate from the search representation. Collection configuration, embedding model identity and metadata schema
+    should be documented so that results remain interpretable.
+  formulas: []
+  viz:
+    type: chroma_flow
+    description: Follow a chunk ID from MongoDB through Chroma indexing and back during retrieval.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 5
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      steps:
+      - Read chunk record
+      - Generate embedding
+      - Upsert into Chroma
+      - Query vector collection
+      - Fetch text by returned ID
+    outcomes:
+    - when: stage <= 3
+      title: Indexing
+      explain: The chunk is being represented and added to vector search.
+      severity: info
+    - when: stage >= 4
+      title: Retrieval
+      explain: A query returns candidate IDs that can be resolved to source text.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Create a small Chroma collection with five chunk IDs and verify that each returned ID maps to a MongoDB
+        record.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What does Chroma primarily provide in the described architecture?
+    options:
+    - Vector storage and similarity search
+    - Authoritative PDF editing
+    - LLM fine-tuning
+    - User authentication
+    answer: 0
+    explanation: Chroma is the vector store in the course design.
+  - type: short_answer
+    question: Why should vector entries carry stable chunk IDs?
+    answer: Stable IDs let the application map search results back to authoritative chunk records and metadata.
+    explanation: Mention cross-store linking.
+  - type: application
+    question: Chroma returns a relevant chunk ID but the application cannot find it in MongoDB. What kind of issue
+      is this?
+    answer: A cross-store consistency or identifier-mapping failure; the pipeline should detect and report it rather
+      than fabricate context.
+    explanation: Emphasise reliable ID mapping.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Create a small Chroma collection with five chunk IDs and verify that each returned ID maps to a MongoDB
+    record.
+- id: data-consistency-and-reindexing
+  code: GA-CO3.6.3
+  title: Data Consistency, Updates and Reindexing
+  session: 18
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: The document store and vector store must remain consistent when sources are added, changed or removed.
+  key_points:
+  - A source update can invalidate old chunks and embeddings.
+  - Stable source and chunk IDs support coordinated updates.
+  - A reindexing plan should include failure recovery and validation.
+  deep_dive: Because MongoDB and Chroma hold related but different representations, ingestion must coordinate changes
+    across them. When a source changes, the application may need to create new chunks, update MongoDB records, generate
+    fresh embeddings and replace old Chroma entries. If one step fails, the system can be left with stale or missing
+    vectors. A robust process uses source versions, stable identifiers, ingestion status records and retryable steps.
+    It should also verify counts and spot-check retrieval after reindexing. Deletion requires removing or deactivating
+    associated vector entries so that obsolete information is not retrieved. The system should be designed to recover
+    from partial failure rather than assuming every multi-step update succeeds atomically across both stores.
+  formulas: []
+  viz:
+    type: reindex_lifecycle
+    description: Inspect the update lifecycle and identify where stale vector entries can remain.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 6
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      steps:
+      - Detect source change
+      - Create new chunks
+      - Update MongoDB records
+      - Generate new embeddings
+      - Replace Chroma entries
+      - Validate index
+    outcomes:
+    - when: stage <= 3
+      title: Source update
+      explain: Authoritative records are being refreshed.
+      severity: info
+    - when: stage >= 4
+      title: Vector refresh
+      explain: Search representations are being regenerated and validated.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Write a reindexing checklist for a changed PDF, including rollback or retry behaviour.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What can happen if MongoDB is updated but old Chroma vectors remain?
+    options:
+    - Search may return stale content
+    - All citations become automatically correct
+    - The embedding model changes itself
+    - The context window increases
+    answer: 0
+    explanation: Old vectors can point to outdated content.
+  - type: short_answer
+    question: Why are stable IDs useful when updating a vector index?
+    answer: They allow the system to identify and replace or delete the correct vector records linked to source
+      chunks.
+    explanation: Connect IDs to lifecycle operations.
+  - type: application
+    question: An ingestion job crashes after updating MongoDB but before updating Chroma. What should a reliable
+      pipeline do?
+    answer: Record the incomplete state and retry or reconcile vector updates before marking ingestion complete.
+    explanation: Describe recovery and consistency checks.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Write a reindexing checklist for a changed PDF, including rollback or retry behaviour.

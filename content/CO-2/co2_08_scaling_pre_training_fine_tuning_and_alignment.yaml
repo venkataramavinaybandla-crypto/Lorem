@@ -1,0 +1,263 @@
+part:
+  id: co2-part-08
+  co: CO2
+  title: Scaling, Pre-Training, Fine-Tuning and Alignment
+  order: 8
+  concept_ids:
+  - scaling-concepts
+  - pretraining
+  - fine-tuning-and-alignment
+concepts:
+- id: scaling-concepts
+  code: GA-CO2.8.1
+  title: Scaling Concepts
+  session: 1
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Scaling means increasing resources such as model parameters, training data or computation. It can improve
+    capabilities, but it also increases cost and operational demands.
+  key_points:
+  - Common scaling dimensions include parameter count, training data and compute.
+  - Performance gains depend on the training setup and evaluation task.
+  - Larger models can require more memory, latency and serving cost.
+  deep_dive: 'Scaling discussions consider how model size, data volume and training compute relate to performance.
+    Increasing parameter count can increase representational capacity, while more and better data can improve the
+    patterns learned. More compute may allow a model to use those resources during training. These dimensions interact,
+    and scaling is not a guarantee of improvement on every task. Data quality, training objectives, optimisation
+    and evaluation all matter. Larger models also create engineering trade-offs: they may require more memory, specialised
+    hardware, longer inference time and higher serving cost. A platform engineer should therefore compare capability
+    improvements against measured cost and latency rather than treating size as the only selection criterion.'
+  formulas: []
+  viz:
+    type: scaling_tradeoff
+    description: Compare an illustrative model-size increase with its memory and serving-cost implications.
+    params:
+    - name: scale
+      label: Scale
+      min: 1
+      max: 4
+      step: 1
+      default: 2
+      unit: relative scale
+    compute:
+      scale: scale
+      baseline_parameters: 1
+      note: Relative teaching example, not an empirical scaling law.
+    outcomes:
+    - when: scale <= 2
+      title: Moderate scale
+      explain: Capacity and resource needs increase relative to the baseline.
+      severity: info
+    - when: scale > 2
+      title: Larger scale
+      explain: Serving memory and compute demands can become substantial.
+      severity: info
+    combos_to_try:
+    - set:
+        scale: 2
+      lesson: List three benefits and three operational costs that may accompany a larger model.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which set contains common dimensions considered in model scaling?
+    options:
+    - Parameters, data and compute
+    - Font size, screen size and colour
+    - Prompt punctuation, file name and folder count
+    - Vocabulary order, UI theme and browser tabs
+    answer: 0
+    explanation: Scaling commonly considers model size, data and compute.
+  - type: short_answer
+    question: Why is a larger model not automatically the best model for an application?
+    answer: It may cost more, run slower or require more memory, and its measured task performance may not justify
+      those costs.
+    explanation: Include task performance and operational constraints.
+  - type: application
+    question: A larger model improves evaluation quality slightly but doubles serving cost. What should the team
+      do?
+    answer: Measure the quality-cost trade-off against application requirements and record whether the improvement
+      justifies the added cost.
+    explanation: Use evidence and requirements rather than model size alone.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: List three benefits and three operational costs that may accompany a larger model.
+- id: pretraining
+  code: GA-CO2.8.2
+  title: Pre-Training
+  session: 2
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - scaling-concepts
+  eli5: Pre-training is the broad initial training stage in which a model learns general patterns from a large training
+    corpus using a chosen objective.
+  key_points:
+  - Pre-training uses a large corpus to learn general representations or sequence patterns.
+  - The objective determines what the model is trained to predict or reconstruct.
+  - Pre-training is distinct from later task-specific fine-tuning.
+  deep_dive: Pre-training exposes a model to a large dataset and optimises its parameters using a training objective.
+    For an autoregressive language model, a common objective is next-token prediction over text sequences. The model
+    learns statistical regularities in language and information patterns represented in the data. Pre-training generally
+    requires substantial data and compute and produces a foundation that can later be adapted for specific uses.
+    It does not guarantee that a model will follow every instruction, behave safely or know current information.
+    Those behaviours depend on the data, objective, subsequent adaptation and the system context in which the model
+    is deployed.
+  formulas:
+  - L = -Σ_t log P(x_t | x_<t)
+  viz:
+    type: training_stages
+    description: Place pre-training and later adaptation stages in the correct order.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      stages:
+      - Pre-training data
+      - Pre-training objective
+      - Base model
+      - Later adaptation or deployment
+    outcomes:
+    - when: stage <= 2
+      title: Learning phase
+      explain: The model is optimised on the broad training objective.
+      severity: info
+    - when: stage >= 3
+      title: Base model available
+      explain: The pretrained model can be evaluated, adapted or deployed.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Explain what an autoregressive language model learns during pre-training using one short token sequence.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What is the main purpose of pre-training?
+    options:
+    - Learn broad patterns from a large training corpus using a training objective
+    - Only format the model's final answer
+    - Store every training document for exact retrieval
+    - Choose a user interface theme
+    answer: 0
+    explanation: Pre-training optimises model parameters on a broad learning objective.
+  - type: short_answer
+    question: How does pre-training differ from fine-tuning?
+    answer: Pre-training learns broad patterns from a large corpus; fine-tuning continues training on a more targeted
+      dataset or objective.
+    explanation: Describe broad initial learning versus targeted adaptation.
+  - type: application
+    question: Why can a pretrained model still fail to follow a specialised instruction format?
+    answer: Its broad pre-training objective may not have taught the required task behaviour or output constraints;
+      further adaptation or prompting may be needed.
+    explanation: Connect training objective to task behaviour.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Explain what an autoregressive language model learns during pre-training using one short token sequence.
+- id: fine-tuning-and-alignment
+  code: GA-CO2.8.3
+  title: Fine-Tuning and Alignment Concepts
+  session: 3
+  skilling_exp: 3
+  btl: 4
+  difficulty: 3
+  prereqs:
+  - pretraining
+  eli5: Fine-tuning continues training a pretrained model on more targeted examples. Alignment work aims to make
+    behaviour better match intended instructions and preferences.
+  key_points:
+  - Fine-tuning adapts a pretrained model to a narrower task, domain or response style.
+  - Alignment is a broad term for methods that shape model behaviour toward desired preferences or constraints.
+  - Training changes should be evaluated for both gains and regressions.
+  deep_dive: Fine-tuning starts from a pretrained model and updates some or all of its parameters using a more targeted
+    dataset or objective. It can adapt task performance, domain language or response format. Alignment refers broadly
+    to methods intended to make model behaviour better match human instructions, preferences or safety expectations.
+    The course handout names alignment concepts but does not require assuming one method is universally superior.
+    Fine-tuning and alignment can improve selected behaviours while also introducing regressions, such as loss of
+    general capability, overfitting or unexpected output changes. A responsible workflow uses representative evaluation
+    data before and after adaptation and records the trade-offs.
+  formulas: []
+  viz:
+    type: adaptation_comparison
+    description: Compare a base model, a task-fine-tuned model and an aligned model by their intended purpose.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: model stage
+    compute:
+      stage: stage
+      stages:
+      - Pretrained base
+      - Task fine-tuned
+      - Preference or alignment adapted
+    outcomes:
+    - when: stage == 1
+      title: General base
+      explain: Broad capabilities are learned from pre-training.
+      severity: info
+    - when: stage == 2
+      title: Task adaptation
+      explain: Targeted examples shape performance for a task or domain.
+      severity: info
+    - when: stage == 3
+      title: Behaviour shaping
+      explain: Preference or alignment methods shape desired response behaviour.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Choose a narrow task and describe what training examples would be needed to fine-tune a pretrained
+        model for it.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What is fine-tuning in the context of pretrained models?
+    options:
+    - Further training a pretrained model on a targeted dataset or objective
+    - Converting every token to an image
+    - Increasing the context window without changing the model
+    - Removing all model parameters
+    answer: 0
+    explanation: Fine-tuning adapts an existing pretrained model.
+  - type: short_answer
+    question: Why should a fine-tuned model be evaluated for regressions as well as improvements?
+    answer: Targeted training can improve the intended task while degrading other capabilities or causing overfitting
+      and behaviour changes.
+    explanation: Mention gains and possible regressions.
+  - type: application
+    question: A fine-tuned support model follows a domain style better but becomes worse at general questions. How
+      should this be assessed?
+    answer: Compare both specialised and general-purpose evaluation sets before and after fine-tuning and document
+      the trade-off.
+    explanation: Recommend a broader regression evaluation.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Choose a narrow task and describe what training examples would be needed to fine-tune a pretrained
+    model for it.

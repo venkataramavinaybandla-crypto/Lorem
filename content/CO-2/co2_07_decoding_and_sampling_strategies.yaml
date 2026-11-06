@@ -1,0 +1,281 @@
+part:
+  id: co2-part-07
+  co: CO2
+  title: Decoding and Sampling Strategies
+  order: 7
+  concept_ids:
+  - greedy-decoding
+  - temperature-sampling
+  - top-k-and-top-p-sampling
+concepts:
+- id: greedy-decoding
+  code: GA-CO2.7.1
+  title: Greedy Decoding
+  session: 1
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: Greedy decoding chooses the token with the highest probability at every step. It is simple and repeatable
+    for a fixed model and context.
+  key_points:
+  - Greedy decoding selects argmax at each generation step.
+  - It does not explore lower-probability alternatives at that step.
+  - A locally best token does not guarantee the globally best sequence.
+  deep_dive: 'Greedy decoding selects the token with the maximum probability from the current next-token distribution.
+    The selected token is appended to the context and the process repeats. This strategy is deterministic when model
+    execution and settings are fixed, but it can produce repetitive or overly predictable text. Greedy selection
+    is locally optimal at each step, not necessarily globally optimal over complete sequences: an early high-probability
+    token may lead to a less desirable continuation. Greedy decoding is a useful baseline because it is easy to
+    explain and compare against sampling strategies. It should not be assumed to be the best choice for every task.'
+  formulas:
+  - x_t = argmax_i P(i | x_<t)
+  viz:
+    type: decoding_choice
+    description: Compare greedy selection with a sampling choice from the same illustrative distribution.
+    params:
+    - name: mode
+      label: Mode
+      min: 1
+      max: 2
+      step: 1
+      default: 1
+      unit: decoding mode
+    compute:
+      mode: mode
+      candidate_tokens:
+      - A
+      - B
+      - C
+      probabilities:
+      - 0.6
+      - 0.3
+      - 0.1
+    outcomes:
+    - when: mode == 1
+      title: Greedy selection
+      explain: The token with the largest probability is selected.
+      severity: info
+    - when: mode == 2
+      title: Sampling selection
+      explain: A token is drawn according to the probability distribution.
+      severity: info
+    combos_to_try:
+    - set:
+        mode: 1
+      lesson: Given probabilities 0.5, 0.3 and 0.2, identify the greedy token and explain why sampling may choose
+        another.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What does greedy decoding select at each step?
+    options:
+    - The highest-probability token
+    - A uniformly random token
+    - The lowest-probability token
+    - The token with the longest spelling
+    answer: 0
+    explanation: Greedy decoding takes the argmax of the current distribution.
+  - type: short_answer
+    question: Why is greedy decoding described as locally optimal?
+    answer: It chooses the highest-probability token at the current step but does not optimise the complete future
+      sequence.
+    explanation: Distinguish step-level and sequence-level decisions.
+  - type: application
+    question: A system must produce the same response for the same prompt and fixed configuration. Why might greedy
+      decoding be a useful baseline?
+    answer: It selects the maximum-probability token at each step and is typically deterministic under fixed execution
+      conditions.
+    explanation: Mention repeatability and the fixed-configuration assumption.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Given probabilities 0.5, 0.3 and 0.2, identify the greedy token and explain why sampling may choose
+    another.
+- id: temperature-sampling
+  code: GA-CO2.7.2
+  title: Temperature Sampling
+  session: 2
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - greedy-decoding
+  eli5: Temperature changes the sharpness of a probability distribution before sampling. Lower values concentrate
+    probability; higher values flatten it.
+  key_points:
+  - Temperature is applied to logits before softmax.
+  - Lower positive temperature makes the distribution sharper.
+  - Higher temperature makes alternatives more competitive; it does not add knowledge.
+  deep_dive: Temperature sampling divides logits by a positive temperature parameter before applying softmax. A
+    lower temperature magnifies differences between logits, concentrating probability on high-scoring tokens. A
+    higher temperature reduces those relative differences, making the distribution flatter and increasing the chance
+    of selecting alternatives. Temperature therefore changes the randomness and diversity of sampled output, not
+    the model's learned knowledge or factual reliability. Temperature values should be compared using a fixed evaluation
+    set and consistent model conditions. Temperature equal to one leaves the logits at their original scale; implementations
+    may define special behaviour for zero, often approximating greedy selection.
+  formulas:
+  - p_i(T) = exp(z_i/T) / Σ_j exp(z_j/T)
+  viz:
+    type: temperature_distribution
+    description: Change temperature and observe how a fixed set of logits produces different probability concentration.
+    params:
+    - name: temperature
+      label: Temperature
+      min: 0.2
+      max: 2.0
+      step: 0.1
+      default: 1.0
+      unit: temperature
+    compute:
+      temperature: temperature
+      logits:
+      - 3.0
+      - 2.0
+      - 0.5
+      note: Illustrative logits; T must be positive for this formula.
+    outcomes:
+    - when: temperature < 1
+      title: Sharper distribution
+      explain: High-logit tokens receive a larger share of probability.
+      severity: info
+    - when: temperature == 1
+      title: Original scale
+      explain: The logits are passed to softmax without temperature rescaling.
+      severity: info
+    - when: temperature > 1
+      title: Flatter distribution
+      explain: Lower-ranked alternatives receive more probability mass.
+      severity: info
+    combos_to_try:
+    - set:
+        temperature: 1.0
+      lesson: Compare temperatures 0.5, 1.0 and 1.5 using the same logits and describe the change in entropy qualitatively.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What generally happens when positive temperature is increased?
+    options:
+    - The sampling distribution becomes flatter
+    - The vocabulary becomes smaller
+    - The model stops using logits
+    - The context window doubles
+    answer: 0
+    explanation: Higher temperature reduces relative logit gaps before softmax.
+  - type: short_answer
+    question: Does a higher temperature make a model more knowledgeable? Explain.
+    answer: No. Temperature changes the sampling distribution over model scores; it does not add training knowledge
+      or evidence.
+    explanation: Separate decoding behaviour from model capability.
+  - type: application
+    question: A creative writing task is too repetitive at a low temperature. What controlled experiment could you
+      run?
+    answer: Increase temperature in measured steps while keeping the prompt, model and other settings fixed, then
+      compare diversity and quality.
+    explanation: Propose a controlled comparison.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Compare temperatures 0.5, 1.0 and 1.5 using the same logits and describe the change in entropy qualitatively.
+- id: top-k-and-top-p-sampling
+  code: GA-CO2.7.3
+  title: Top-k and Top-p Sampling
+  session: 3
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - temperature-sampling
+  eli5: Top-k keeps a fixed number of highest-ranked tokens. Top-p keeps the smallest high-probability set whose
+    cumulative probability reaches a threshold.
+  key_points:
+  - Top-k uses a fixed candidate count k.
+  - Top-p uses a cumulative probability threshold p.
+  - Both restrict the sampling candidate set before drawing a token.
+  deep_dive: Top-k sampling sorts candidate tokens by probability and retains only the k most likely options. The
+    probabilities are then renormalised over that retained set before sampling. Top-p, also called nucleus sampling,
+    retains the smallest set of top-ranked tokens whose cumulative probability reaches or exceeds p. Unlike top-k,
+    the number of retained tokens can vary with the shape of the distribution. Both methods reduce the chance of
+    selecting very low-probability tokens while preserving alternatives. Their effects interact with temperature
+    and the model's distribution. They should be tuned empirically rather than treated as universal quality switches.
+  formulas: []
+  viz:
+    type: candidate_filtering
+    description: Compare a fixed top-k candidate set with a cumulative top-p candidate set.
+    params:
+    - name: k
+      label: K
+      min: 1
+      max: 10
+      step: 1
+      default: 3
+      unit: candidate count
+    - name: p
+      label: P
+      min: 0.5
+      max: 1.0
+      step: 0.05
+      default: 0.9
+      unit: cumulative probability
+    compute:
+      k: k
+      p: p
+      sorted_probabilities:
+      - 0.4
+      - 0.25
+      - 0.15
+      - 0.1
+      - 0.06
+      - 0.04
+    outcomes:
+    - when: k <= 3
+      title: Fixed shortlist
+      explain: Top-k retains exactly k candidates, subject to available vocabulary size.
+      severity: info
+    - when: p >= 0.9
+      title: Cumulative nucleus
+      explain: Top-p retains enough leading candidates to reach the chosen cumulative mass.
+      severity: info
+    combos_to_try:
+    - set:
+        k: 3
+      lesson: Using probabilities 0.40, 0.25, 0.15, 0.10 and 0.10, find the retained candidates for top-k=3 and
+        top-p=0.8.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What determines the candidate set size in top-k sampling?
+    options:
+    - The fixed integer k
+    - The cumulative probability threshold p
+    - The prompt character count
+    - The embedding dimension
+    answer: 0
+    explanation: Top-k retains a fixed number of highest-ranked candidates.
+  - type: short_answer
+    question: How does top-p differ from top-k?
+    answer: Top-k retains a fixed number of candidates; top-p retains the smallest leading set whose cumulative
+      probability reaches a threshold.
+    explanation: State fixed count versus cumulative mass.
+  - type: application
+    question: A model's distribution is very peaked for one prompt and diffuse for another. Why might top-p retain
+      different numbers of candidates?
+    answer: Because the number of tokens needed to reach the cumulative probability threshold depends on the distribution
+      shape.
+    explanation: Connect candidate count to cumulative probability.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Using probabilities 0.40, 0.25, 0.15, 0.10 and 0.10, find the retained candidates for top-k=3 and top-p=0.8.

@@ -1,0 +1,277 @@
+part:
+  id: co1-part-02
+  co: CO1
+  title: AI, ML, DL, NLP, and Generative AI
+  order: 2
+  concept_ids:
+  - ai-ml-dl-nlp-genai-hierarchy
+  - generative-vs-discriminative
+  - genai-use-cases-and-boundaries
+concepts:
+- id: ai-ml-dl-nlp-genai-hierarchy
+  code: GA-CO1.2.1
+  title: AI to ML to DL to NLP to Generative AI
+  session: 2
+  skilling_exp: 2
+  btl: 1
+  difficulty: 2
+  prereqs: []
+  eli5: AI is the broad field of making machines perform tasks associated with intelligence. Machine learning
+    is one way to build such systems from data; deep learning is a machine-learning approach using layered
+    neural networks. NLP focuses on language, and Generative AI creates new content.
+  key_points:
+  - The handout presents the hierarchy AI → ML → DL → NLP → GenAI.
+  - The terms are related but are not interchangeable.
+  - NLP concerns computational processing of human language.
+  - Generative AI focuses on producing new content.
+  deep_dive: 'The course handout introduces the progression AI → ML → DL → NLP → GenAI as a conceptual
+    hierarchy. Artificial intelligence is the broad area concerned with systems that perform tasks associated
+    with intelligent behaviour. Machine learning is a family of methods in which systems learn patterns
+    from data rather than relying only on manually written rules. Deep learning is a machine-learning
+    approach based on neural networks with multiple learned layers. Natural language processing focuses
+    on computational tasks involving human language, such as analysing, classifying or generating text.
+    Generative AI refers to systems that produce new content, which may include language and other modalities.
+    These categories overlap: a language-generating model can be a deep-learning model and therefore also
+    belong to machine learning and AI. The hierarchy is a learning aid, not a claim that every AI system
+    must contain every narrower category. Correctly distinguishing the terms helps explain what a particular
+    model does and which methods support it.'
+  formulas: []
+  viz:
+    type: hierarchy_diagram
+    description: Reveal each level of the hierarchy and identify the broader field that contains it.
+    params:
+    - name: level
+      label: Level
+      min: 1
+      max: 5
+      step: 1
+      default: 5
+      unit: level
+    compute:
+      level: level
+      levels:
+      - Artificial Intelligence
+      - Machine Learning
+      - Deep Learning
+      - Natural Language Processing
+      - Generative AI
+    outcomes:
+    - when: level == 1
+      title: Broadest scope
+      explain: AI includes many approaches beyond machine learning and language generation.
+      severity: info
+    - when: level >= 2 && level <= 4
+      title: Specialised subfield
+      explain: Each step narrows the focus toward learning, neural networks and language tasks.
+      severity: info
+    - when: level == 5
+      title: Generative focus
+      explain: The focus is producing new content using learned patterns.
+      severity: info
+    combos_to_try:
+    - set:
+        level: 5
+      lesson: Classify a spam detector, speech recogniser and text generator by the most relevant levels
+        of the hierarchy.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes ai to ml to dl to nlp to generative ai?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of ai to ml to dl to nlp to generative ai in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which ai to ml to dl to nlp to generative ai matters when
+      building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Draw the hierarchy and give one example of a system at each relevant level.
+- id: generative-vs-discriminative
+  code: GA-CO1.2.2
+  title: Generative versus Discriminative Tasks
+  session: 2
+  skilling_exp: 2
+  btl: 1
+  difficulty: 2
+  prereqs:
+  - ai-ml-dl-nlp-genai-hierarchy
+  eli5: A discriminative system decides which label or outcome best fits an input. A generative system
+    learns patterns in data and produces a new example, such as a paragraph, image or audio clip.
+  key_points:
+  - Discriminative tasks distinguish classes or predict labels.
+  - Generative tasks produce new content or samples.
+  - The task objective determines whether a generative or discriminative framing is appropriate.
+  - The handout expects comparison using examples.
+  deep_dive: 'Generative and discriminative systems are distinguished by the kind of problem they solve.
+    A discriminative model learns to estimate a decision boundary or a conditional relationship useful
+    for assigning labels or predicting an outcome. For example, it may classify an email as spam or not
+    spam, or identify the sentiment of a review. A generative model learns patterns in data in a way that
+    allows it to produce new samples, such as a paragraph, an image or an audio sequence. A text-generating
+    language model can produce a continuation based on a prompt, while a classifier returns a category
+    or score. The distinction is about the task and modelling objective, not simply whether a system uses
+    a neural network: neural networks can be used for both kinds of task. Some systems combine the two,
+    such as a generative assistant that also uses a classifier for moderation. When comparing systems,
+    state the input, expected output and purpose rather than relying only on the model name.'
+  formulas: []
+  viz:
+    type: task_classifier
+    description: Select whether the described system is primarily generating content or assigning a label.
+    params:
+    - name: task
+      label: Task
+      min: 1
+      max: 2
+      step: 1
+      default: 1
+      unit: task
+    compute:
+      task: task
+      examples:
+      - Predict whether a message is spam
+      - Generate a reply to a message
+    outcomes:
+    - when: task == 1
+      title: Discriminative task
+      explain: The system assigns a label or prediction to an input.
+      severity: info
+    - when: task == 2
+      title: Generative task
+      explain: The system produces new content conditioned on the input.
+      severity: info
+    combos_to_try:
+    - set:
+        task: 1
+      lesson: For five applications, write the input, output and whether the task is generative or discriminative.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes generative versus discriminative tasks?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of generative versus discriminative tasks in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which generative versus discriminative tasks matters when
+      building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Compare a sentiment classifier and a text-generation model using input, output and objective.
+- id: genai-use-cases-and-boundaries
+  code: GA-CO1.2.3
+  title: Generative AI Tasks and Output Types
+  session: 2
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - generative-vs-discriminative
+  eli5: Generative AI can create different kinds of outputs. A text model may draft an explanation, while
+    an image model may create a picture. The type of output and the task requirements determine which
+    model capability is needed.
+  key_points:
+  - Generative tasks can produce different kinds of content.
+  - The handout names modalities as a CO-1 topic.
+  - A task should be described by its requested output and constraints.
+  - Generated content still needs evaluation.
+  deep_dive: Generative AI is not limited to chat or text completion. The handout explicitly includes
+    modalities in the CO-1 scope, so students should recognise that generative systems can work with different
+    forms of content. A text-oriented system may draft, summarise or continue language. Other generative
+    systems may create or transform images, audio or other supported data forms. The modality describes
+    the form of information handled; it does not by itself describe the quality, reliability or intended
+    use of the system. A practical task definition should state what input is supplied, what output is
+    expected, what constraints apply and how success will be evaluated. For example, a request to generate
+    a short explanation has different output requirements from a request to produce a structured classification.
+    A system should be selected because its capabilities match the task, not merely because it is described
+    as generative. Generated output can be plausible yet incorrect, so evaluation remains necessary.
+  formulas: []
+  viz:
+    type: modality_selector
+    description: Choose the output modality that matches a task description.
+    params:
+    - name: modality
+      label: Modality
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: modality
+    compute:
+      modality: modality
+      labels:
+      - Text
+      - Image
+      - Audio
+      - Other supported modality
+    outcomes:
+    - when: modality >= 1 && modality <= 4
+      title: Task modality selected
+      explain: The selected modality should match the content expected from the model.
+      severity: info
+    combos_to_try:
+    - set:
+        modality: 1
+      lesson: Write three generative tasks and specify their input modality, output modality and success
+        criteria.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes generative ai tasks and output types?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of generative ai tasks and output types in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which generative ai tasks and output types matters when
+      building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Design a modality-aware task specification for one generative application.

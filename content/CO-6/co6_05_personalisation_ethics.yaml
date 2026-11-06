@@ -1,0 +1,229 @@
+part:
+  id: CO6-P05
+  co: CO6
+  title: Hyper-Personalisation and Ethics
+  order: 5
+  concept_ids:
+  - CO6-P05-C01
+  - CO6-P05-C02
+  - CO6-P05-C03
+concepts:
+- id: CO6-P05-C01
+  code: CO6.5.1
+  title: User profiles and preference-aware responses
+  session: 35
+  skilling_exp: 'CO6 practical focus: hyper-personalisation and ethics'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO6-P04-C03
+  eli5: Use user profile data to tailor an experience only when the data is relevant and authorised.
+  key_points:
+  - Explain the purpose and boundary of user profiles and preference-aware responses.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Hyper-personalisation can adapt language, response depth, preferred formats or other product behaviour
+    using a user profile stored in MongoDB. Profile attributes should have a clear purpose, source and update mechanism.
+    Do not infer or store sensitive traits merely because they might improve engagement. Personalisation should
+    be transparent and controllable, and the application should still provide a useful default when no profile exists.
+    Keep profile retrieval scoped to the authenticated user and pass only the minimum relevant fields to downstream
+    model prompts. Test that one user's profile cannot influence another user's response. Personalisation is a product
+    capability, not permission to collect unlimited personal information.
+  formulas: []
+  viz:
+    type: architecture flow
+    description: Visualise the responsibilities, interfaces and controls involved in user profiles and preference-aware
+      responses.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes user profiles and preference-aware responses?
+    options:
+    - Use user profile data to tailor an experience only when the data is relevant and authorised.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to use user profile data to tailor an experience only when the data is relevant
+      and authorised.
+  - type: short_answer
+    question: Identify one important design consideration for user profiles and preference-aware responses.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply user profiles and preference-aware responses
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for user profiles and preference-aware responses.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P05-C02
+  code: CO6.5.2
+  title: Consent, privacy controls and data lifecycle
+  session: 35
+  skilling_exp: 'CO6 practical focus: hyper-personalisation and ethics'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO6-P05-C01
+  eli5: Make consent meaningful and provide controls for access, correction, retention and deletion.
+  key_points:
+  - Explain the purpose and boundary of consent, privacy controls and data lifecycle.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: A governed application should explain what profile data is used for and provide appropriate controls
+    over that use. Consent should be specific, informed and revocable where applicable; it should not be hidden
+    inside an unrelated acceptance. Store consent status and its version or timestamp so the system can apply the
+    user's current choice. Define retention periods and deletion workflows for profile records, conversation data,
+    derived embeddings and backups. Minimise personal data in prompts, traces and analytics. Access control, encryption
+    and secure secret handling remain necessary even when consent exists. Consent does not make every data use appropriate,
+    and legal requirements depend on the deployment context.
+  formulas: []
+  viz:
+    type: sequence diagram
+    description: Visualise the responsibilities, interfaces and controls involved in consent, privacy controls and
+      data lifecycle.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes consent, privacy controls and data lifecycle?
+    options:
+    - Make consent meaningful and provide controls for access, correction, retention and deletion.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to make consent meaningful and provide controls for access, correction, retention
+      and deletion.
+  - type: short_answer
+    question: Identify one important design consideration for consent, privacy controls and data lifecycle.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply consent, privacy controls and data lifecycle
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for consent, privacy controls and data lifecycle.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P05-C03
+  code: CO6.5.3
+  title: Ethics layer, fairness and responsible personalisation
+  session: 35
+  skilling_exp: 'CO6 practical focus: hyper-personalisation and ethics'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO6-P05-C02
+  eli5: Evaluate whether personalised behaviour is appropriate, explainable and equitable across users.
+  key_points:
+  - Explain the purpose and boundary of ethics layer, fairness and responsible personalisation.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: An ethics layer considers whether a system's behaviour could unfairly exclude, stereotype, manipulate
+    or disadvantage users. Evaluate outputs across relevant language varieties, user contexts and task categories,
+    while respecting privacy and avoiding unnecessary sensitive profiling. Give users ways to understand and adjust
+    personalisation, and provide human review for consequential cases. Define prohibited uses and escalation paths.
+    Monitor complaints, differential error patterns and unexpected profile-driven behaviour. A checklist alone cannot
+    establish fairness; teams need evidence, stakeholder input and ongoing review. Document known limitations and
+    avoid claims that the system is unbiased or fully ethical.
+  formulas: []
+  viz:
+    type: decision flow
+    description: Visualise the responsibilities, interfaces and controls involved in ethics layer, fairness and
+      responsible personalisation.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes ethics layer, fairness and responsible personalisation?
+    options:
+    - Evaluate whether personalised behaviour is appropriate, explainable and equitable across users.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to evaluate whether personalised behaviour is appropriate, explainable and
+      equitable across users.
+  - type: short_answer
+    question: Identify one important design consideration for ethics layer, fairness and responsible personalisation.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply ethics layer, fairness and responsible
+      personalisation and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for ethics layer, fairness and responsible
+    personalisation. Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.

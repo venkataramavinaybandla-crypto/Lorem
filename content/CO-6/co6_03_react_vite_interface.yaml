@@ -1,0 +1,228 @@
+part:
+  id: CO6-P03
+  co: CO6
+  title: React + Vite AI Interface
+  order: 3
+  concept_ids:
+  - CO6-P03-C01
+  - CO6-P03-C02
+  - CO6-P03-C03
+concepts:
+- id: CO6-P03-C01
+  code: CO6.3.1
+  title: React and Vite application structure
+  session: 33
+  skilling_exp: 'CO6 practical focus: react + vite ai interface'
+  btl: Create
+  difficulty: Intermediate
+  prereqs:
+  - CO6-P02-C03
+  eli5: Build a modular client interface with reusable React components and a Vite development workflow.
+  key_points:
+  - Explain the purpose and boundary of react and vite application structure.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: React supports a component-based interface in which the chat window, message list, input composer,
+    citation panel and status indicators can be developed independently. Vite provides the development server and
+    build tooling for the frontend project. Keep presentation components separate from API client logic and shared
+    state where practical. Define clear component props and types, and avoid placing authentication secrets or provider
+    credentials in browser code. A frontend build is public to the client, so environment variables bundled into
+    it must not be treated as secret. Organise the application so that UI changes do not require rewriting request
+    handling or citation rendering.
+  formulas: []
+  viz:
+    type: architecture flow
+    description: Visualise the responsibilities, interfaces and controls involved in react and vite application
+      structure.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes react and vite application structure?
+    options:
+    - Build a modular client interface with reusable React components and a Vite development workflow.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to build a modular client interface with reusable react components and a vite
+      development workflow.
+  - type: short_answer
+    question: Identify one important design consideration for react and vite application structure.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply react and vite application structure
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for react and vite application structure.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P03-C02
+  code: CO6.3.2
+  title: Streaming responses and chat state
+  session: 33
+  skilling_exp: 'CO6 practical focus: react + vite ai interface'
+  btl: Create
+  difficulty: Intermediate
+  prereqs:
+  - CO6-P03-C01
+  eli5: Represent message lifecycle states and render streamed model output safely.
+  key_points:
+  - Explain the purpose and boundary of streaming responses and chat state.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Streaming can make a chat interface feel responsive by displaying generated text as it arrives. The
+    frontend should model request states such as idle, submitting, streaming, completed, cancelled and failed. Append
+    incoming chunks safely, preserve message order and handle a stream that ends unexpectedly. Avoid rendering untrusted
+    model output as raw HTML. Support cancellation where the backend permits it and prevent duplicate submissions
+    while a request is active. Streaming protocols such as Server-Sent Events or fetch streams require explicit
+    handling of connection closure and partial messages. The UI should communicate when an answer is incomplete
+    or when a retry is underway rather than presenting a truncated response as final.
+  formulas: []
+  viz:
+    type: sequence diagram
+    description: Visualise the responsibilities, interfaces and controls involved in streaming responses and chat
+      state.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes streaming responses and chat state?
+    options:
+    - Represent message lifecycle states and render streamed model output safely.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to represent message lifecycle states and render streamed model output safely.
+  - type: short_answer
+    question: Identify one important design consideration for streaming responses and chat state.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply streaming responses and chat state and
+      verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for streaming responses and chat state. Identify
+    its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P03-C03
+  code: CO6.3.3
+  title: Citations, responsive design and UI component systems
+  session: 33
+  skilling_exp: 'CO6 practical focus: react + vite ai interface'
+  btl: Create
+  difficulty: Intermediate
+  prereqs:
+  - CO6-P03-C02
+  eli5: Display source references clearly and build an accessible interface using the selected UI toolkit.
+  key_points:
+  - Explain the purpose and boundary of citations, responsive design and ui component systems.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: A RAG-enabled chat interface should make citations understandable and actionable. Show source labels
+    or document references near the claims they support, and provide a way to inspect the retrieved material when
+    permissions allow. Do not imply that a citation proves every sentence is supported. The course handout names
+    Tailwind CSS with MUI or Bootstrap as styling choices; select a consistent approach rather than combining systems
+    without a reason. Use semantic HTML, keyboard-accessible controls, readable contrast and responsive layouts.
+    Loading, empty, error and refusal states deserve deliberate design because they are part of the user experience,
+    not edge cases to hide.
+  formulas: []
+  viz:
+    type: decision flow
+    description: Visualise the responsibilities, interfaces and controls involved in citations, responsive design
+      and ui component systems.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes citations, responsive design and ui component systems?
+    options:
+    - Display source references clearly and build an accessible interface using the selected UI toolkit.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to display source references clearly and build an accessible interface using
+      the selected ui toolkit.
+  - type: short_answer
+    question: Identify one important design consideration for citations, responsive design and ui component systems.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply citations, responsive design and ui component
+      systems and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for citations, responsive design and ui component
+    systems. Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.

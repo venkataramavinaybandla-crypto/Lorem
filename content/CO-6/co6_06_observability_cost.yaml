@@ -1,0 +1,229 @@
+part:
+  id: CO6-P06
+  co: CO6
+  title: Observability and Cost Management
+  order: 6
+  concept_ids:
+  - CO6-P06-C01
+  - CO6-P06-C02
+  - CO6-P06-C03
+concepts:
+- id: CO6-P06-C01
+  code: CO6.6.1
+  title: End-to-end tracing with Langfuse or LangSmith
+  session: 36
+  skilling_exp: 'CO6 practical focus: observability and cost management'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO6-P05-C03
+  eli5: Trace each request across gateway, retrieval and model components to diagnose behaviour.
+  key_points:
+  - Explain the purpose and boundary of end-to-end tracing with langfuse or langsmith.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Operational tracing links the stages of one user request into a trace with related spans. The course
+    handout names Langfuse or LangSmith as possible tracing tools and expects one trace per request. Capture useful
+    metadata such as service, model identifier, prompt version, retrieval duration, generation duration, token usage
+    and outcome status. Use correlation identifiers across microservices so a failure can be followed through the
+    system. Avoid recording secrets, unnecessary personal data or full sensitive prompts by default. Define access
+    and retention for traces. Tracing should help answer what happened, where time was spent and which component
+    failed without creating a new privacy risk.
+  formulas: []
+  viz:
+    type: architecture flow
+    description: Visualise the responsibilities, interfaces and controls involved in end-to-end tracing with langfuse
+      or langsmith.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes end-to-end tracing with langfuse or langsmith?
+    options:
+    - Trace each request across gateway, retrieval and model components to diagnose behaviour.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to trace each request across gateway, retrieval and model components to diagnose
+      behaviour.
+  - type: short_answer
+    question: Identify one important design consideration for end-to-end tracing with langfuse or langsmith.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply end-to-end tracing with langfuse or langsmith
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for end-to-end tracing with langfuse or langsmith.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P06-C02
+  code: CO6.6.2
+  title: Cost dashboards and usage controls
+  session: 36
+  skilling_exp: 'CO6 practical focus: observability and cost management'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO6-P06-C01
+  eli5: Measure token and service costs and connect them to product usage and operational limits.
+  key_points:
+  - Explain the purpose and boundary of cost dashboards and usage controls.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: A cost dashboard should make usage visible by model, request type, user or tenant where appropriate,
+    and time period. Include input and output tokens, embedding calls, retrieval usage and relevant infrastructure
+    costs. Apply budgets, rate limits and alerts so a runaway workflow cannot create uncontrolled spending. Distinguish
+    estimated provider cost from actual billed cost and document pricing assumptions. Track cost alongside quality
+    and latency; reducing tokens by truncating critical evidence may harm answer quality. Use sampling and aggregation
+    carefully so monitoring itself does not become expensive or expose private data.
+  formulas: []
+  viz:
+    type: sequence diagram
+    description: Visualise the responsibilities, interfaces and controls involved in cost dashboards and usage controls.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes cost dashboards and usage controls?
+    options:
+    - Measure token and service costs and connect them to product usage and operational limits.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to measure token and service costs and connect them to product usage and operational
+      limits.
+  - type: short_answer
+    question: Identify one important design consideration for cost dashboards and usage controls.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply cost dashboards and usage controls and
+      verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for cost dashboards and usage controls. Identify
+    its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P06-C03
+  code: CO6.6.3
+  title: Graceful degradation and operational reliability
+  session: 36
+  skilling_exp: 'CO6 practical focus: observability and cost management'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO6-P06-C02
+  eli5: Keep the application understandable and safe when models or supporting services fail.
+  key_points:
+  - Explain the purpose and boundary of graceful degradation and operational reliability.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: A platform should define behaviour for model-provider outages, retrieval failures, timeouts, rate limits
+    and observability interruptions. Graceful degradation may mean returning a clear temporary error, switching
+    to an approved fallback model, serving a cached non-sensitive result or allowing a non-AI workflow to continue.
+    Never silently fabricate an answer when retrieval is unavailable if the product promises grounded responses.
+    Use circuit breakers or bounded retries where appropriate, and expose service health to operators. Test degraded
+    paths deliberately. Reliability includes communicating limitations honestly and preserving safety controls when
+    dependencies are unavailable. Document the configuration and assumptions used, retain representative test evidence,
+    and repeat the check after relevant service, model or infrastructure changes. This makes the behaviour easier
+    to reproduce and the operational limits easier to communicate.
+  formulas: []
+  viz:
+    type: decision flow
+    description: Visualise the responsibilities, interfaces and controls involved in graceful degradation and operational
+      reliability.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes graceful degradation and operational reliability?
+    options:
+    - Keep the application understandable and safe when models or supporting services fail.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to keep the application understandable and safe when models or supporting services
+      fail.
+  - type: short_answer
+    question: Identify one important design consideration for graceful degradation and operational reliability.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply graceful degradation and operational
+      reliability and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for graceful degradation and operational
+    reliability. Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.

@@ -1,0 +1,285 @@
+part:
+  id: co1-part-04
+  co: CO1
+  title: Model Landscape and Models as Dependencies
+  order: 4
+  concept_ids:
+  - open-weight-vs-closed-models
+  - hallucinations-and-knowledge-cutoffs
+  - pricing-rate-limits-and-failure-rates
+concepts:
+- id: open-weight-vs-closed-models
+  code: GA-CO1.4.1
+  title: Open-Weight versus Closed Models
+  session: 4
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: An open-weight model makes its learned parameter weights available under its release terms. A
+    closed model is accessed through a provider-controlled service without making the model weights generally
+    available to the user.
+  key_points:
+  - The handout explicitly contrasts open-weight and closed models.
+  - Availability of weights is different from permission to use or redistribute them.
+  - Closed models are commonly accessed through a provider interface.
+  - Model choice should consider the application requirements.
+  deep_dive: The CO-1 syllabus asks students to recall model types, including open-weight and closed models.
+    In an open-weight release, model parameters are made available for download or inspection subject
+    to the licence and terms attached to the release. This can enable local execution, adaptation or deeper
+    control, but it also places more operational responsibility on the application team. A closed model
+    is generally accessed through a provider-operated interface, such as an API, while the underlying
+    weights and serving infrastructure remain controlled by the provider. The distinction should not be
+    simplified into 'free versus paid' or 'safe versus unsafe'. Open-weight models can have usage restrictions
+    or deployment costs, and closed providers may offer different pricing and service guarantees. A responsible
+    selection compares the actual terms, task capability, language support, privacy needs, operational
+    effort, latency and cost. The handout treats both types as part of the model landscape that an engineer
+    must understand.
+  formulas: []
+  viz:
+    type: model_access_comparison
+    description: Compare the operational responsibility associated with two model access choices.
+    params:
+    - name: access
+      label: Access
+      min: 1
+      max: 2
+      step: 1
+      default: 1
+      unit: type
+    compute:
+      access: access
+      labels:
+      - Open-weight
+      - Closed provider model
+    outcomes:
+    - when: access == 1
+      title: Weights available under release terms
+      explain: The team may control deployment but must manage infrastructure and comply with licence
+        terms.
+      severity: info
+    - when: access == 2
+      title: Provider-managed access
+      explain: The team integrates with a provider interface and depends on provider service behaviour.
+      severity: info
+    combos_to_try:
+    - set:
+        access: 1
+      lesson: List two advantages and two responsibilities for each access type.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes open-weight versus closed models?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of open-weight versus closed models in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which open-weight versus closed models matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Write a short comparison of open-weight and closed model deployment choices.
+- id: hallucinations-and-knowledge-cutoffs
+  code: GA-CO1.4.2
+  title: Hallucinations and Knowledge Cutoffs
+  session: 4
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - open-weight-vs-closed-models
+  eli5: A hallucination is an answer that sounds confident but contains unsupported or incorrect information.
+    A knowledge cutoff is the point after which information may not be included in the model's training
+    knowledge.
+  key_points:
+  - Hallucinations are a model limitation.
+  - A confident tone does not prove correctness.
+  - A knowledge cutoff can make recent information unavailable to the model.
+  - Applications should verify important claims and provide current context when needed.
+  deep_dive: The handout identifies hallucinations and knowledge cutoffs as reasons to treat a model as
+    a dependency that can fail. A hallucination occurs when a model produces information that is false,
+    fabricated or not supported by the available evidence. The output may be fluent and confident, so
+    style alone is not a reliable signal of truth. A knowledge cutoff refers to a boundary in the information
+    represented by the model's training process; information arising after that point may be absent or
+    incomplete. A cutoff does not mean that the model cannot discuss later events if current information
+    is supplied in the prompt or retrieved from another source, but the model should not be assumed to
+    know them independently. In an application, these limitations motivate verification, retrieval, source
+    citations, refusal when evidence is insufficient and clear communication about uncertainty. CO-1 expects
+    students to recognise these risks before building a client that logs and measures model behaviour.
+  formulas: []
+  viz:
+    type: reliability_risk
+    description: Toggle whether a request needs current external facts and inspect the corresponding model
+      risk.
+    params:
+    - name: needs_current
+      label: Needs Current
+      min: 0
+      max: 1
+      step: 1
+      default: 1
+      unit: boolean
+    compute:
+      needs_current: needs_current
+      risk: A model without supplied current context may not know events after its training cutoff.
+    outcomes:
+    - when: needs_current == 0
+      title: Stable knowledge request
+      explain: The answer may be within the model's learned knowledge, but factual verification can still
+        be necessary.
+      severity: info
+    - when: needs_current == 1
+      title: Current information required
+      explain: Supply trusted current context or a suitable retrieval/tool path; do not rely on model
+        memory alone.
+      severity: warn
+    combos_to_try:
+    - set:
+        needs_current: 1
+      lesson: Give one example of a hallucination and one example where a knowledge cutoff matters.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes hallucinations and knowledge cutoffs?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of hallucinations and knowledge cutoffs in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which hallucinations and knowledge cutoffs matters when
+      building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Prepare a checklist for verifying a model answer about a recent event.
+- id: pricing-rate-limits-and-failure-rates
+  code: GA-CO1.4.3
+  title: Pricing, Rate Limits, and Failure Rates
+  session: 4
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - hallucinations-and-knowledge-cutoffs
+  eli5: 'Using a hosted model is like depending on an external service: requests may cost money, be limited
+    in frequency and sometimes fail. An application must account for all three instead of assuming every
+    request will succeed instantly.'
+  key_points:
+  - The handout names pricing, rate limits and failure rates.
+  - Pricing may depend on input and output usage.
+  - Rate limits constrain request frequency or throughput.
+  - Failures require application-level handling and measurement.
+  deep_dive: 'A hosted model is an external dependency with commercial and operational constraints. Pricing
+    describes what the provider charges for use; in token-priced services, input and output token quantities
+    may be billed at different rates. Rate limits restrict how frequently or how much a client can request
+    within a period, and the exact limit depends on the provider and account. Failure rates describe how
+    often requests do not complete successfully under defined conditions. Failures may arise from network
+    problems, service errors, timeouts, rejected requests or quota limits. These are separate dimensions:
+    a model can be inexpensive but frequently unavailable, or fast but expensive at a high output volume.
+    The handout explicitly asks students to consider price, rate limits and failure rates when treating
+    models as dependencies. An application should record request outcomes, avoid unbounded retries and
+    provide a graceful response when the provider cannot serve a request. Provider-specific limits and
+    prices must be checked from current provider documentation before deployment.'
+  formulas: []
+  viz:
+    type: service_meter
+    description: Adjust total requests and failed requests to calculate an observed failure rate.
+    params:
+    - name: total
+      label: Total
+      min: 1
+      max: 10000
+      step: 1
+      default: 100
+      unit: requests
+    - name: failed
+      label: Failed
+      min: 0
+      max: 10000
+      step: 1
+      default: 5
+      unit: requests
+    compute:
+      failure_rate: failed / total * 100
+    outcomes:
+    - when: failed == 0
+      title: No observed failures
+      explain: No failures occurred in this sample; this does not prove the service can never fail.
+      severity: info
+    - when: failed > 0 && failed / total <= 0.05
+      title: Some failures observed
+      explain: Measure the pattern and classify failure causes before deciding on mitigations.
+      severity: warn
+    - when: failed / total > 0.05
+      title: Elevated observed failure rate
+      explain: Investigate provider, network, quota and client-side causes.
+      severity: fail
+    combos_to_try:
+    - set:
+        total: 100
+        failed: 5
+      lesson: Identify which metric—price, rate limit or failure rate—applies to three example incidents.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes pricing, rate limits, and failure rates?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of pricing, rate limits, and failure rates in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which pricing, rate limits, and failure rates matters when
+      building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - practical
+  mini_task: Calculate a failure rate from a sample request log and explain what the number does not tell
+    you.

@@ -1,0 +1,259 @@
+part:
+  id: co3-part-09
+  co: CO3
+  title: End-to-End RAG Pipeline
+  order: 9
+  concept_ids:
+  - rag-pipeline-overview
+  - context-construction-and-citations
+  - grounded-generation-and-failure-cases
+concepts:
+- id: rag-pipeline-overview
+  code: GA-CO3.9.1
+  title: Retrieval-Augmented Generation Pipeline
+  session: 21
+  skilling_exp: 3
+  btl: 5
+  difficulty: 3
+  prereqs: []
+  eli5: RAG retrieves relevant source passages and supplies them to a language model so the answer can be grounded
+    in external material.
+  key_points:
+  - RAG separates knowledge retrieval from language generation.
+  - The query is embedded and used to retrieve candidate chunks.
+  - Retrieved evidence is assembled into context for the model.
+  deep_dive: 'A Retrieval-Augmented Generation pipeline combines a retrieval system with a generative model. During
+    ingestion, documents are loaded, cleaned, split into chunks, embedded and indexed. At query time, the user''s
+    question is embedded, relevant chunks are retrieved and their source text is assembled into a context package.
+    The language model receives the question together with this evidence and generates an answer. This architecture
+    can make answers more specific to a changing or private document collection than relying only on the model''s
+    pretraining. RAG does not guarantee correctness: retrieval can miss the right passage, context can be misconstructed
+    and the model can misinterpret evidence. Each stage should therefore be observable and evaluated.'
+  formulas: []
+  viz:
+    type: rag_pipeline
+    description: Trace a question through retrieval, context assembly and grounded generation.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 7
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      steps:
+      - User question
+      - Query embedding
+      - Vector retrieval
+      - Fetch source text
+      - Build context
+      - Generate answer
+      - Attach citations
+    outcomes:
+    - when: stage <= 3
+      title: Retrieval
+      explain: The system locates candidate evidence.
+      severity: info
+    - when: stage >= 4
+      title: Grounded response construction
+      explain: Retrieved source text is assembled and used for generation.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Draw the full RAG flow and identify one measurable failure mode at each stage.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What is the central purpose of retrieval in RAG?
+    options:
+    - Supply relevant external evidence to condition generation
+    - Replace the tokenizer
+    - Train the LLM on every query
+    - Guarantee every answer is true
+    answer: 0
+    explanation: Retrieval supplies evidence but does not guarantee correctness.
+  - type: short_answer
+    question: How does RAG differ from relying only on a model's pretrained parameters?
+    answer: RAG retrieves external source material at query time and supplies it as context for generation.
+    explanation: Mention external evidence and query-time retrieval.
+  - type: application
+    question: A RAG answer is wrong because the correct chunk was never retrieved. Which part of the pipeline should
+      be investigated first?
+    answer: Investigate ingestion, embeddings, indexing and retrieval ranking before blaming answer generation.
+    explanation: Locate the failure upstream.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Draw the full RAG flow and identify one measurable failure mode at each stage.
+- id: context-construction-and-citations
+  code: GA-CO3.9.2
+  title: Context Construction and Citations
+  session: 21
+  skilling_exp: 3
+  btl: 5
+  difficulty: 3
+  prereqs: []
+  eli5: Context construction selects, orders and formats retrieved evidence for the model, while citations link
+    claims back to source records.
+  key_points:
+  - Retrieved chunks should retain source identity and location metadata.
+  - Context should be relevant, concise and within the model's token budget.
+  - Citations must point to evidence that actually supports the associated claim.
+  deep_dive: After retrieval, the application must construct a context that the language model can use. This involves
+    fetching authoritative text for the returned chunk IDs, ordering or deduplicating chunks, retaining source labels
+    and fitting the content within the model's context budget. Context should not silently drop provenance metadata.
+    Citation generation should map answer claims to the source chunks that support them, including page or section
+    information when available. A citation is not valid merely because a source was retrieved; the source must actually
+    support the claim. Context construction errors can lead to missing qualifications, contradictory passages or
+    unsupported statements. The application should inspect evidence coverage and make citations traceable.
+  formulas: []
+  viz:
+    type: context_builder
+    description: Select retrieved chunks and inspect how metadata and token budget shape the final context.
+    params:
+    - name: chunks
+      label: Chunks
+      min: 1
+      max: 8
+      step: 1
+      default: 4
+      unit: chunks
+    compute:
+      chunks: chunks
+      fields:
+      - chunk text
+      - source ID
+      - page
+      - section
+      - version
+      deduplicate: true
+    outcomes:
+    - when: chunks <= 3
+      title: Compact context
+      explain: Fewer passages may fit the token budget but can omit supporting details.
+      severity: info
+    - when: chunks >= 6
+      title: Expanded context
+      explain: More evidence is available but noise and token cost can rise.
+      severity: info
+    combos_to_try:
+    - set:
+        chunks: 4
+      lesson: Construct a context block from three retrieved chunks and attach source ID, page and section to each.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What must a reliable citation identify?
+    options:
+    - A source that supports the associated claim
+    - Any document returned by the vector store
+    - The embedding model's vector dimension
+    - The model temperature
+    answer: 0
+    explanation: Citations must be evidence-linked.
+  - type: short_answer
+    question: Why should source metadata be preserved during context construction?
+    answer: It enables traceable citations and helps identify the origin and location of retrieved evidence.
+    explanation: Mention source and location.
+  - type: application
+    question: A response cites a retrieved page, but that page does not support the claim. Is the citation valid?
+    answer: No. Retrieval alone is not enough; the cited passage must support the specific claim.
+    explanation: Distinguish source presence from entailment.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Construct a context block from three retrieved chunks and attach source ID, page and section to each.
+- id: grounded-generation-and-failure-cases
+  code: GA-CO3.9.3
+  title: Grounded Generation and RAG Failure Cases
+  session: 21
+  skilling_exp: 3
+  btl: 5
+  difficulty: 3
+  prereqs: []
+  eli5: Grounded generation answers from retrieved evidence and recognises when retrieval does not provide enough
+    support.
+  key_points:
+  - Generation should be constrained by the retrieved evidence and user question.
+  - Retrieval misses, stale sources and conflicting passages can cause failures.
+  - Unsupported or conflicting evidence should be surfaced rather than hidden.
+  deep_dive: Grounded generation instructs the model to answer using the supplied source material and to avoid adding
+    unsupported facts. The application should distinguish evidence that directly answers the question from evidence
+    that is merely related. Common RAG failures include missing relevant chunks, retrieving stale versions, retrieving
+    contradictory sources, truncating context, incorrect citations and model claims that go beyond the evidence.
+    Debugging should inspect the retrieved chunk IDs, source text, context sent to the model and final claims. A
+    robust system can express uncertainty or ask for clarification when evidence is incomplete. Grounding is a workflow
+    and evaluation discipline, not a magic prompt that eliminates hallucination.
+  formulas: []
+  viz:
+    type: grounding_failures
+    description: Classify common RAG failure cases by the pipeline stage where they occur.
+    params:
+    - name: failure
+      label: Failure
+      min: 1
+      max: 5
+      step: 1
+      default: 1
+      unit: failure
+    compute:
+      failure: failure
+      labels:
+      - retrieval miss
+      - stale source
+      - context truncation
+      - unsupported claim
+      - incorrect citation
+    outcomes:
+    - when: failure <= 2
+      title: Source and retrieval issue
+      explain: Check source freshness and whether the right passage was retrieved.
+      severity: info
+    - when: failure >= 3
+      title: Context or answer issue
+      explain: Inspect context construction, grounding instructions and citation mapping.
+      severity: info
+    combos_to_try:
+    - set:
+        failure: 1
+      lesson: Create a five-case RAG failure test suite and identify the stage responsible for each failure.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Which statement best describes grounded generation?
+    options:
+    - The model uses retrieved source evidence and avoids unsupported claims
+    - The model answers from memory only
+    - The model always returns the longest answer
+    - The model ignores retrieved passages
+    answer: 0
+    explanation: Grounded generation conditions the answer on evidence.
+  - type: short_answer
+    question: Name two failure modes in a RAG pipeline.
+    answer: Examples include retrieval misses, stale sources, context truncation, unsupported claims and incorrect
+      citations.
+    explanation: Any two distinct pipeline failures are acceptable.
+  - type: application
+    question: The correct chunk is retrieved but omitted from the final prompt because of a token-budget bug. Where
+      is the failure?
+    answer: Context construction or context-budget management.
+    explanation: Distinguish retrieval success from context assembly failure.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Create a five-case RAG failure test suite and identify the stage responsible for each failure.

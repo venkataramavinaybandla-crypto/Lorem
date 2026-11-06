@@ -1,0 +1,223 @@
+part:
+  id: CO4-P04
+  co: CO4
+  title: Role Prompting and Advanced Techniques
+  order: 4
+  concept_ids:
+  - CO4-P04-C01
+  - CO4-P04-C02
+  - CO4-P04-C03
+concepts:
+- id: CO4-P04-C01
+  code: CO4.4.1
+  title: Role prompting and audience adaptation
+  session: 22
+  skilling_exp: 'CO4 practical focus: role prompting and advanced techniques'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P03-C03
+  eli5: Use a role or perspective to clarify the task, expertise level and communication style.
+  key_points:
+  - Define the purpose and boundary of role prompting and audience adaptation.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: 'Role prompting describes the perspective or function the model should adopt, such as a teaching assistant,
+    code reviewer or technical editor. It can help establish audience, vocabulary and priorities, but it does not
+    grant real credentials or guarantee factual correctness. Define the role through observable responsibilities:
+    explain assumptions, identify risks, or review code against stated criteria. Avoid relying on theatrical labels
+    such as ''world expert'' as a substitute for evidence. Test whether role instructions improve consistency and
+    usefulness on representative examples, and ensure they do not conflict with the task''s actual scope or safety
+    requirements.'
+  formulas: []
+  viz:
+    type: Role prompt
+    description: role; audience; responsibilities; evaluation criteria
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Assuming a role label makes the model an actual qualified professional.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes role prompting and audience adaptation?
+    options:
+    - It applies use a role or perspective to clarify the task, expertise level and communication style. through
+      an explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because use a role or perspective to clarify the task, expertise level and
+      communication style. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying role prompting and audience adaptation.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to role prompting and audience adaptation.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply role prompting and audience adaptation
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for role prompting and audience adaptation, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P04-C02
+  code: CO4.4.2
+  title: Example-guided reasoning and chain-of-thought awareness
+  session: 22
+  skilling_exp: 'CO4 practical focus: role prompting and advanced techniques'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P04-C01
+  eli5: Guide the response with useful intermediate outputs without demanding private reasoning traces.
+  key_points:
+  - Define the purpose and boundary of example-guided reasoning and chain-of-thought awareness.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Some tasks benefit from asking the model to identify evidence, list assumptions, apply a rubric or
+    show a concise calculation. These outputs make the result easier to inspect without requiring hidden internal
+    reasoning. Demonstrations can show the expected level of explanation and how to handle uncertainty. Ask for
+    verifiable steps, cited evidence or a short rationale appropriate to the audience. Do not treat a long reasoning
+    transcript as proof of correctness; validate important claims independently. For arithmetic or code, use deterministic
+    tools where appropriate and check their outputs before presenting a conclusion.
+  formulas: []
+  viz:
+    type: Inspectable reasoning
+    description: evidence; assumptions; concise rationale; verification
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Equating longer explanations with more accurate answers.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes example-guided reasoning and chain-of-thought awareness?
+    options:
+    - It applies guide the response with useful intermediate outputs without demanding private reasoning traces.
+      through an explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because guide the response with useful intermediate outputs without demanding
+      private reasoning traces. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying example-guided reasoning and chain-of-thought
+      awareness.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to example-guided reasoning and chain-of-thought awareness.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply example-guided reasoning and chain-of-thought
+      awareness to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for example-guided reasoning and chain-of-thought awareness, define expected
+    behaviour, and record one failure mode and one safeguard.
+- id: CO4-P04-C03
+  code: CO4.4.3
+  title: Responsible prompt design
+  session: 22
+  skilling_exp: 'CO4 practical focus: role prompting and advanced techniques'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P04-C02
+  eli5: Design prompts that reduce bias, protect privacy and communicate uncertainty.
+  key_points:
+  - Define the purpose and boundary of responsible prompt design.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Responsible prompt design considers who may be affected by the output, what data is necessary, and
+    how uncertainty or unsupported requests should be handled. Avoid requesting sensitive personal information unless
+    it is essential and authorised. Do not encode stereotypes into roles or examples. Ask the model to distinguish
+    supplied facts from assumptions and to state when evidence is insufficient. Human review may be necessary for
+    consequential decisions. Test prompts across varied language, phrasing and user groups, and document known limitations.
+    Responsibility is shared across prompt authors, application code, data governance and deployment processes;
+    a prompt alone cannot provide complete protection.
+  formulas: []
+  viz:
+    type: Responsible design
+    description: privacy minimisation; bias testing; uncertainty; human review
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Assuming that a safety sentence in the prompt replaces application safeguards.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes responsible prompt design?
+    options:
+    - It applies design prompts that reduce bias, protect privacy and communicate uncertainty. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because design prompts that reduce bias, protect privacy and communicate
+      uncertainty. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying responsible prompt design.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to responsible prompt design.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply responsible prompt design to improve
+      reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for responsible prompt design, define expected behaviour, and record one
+    failure mode and one safeguard.

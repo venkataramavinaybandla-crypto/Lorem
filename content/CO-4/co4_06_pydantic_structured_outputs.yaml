@@ -1,0 +1,220 @@
+part:
+  id: CO4-P06
+  co: CO4
+  title: Structured Outputs with Pydantic
+  order: 6
+  concept_ids:
+  - CO4-P06-C01
+  - CO4-P06-C02
+  - CO4-P06-C03
+concepts:
+- id: CO4-P06-C01
+  code: CO4.6.1
+  title: Structured output contracts and JSON schemas
+  session: 24
+  skilling_exp: 'CO4 practical focus: structured outputs with pydantic'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P05-C03
+  eli5: Represent machine-consumed responses as explicit fields, types and constraints.
+  key_points:
+  - Define the purpose and boundary of structured output contracts and json schemas.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: 'Structured outputs reduce ambiguity when model responses are consumed by software. Define a schema
+    with required fields, types, enumerations, bounds and descriptions. A JSON schema or Pydantic model can express
+    much of this contract, but the model may still return missing, malformed or semantically invalid data. Keep
+    the schema small and task-focused. Distinguish syntactic validity from correctness: a response can parse successfully
+    and still contain a false value. Include examples of valid and invalid records, and decide how optional or unknown
+    values should be represented rather than allowing arbitrary formats.'
+  formulas: []
+  viz:
+    type: Structured contract
+    description: field; type; required; enum; constraint
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Assuming valid JSON means the response is factually correct.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes structured output contracts and json schemas?
+    options:
+    - It applies represent machine-consumed responses as explicit fields, types and constraints. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because represent machine-consumed responses as explicit fields, types and
+      constraints. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying structured output contracts and json schemas.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to structured output contracts and json schemas.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply structured output contracts and json
+      schemas to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for structured output contracts and json schemas, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P06-C02
+  code: CO4.6.2
+  title: Pydantic validation and semantic checks
+  session: 24
+  skilling_exp: 'CO4 practical focus: structured outputs with pydantic'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P06-C01
+  eli5: Validate parsed model output with Pydantic and application-level business rules.
+  key_points:
+  - Define the purpose and boundary of pydantic validation and semantic checks.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Pydantic can parse data into typed models and report validation errors for missing fields, invalid
+    types or violated constraints. Use strictness intentionally, validate nested structures, and add field or model
+    validators for rules that schemas cannot express alone. After parsing, apply business checks such as whether
+    an identifier exists or a date range is logically valid. Treat model output as untrusted input even when it
+    follows a schema. Never use successful parsing as permission to execute arbitrary commands or trust an unsupported
+    claim. Keep validation errors structured so the application can respond safely.
+  formulas: []
+  viz:
+    type: Validation pipeline
+    description: parse; type validation; field validator; business rule
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Skipping semantic checks because Pydantic accepted the object.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes pydantic validation and semantic checks?
+    options:
+    - It applies validate parsed model output with pydantic and application-level business rules. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because validate parsed model output with pydantic and application-level
+      business rules. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying pydantic validation and semantic checks.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to pydantic validation and semantic checks.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply pydantic validation and semantic checks
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for pydantic validation and semantic checks, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P06-C03
+  code: CO4.6.3
+  title: Retries, repair and safe fallback
+  session: 24
+  skilling_exp: 'CO4 practical focus: structured outputs with pydantic'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P06-C02
+  eli5: Handle invalid structured responses with bounded retries and predictable fallback behaviour.
+  key_points:
+  - Define the purpose and boundary of retries, repair and safe fallback.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: A robust structured-output pipeline distinguishes transient provider failures, malformed output and
+    semantic validation failures. A retry may ask the model to correct a specific validation issue, but it should
+    be bounded to avoid loops and unexpected cost. Do not expose secrets or internal stack traces in repair prompts.
+    If the response remains invalid, return a safe typed error or route to human review rather than silently inventing
+    defaults. Log the error category, prompt version and retry count while minimising sensitive data. Test repeated
+    invalid responses and provider outages as well as normal success cases.
+  formulas: []
+  viz:
+    type: Recovery flow
+    description: validation error; bounded retry; fallback; human review
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Retrying indefinitely or silently filling missing required values.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes retries, repair and safe fallback?
+    options:
+    - It applies handle invalid structured responses with bounded retries and predictable fallback behaviour. through
+      an explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because handle invalid structured responses with bounded retries and predictable
+      fallback behaviour. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying retries, repair and safe fallback.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to retries, repair and safe fallback.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply retries, repair and safe fallback to
+      improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for retries, repair and safe fallback, define expected behaviour, and record
+    one failure mode and one safeguard.

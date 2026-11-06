@@ -1,0 +1,283 @@
+part:
+  id: co1-part-07
+  co: CO1
+  title: English, Telugu, and Hindi Tokenization
+  order: 7
+  concept_ids:
+  - multilingual-tokenization-basics
+  - why-token-counts-differ
+  - multilingual-tokenization-experiment
+concepts:
+- id: multilingual-tokenization-basics
+  code: GA-CO1.7.1
+  title: Multilingual Tokenization
+  session: 7
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: A tokenizer may split different languages into different numbers of tokens even when the sentences
+    have similar meanings. This can happen because vocabulary coverage and the tokenizer's training data
+    are not evenly distributed across languages.
+  key_points:
+  - Token counts depend on the tokenizer and text.
+  - Different languages can have different token efficiency.
+  - Script, spelling, morphology and vocabulary coverage can affect segmentation.
+  - Compare languages using the same tokenizer and equivalent content.
+  deep_dive: The CO-1 handout explicitly asks students to compare English, Telugu and Hindi token counts.
+    A tokenizer's vocabulary and learned segmentation patterns influence how efficiently it represents
+    each language. If a tokenizer has more effective vocabulary coverage for one language, common words
+    or character sequences may be represented compactly. Text in another language may be split into more
+    pieces, particularly when its script, morphology or spelling patterns are less represented in the
+    tokenizer's training data. This is not a statement that one language is inherently more complex or
+    less efficient; it is a property of a particular tokenizer and its training and design. A fair comparison
+    uses equivalent meanings, comparable sentence lengths and the same tokenizer version. Students should
+    record both the text and token count, because a count without the exact input is not reproducible.
+    This comparison matters for token budgets, pricing and user experience in multilingual applications.
+  formulas: []
+  viz:
+    type: language-token-count-comparison
+    description: Compare token counts for equivalent sentences in English, Telugu and Hindi using one
+      tokenizer.
+    params:
+    - name: language
+      label: Language
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: language
+    compute:
+      language: language
+      labels:
+      - English
+      - Telugu
+      - Hindi
+      note: Enter or load equivalent sentences and use the same model tokenizer for all three.
+    outcomes:
+    - when: language >= 1 && language <= 3
+      title: Language selected
+      explain: The selected language should be compared using equivalent content and the same tokenizer.
+      severity: info
+    combos_to_try:
+    - set:
+        language: 1
+      lesson: Prepare equivalent short sentences in English, Telugu and Hindi and record tokenizer outputs.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes multilingual tokenization?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of multilingual tokenization in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which multilingual tokenization matters when building an
+      LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - practical
+  mini_task: Design a controlled multilingual tokenization experiment.
+- id: why-token-counts-differ
+  code: GA-CO1.7.2
+  title: Why English, Telugu, and Hindi Token Counts Differ
+  session: 7
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - multilingual-tokenization-basics
+  eli5: Two translations can have similar meanings but different token counts. A tokenizer may recognise
+    common English pieces efficiently while splitting Telugu or Hindi text into more pieces, depending
+    on its vocabulary and training.
+  key_points:
+  - Language token efficiency is tokenizer-specific.
+  - Vocabulary coverage influences segmentation.
+  - Unicode text and script do not guarantee one character per token.
+  - A higher token count can affect cost and context usage.
+  deep_dive: Token counts differ across languages because tokenizers learn or define vocabulary units
+    from particular text distributions and processing rules. A tokenizer may contain frequent English
+    words or word fragments as compact entries, while a Telugu or Hindi expression may be decomposed into
+    smaller units. The number of tokens is also affected by the exact translation, spelling, punctuation,
+    spacing, inflection and tokenizer normalisation. Therefore, a simple comparison of character counts
+    or word counts cannot predict the result reliably. The handout highlights that Telugu and Hindi may
+    cost more tokens than English in the tokenizer context being studied. This should be treated as an
+    empirical observation to test with the selected tokenizer, not as a universal constant that applies
+    to every model. For a sound experiment, keep the intended meaning comparable, use the same tokenizer,
+    preserve the exact input strings and report token counts alongside the tokenizer identity. These measurements
+    can then inform application budgets.
+  formulas: []
+  viz:
+    type: multilingual-efficiency
+    description: Change the token-count ratio and observe how relative token usage changes for the same
+      semantic content.
+    params:
+    - name: ratio
+      label: Ratio
+      min: 1
+      max: 4
+      step: 0.1
+      default: 1.5
+      unit: ratio
+    compute:
+      ratio: ratio
+      illustration: A ratio above 1 means the compared text uses more tokens than the reference text.
+    outcomes:
+    - when: ratio <= 1
+      title: Equal or fewer tokens
+      explain: The compared text uses no more tokens than the reference under this measurement.
+      severity: info
+    - when: ratio > 1 && ratio <= 2
+      title: Moderately higher count
+      explain: The compared text uses more tokens; include this in cost and context estimates.
+      severity: warn
+    - when: ratio > 2
+      title: Much higher count
+      explain: Investigate tokenizer coverage and exact text before generalising from the result.
+      severity: warn
+    combos_to_try:
+    - set:
+        ratio: 1.5
+      lesson: Explain why token-count differences should not be interpreted as a ranking of languages.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes why english, telugu, and hindi token counts differ?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of why english, telugu, and hindi token counts differ in your own
+      words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which why english, telugu, and hindi token counts differ
+      matters when building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Write a short interpretation of a multilingual token-count experiment without overgeneralising.
+- id: multilingual-tokenization-experiment
+  code: GA-CO1.7.3
+  title: Measuring Multilingual Tokenisation Fairly
+  session: 7
+  skilling_exp: 3
+  btl: 3
+  difficulty: 2
+  prereqs:
+  - why-token-counts-differ
+  eli5: To compare tokenization fairly, use the same model tokenizer on sentences that express the same
+    meaning. Save the exact strings, count the tokens and calculate the relative difference.
+  key_points:
+  - Use one tokenizer and version for all languages.
+  - Use equivalent meanings and comparable sentence lengths.
+  - Record exact text and token counts.
+  - Report the measurement conditions and avoid universal claims.
+  deep_dive: A reproducible multilingual tokenization experiment begins by choosing a model and loading
+    its associated tokenizer. Prepare equivalent sentences in English, Telugu and Hindi, ensuring that
+    they communicate the same meaning. Use the same tokenizer version and tokenization settings for every
+    sample. Record the exact input text and the resulting token count. Repeat the procedure over several
+    sentences because one example may be unusually short or may contain uncommon vocabulary. Summarise
+    the observations using counts and, where useful, a ratio relative to a reference language. The handout's
+    learning outcome asks students to quantify tokenization cost across English and Indian languages,
+    so the measurement should be connected to token economics rather than presented as an isolated linguistic
+    observation. Do not claim that every Telugu or Hindi sentence always uses a fixed multiple of English
+    tokens. Results are dependent on the model tokenizer, text sample and implementation. Preserve the
+    experiment details so another student can reproduce the comparison.
+  formulas: []
+  viz:
+    type: experiment_dashboard
+    description: Enter token counts for equivalent texts and calculate the relative token-count ratio.
+    params:
+    - name: reference
+      label: Reference
+      min: 1
+      max: 10000
+      step: 1
+      default: 24
+      unit: tokens
+    - name: comparison
+      label: Comparison
+      min: 1
+      max: 10000
+      step: 1
+      default: 36
+      unit: tokens
+    compute:
+      ratio: comparison / reference
+      difference: comparison - reference
+    outcomes:
+    - when: comparison <= reference
+      title: No token increase
+      explain: The comparison sample uses the same or fewer tokens than the reference.
+      severity: info
+    - when: comparison > reference
+      title: Token increase observed
+      explain: The comparison sample uses more tokens; interpret the result in the context of the tokenizer
+        and sample.
+      severity: warn
+    combos_to_try:
+    - set:
+        reference: 24
+        comparison: 36
+      lesson: Run a three-language experiment with at least five equivalent sentences per language.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes measuring multilingual tokenisation fairly?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of measuring multilingual tokenisation fairly in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which measuring multilingual tokenisation fairly matters
+      when building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - practical
+  mini_task: Create a result table with exact sentences, token counts, ratios and tokenizer version.

@@ -1,0 +1,221 @@
+part:
+  id: CO4-P05
+  co: CO4
+  title: Prompt Versioning and Registry
+  order: 5
+  concept_ids:
+  - CO4-P05-C01
+  - CO4-P05-C02
+  - CO4-P05-C03
+concepts:
+- id: CO4-P05-C01
+  code: CO4.5.1
+  title: Separating system and user prompt assets
+  session: 23
+  skilling_exp: 'CO4 practical focus: prompt versioning and registry'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P04-C03
+  eli5: Store stable application instructions separately from per-request user content.
+  key_points:
+  - Define the purpose and boundary of separating system and user prompt assets.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: 'A prompt registry keeps prompt assets identifiable and reusable. System prompts contain stable application
+    behaviour and constraints; user prompts or templates represent task-specific requests and variables. Separating
+    them makes review and testing easier, prevents user data from being accidentally committed as prompt configuration,
+    and allows each layer to change independently. Templates should define required variables and safe defaults.
+    At runtime, validate that required values are present and escape or delimit untrusted content. Treat prompt
+    templates as application assets: review changes, assign owners and avoid embedding secrets or credentials in
+    them.'
+  formulas: []
+  viz:
+    type: Prompt asset layout
+    description: system template; user template; variables; registry
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Mixing secrets, user data and reusable instructions in one prompt file.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes separating system and user prompt assets?
+    options:
+    - It applies store stable application instructions separately from per-request user content. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because store stable application instructions separately from per-request
+      user content. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying separating system and user prompt assets.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to separating system and user prompt assets.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply separating system and user prompt assets
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for separating system and user prompt assets, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P05-C02
+  code: CO4.5.2
+  title: Prompt versioning and change management
+  session: 23
+  skilling_exp: 'CO4 practical focus: prompt versioning and registry'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P05-C01
+  eli5: Assign versions and record the intent, author and impact of every prompt change.
+  key_points:
+  - Define the purpose and boundary of prompt versioning and change management.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: A prompt change can alter product behaviour even when application code is unchanged. Version each prompt,
+    record its purpose, compatible model settings, required variables and change history. Use meaningful identifiers
+    and retain prior versions so a regression can be reproduced or rolled back. Changes should include tests and
+    an explanation of expected impact. Avoid editing a production prompt invisibly in a dashboard without recording
+    the resulting version. Versioning also supports auditability when users report unexpected outputs. The release
+    process should identify exactly which prompt version served a request, without logging sensitive content unnecessarily.
+  formulas: []
+  viz:
+    type: Version metadata
+    description: version; owner; changelog; model configuration; rollback
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Overwriting a production prompt without preserving the prior version.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes prompt versioning and change management?
+    options:
+    - It applies assign versions and record the intent, author and impact of every prompt change. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because assign versions and record the intent, author and impact of every
+      prompt change. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying prompt versioning and change management.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to prompt versioning and change management.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply prompt versioning and change management
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for prompt versioning and change management, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P05-C03
+  code: CO4.5.3
+  title: Prompt registry testing and reproducibility
+  session: 23
+  skilling_exp: 'CO4 practical focus: prompt versioning and registry'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P05-C02
+  eli5: Make prompt execution reproducible by tracking templates, settings and test fixtures.
+  key_points:
+  - Define the purpose and boundary of prompt registry testing and reproducibility.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: A prompt result depends on more than prompt text. Model identifier, provider, decoding settings, tools,
+    retrieved context and input data can all affect output. A reproducible registry records the relevant configuration
+    and links it to test fixtures and evaluation results. Keep secrets outside version-controlled files and inject
+    them through secure configuration. When a provider changes model behaviour, rerun the golden set and compare
+    results. Exact deterministic reproduction may not always be possible for hosted models, but recording the conditions
+    makes differences explainable and investigations more useful.
+  formulas: []
+  viz:
+    type: Reproducibility record
+    description: prompt hash; model ID; decoding settings; fixture; evaluation
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Recording only the prompt text while ignoring model and runtime configuration.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes prompt registry testing and reproducibility?
+    options:
+    - It applies make prompt execution reproducible by tracking templates, settings and test fixtures. through an
+      explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because make prompt execution reproducible by tracking templates, settings
+      and test fixtures. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying prompt registry testing and reproducibility.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to prompt registry testing and reproducibility.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply prompt registry testing and reproducibility
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for prompt registry testing and reproducibility, define expected behaviour,
+    and record one failure mode and one safeguard.

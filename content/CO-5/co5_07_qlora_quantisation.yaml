@@ -1,0 +1,224 @@
+part:
+  id: CO5-P07
+  co: CO5
+  title: QLoRA and Quantisation
+  order: 7
+  concept_ids:
+  - CO5-P07-C01
+  - CO5-P07-C02
+  - CO5-P07-C03
+concepts:
+- id: CO5-P07-C01
+  code: CO5.7.1
+  title: Quantisation fundamentals
+  session: 31
+  skilling_exp: 'CO5 practical focus: qlora and quantisation'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO5-P06-C03
+  eli5: Explain how lower-precision representations reduce model memory requirements.
+  key_points:
+  - Explain the purpose and boundary of quantisation fundamentals.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: 'Quantisation represents model values using fewer bits than a conventional higher-precision format.
+    Lower bit-width weights can reduce memory use and may improve deployment feasibility on limited hardware. Quantisation
+    introduces approximation error, so quality and numerical behaviour must be measured. Weight quantisation is
+    distinct from reducing the number of model parameters: the model architecture may remain the same while its
+    stored representation changes. Different quantisation schemes have different accuracy, speed and compatibility
+    properties. Record the quantisation method and configuration because a statement such as ''4-bit'' alone does
+    not fully describe the runtime behaviour.'
+  formulas: []
+  viz:
+    type: precision comparison
+    description: FP16; BF16; INT8; 4-bit; memory footprint
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming quantisation fundamentals automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents quantisation fundamentals?
+    options:
+    - Explain how lower-precision representations reduce model memory requirements.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Explain how lower-precision representations reduce model memory requirements.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in quantisation fundamentals.
+    expected_answer: A correct answer should explain the central idea of quantisation fundamentals and connect it
+      to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply quantisation fundamentals and how
+      you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for quantisation fundamentals. State the inputs, baseline,
+    two metrics, one likely failure and how you would document the result.
+- id: CO5-P07-C02
+  code: CO5.7.2
+  title: QLoRA workflow and 4-bit base models
+  session: 31
+  skilling_exp: 'CO5 practical focus: qlora and quantisation'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO5-P07-C01
+  eli5: Describe how QLoRA combines a quantised frozen base with trainable low-rank adapters.
+  key_points:
+  - Explain the purpose and boundary of qlora workflow and 4-bit base models.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: QLoRA makes parameter-efficient fine-tuning possible with a quantised base model. The base weights
+    are loaded in a low-bit representation and generally kept frozen, while LoRA adapters are trained. The workflow
+    depends on compatible model, quantisation and training libraries, and hardware support. Quantisation settings,
+    compute dtype, adapter targets and memory-saving options should be recorded. A successful load does not prove
+    that training is configured correctly; run a small forward and backward pass, verify gradients on the intended
+    adapter parameters and save a test checkpoint before launching a longer experiment. Keep the evaluation protocol
+    stable across runs, inspect representative outputs, and record the exact revisions used so another learner can
+    reproduce the comparison and understand its limitations.
+  formulas: []
+  viz:
+    type: QLoRA training path
+    description: 4-bit base; frozen weights; LoRA adapters; gradient checkpointing
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming qlora workflow and 4-bit base models automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents qlora workflow and 4-bit base models?
+    options:
+    - Describe how QLoRA combines a quantised frozen base with trainable low-rank adapters.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Describe how QLoRA combines a quantised frozen base with trainable low-rank
+      adapters.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in qlora workflow and 4-bit base models.
+    expected_answer: A correct answer should explain the central idea of qlora workflow and 4-bit base models and
+      connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply qlora workflow and 4-bit base models
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for qlora workflow and 4-bit base models. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P07-C03
+  code: CO5.7.3
+  title: Memory, latency and quality trade-offs
+  session: 31
+  skilling_exp: 'CO5 practical focus: qlora and quantisation'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO5-P07-C02
+  eli5: Compare QLoRA and LoRA using resource measurements and held-out task quality.
+  key_points:
+  - Explain the purpose and boundary of memory, latency and quality trade-offs.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: The course practical asks learners to compare memory, latency and quality under QLoRA with 4-bit quantisation.
+    Measure peak GPU memory during training and inference, training duration, generation latency and task performance
+    on the same evaluation set. Include batch size, sequence length, hardware and quantisation configuration because
+    these strongly affect results. A smaller memory footprint may permit a larger batch or model, but quantisation
+    can introduce quality changes and may not accelerate every workload. Report the full configuration and compare
+    against an appropriate LoRA or baseline run rather than assuming 4-bit is always faster or better.
+  formulas: []
+  viz:
+    type: trade-off chart
+    description: peak VRAM; throughput; latency; quality; configuration
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming memory, latency and quality trade-offs automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents memory, latency and quality trade-offs?
+    options:
+    - Compare QLoRA and LoRA using resource measurements and held-out task quality.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Compare QLoRA and LoRA using resource measurements and held-out task quality.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in memory, latency and quality trade-offs.
+    expected_answer: A correct answer should explain the central idea of memory, latency and quality trade-offs
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply memory, latency and quality trade-offs
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for memory, latency and quality trade-offs. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.

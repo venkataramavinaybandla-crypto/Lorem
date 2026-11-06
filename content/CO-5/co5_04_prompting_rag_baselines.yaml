@@ -1,0 +1,224 @@
+part:
+  id: CO5-P04
+  co: CO5
+  title: Prompting and RAG Baselines
+  order: 4
+  concept_ids:
+  - CO5-P04-C01
+  - CO5-P04-C02
+  - CO5-P04-C03
+concepts:
+- id: CO5-P04-C01
+  code: CO5.4.1
+  title: Prompting baseline design
+  session: 28
+  skilling_exp: 'CO5 practical focus: prompting and rag baselines'
+  btl: Evaluate
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P03-C03
+  eli5: Establish a reproducible prompting baseline before adapting model weights.
+  key_points:
+  - Explain the purpose and boundary of prompting baseline design.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: 'A prompting baseline measures what the selected model can do using a documented prompt, model version
+    and decoding configuration. Keep the prompt and test examples fixed, and define task-specific scoring before
+    running the experiment. Record model identifier, provider, temperature or other decoding settings, output constraints
+    and any system instructions. Evaluate the same shared test set planned for later RAG and fine-tuning experiments.
+    A baseline is not merely a weak straw-man: it should be a reasonable, carefully designed implementation that
+    gives the alternatives a fair comparison. Save outputs so errors can be inspected rather than relying only on
+    an aggregate score.'
+  formulas: []
+  viz:
+    type: baseline protocol
+    description: fixed prompt; model version; decoding; saved outputs
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming prompting baseline design automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents prompting baseline design?
+    options:
+    - Establish a reproducible prompting baseline before adapting model weights.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Establish a reproducible prompting baseline before adapting model weights.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in prompting baseline design.
+    expected_answer: A correct answer should explain the central idea of prompting baseline design and connect it
+      to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply prompting baseline design and how
+      you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for prompting baseline design. State the inputs, baseline,
+    two metrics, one likely failure and how you would document the result.
+- id: CO5-P04-C02
+  code: CO5.4.2
+  title: RAG baseline design
+  session: 28
+  skilling_exp: 'CO5 practical focus: prompting and rag baselines'
+  btl: Evaluate
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P04-C01
+  eli5: Build a retrieval-grounded baseline and measure its contribution on the same task.
+  key_points:
+  - Explain the purpose and boundary of rag baseline design.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: A RAG baseline retrieves relevant source material and supplies it to the model with the question. Its
+    quality depends on ingestion, chunking, embedding, retrieval, context construction and generation, not only
+    on the language model. Record the corpus revision, embedding model, chunking settings, retrieval method, top-k
+    and prompt version. Evaluate whether retrieved evidence supports the answer, whether citations are correct and
+    whether the system declines unsupported questions. Use the same shared test set as the prompting baseline. RAG
+    can improve access to external facts, but irrelevant retrieval or poor chunking can reduce quality and increase
+    latency and cost.
+  formulas: []
+  viz:
+    type: RAG baseline flow
+    description: corpus; embedding; retrieval; context; grounded response
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming rag baseline design automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents rag baseline design?
+    options:
+    - Build a retrieval-grounded baseline and measure its contribution on the same task.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Build a retrieval-grounded baseline and measure its contribution on the
+      same task.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in rag baseline design.
+    expected_answer: A correct answer should explain the central idea of rag baseline design and connect it to a
+      relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply rag baseline design and how you
+      would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for rag baseline design. State the inputs, baseline, two metrics,
+    one likely failure and how you would document the result.
+- id: CO5-P04-C03
+  code: CO5.4.3
+  title: Accuracy, latency and cost measurement
+  session: 28
+  skilling_exp: 'CO5 practical focus: prompting and rag baselines'
+  btl: Evaluate
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P04-C02
+  eli5: Compare baselines using consistent quality and operational measurements.
+  key_points:
+  - Explain the purpose and boundary of accuracy, latency and cost measurement.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: The course requires prompting and RAG baselines to be compared on accuracy, latency and cost. Define
+    accuracy in a way that fits the task, such as exact match, classification F1 or a calibrated rubric. Measure
+    latency consistently, noting whether it includes retrieval and network time; report a useful statistic such
+    as median and a tail percentile. Estimate cost using input/output tokens, embedding calls, storage and any other
+    material service charges. Record hardware, provider and test conditions. A quality improvement may be unattractive
+    if it creates excessive latency or cost, while a cheaper approach may be unacceptable if it misses critical
+    cases. Report trade-offs instead of hiding them in one score.
+  formulas: []
+  viz:
+    type: measurement dashboard
+    description: accuracy; latency; tokens; cost; comparable conditions
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming accuracy, latency and cost measurement automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents accuracy, latency and cost measurement?
+    options:
+    - Compare baselines using consistent quality and operational measurements.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Compare baselines using consistent quality and operational measurements.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in accuracy, latency and cost measurement.
+    expected_answer: A correct answer should explain the central idea of accuracy, latency and cost measurement
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply accuracy, latency and cost measurement
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for accuracy, latency and cost measurement. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.

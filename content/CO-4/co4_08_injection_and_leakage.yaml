@@ -1,0 +1,220 @@
+part:
+  id: CO4-P08
+  co: CO4
+  title: Prompt Injection and Information Leakage
+  order: 8
+  concept_ids:
+  - CO4-P08-C01
+  - CO4-P08-C02
+  - CO4-P08-C03
+concepts:
+- id: CO4-P08-C01
+  code: CO4.8.1
+  title: Direct prompt injection
+  session: 26
+  skilling_exp: 'CO4 practical focus: prompt injection and information leakage'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO4-P07-C03
+  eli5: Recognise user attempts to override instructions or extract protected information.
+  key_points:
+  - Define the purpose and boundary of direct prompt injection.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Direct prompt injection occurs when user-supplied content attempts to change the model's governing
+    instructions, bypass constraints or reveal protected information. Examples include requests to ignore previous
+    directions or disclose hidden prompts. Defences should not rely on a single refusal sentence. Keep secrets out
+    of model context, separate trusted instructions from user input, apply server-side access controls and test
+    expected refusal behaviour. The model may still be manipulated, so sensitive operations must be enforced outside
+    the model. Record attack patterns and test both obvious and disguised variants without storing unnecessary private
+    content.
+  formulas: []
+  viz:
+    type: Direct injection path
+    description: malicious user text; instruction conflict; refusal; server-side control
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Believing that hiding the system prompt alone secures the application.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes direct prompt injection?
+    options:
+    - It applies recognise user attempts to override instructions or extract protected information. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because recognise user attempts to override instructions or extract protected
+      information. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying direct prompt injection.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to direct prompt injection.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply direct prompt injection to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for direct prompt injection, define expected behaviour, and record one
+    failure mode and one safeguard.
+- id: CO4-P08-C02
+  code: CO4.8.2
+  title: Indirect prompt injection in retrieved content
+  session: 26
+  skilling_exp: 'CO4 practical focus: prompt injection and information leakage'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO4-P08-C01
+  eli5: Treat documents, webpages and tool outputs as untrusted data that may contain instructions.
+  key_points:
+  - Define the purpose and boundary of indirect prompt injection in retrieved content.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Indirect injection is embedded in content the application retrieves or processes, such as a document,
+    webpage, email or tool result. The text may address the model directly and attempt to change its behaviour.
+    Retrieval does not make content trustworthy. Delimit retrieved passages, identify their source and instruct
+    the model to use them as evidence rather than authority. Apply source permissions before retrieval, filter sensitive
+    content and prevent retrieved text from authorising tools. Test benign-looking documents that contain hidden
+    or explicit instructions and check whether the model follows the task rather than the embedded attack.
+  formulas: []
+  viz:
+    type: Indirect injection flow
+    description: retrieved content; source label; untrusted boundary; tool isolation
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Treating retrieved documents as trusted because they came from an internal index.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes indirect prompt injection in retrieved content?
+    options:
+    - It applies treat documents, webpages and tool outputs as untrusted data that may contain instructions. through
+      an explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because treat documents, webpages and tool outputs as untrusted data that
+      may contain instructions. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying indirect prompt injection in retrieved content.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to indirect prompt injection in retrieved content.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply indirect prompt injection in retrieved
+      content to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for indirect prompt injection in retrieved content, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P08-C03
+  code: CO4.8.3
+  title: System-prompt leakage and information protection
+  session: 26
+  skilling_exp: 'CO4 practical focus: prompt injection and information leakage'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO4-P08-C02
+  eli5: Prevent confidential instructions and data from being exposed through outputs or logs.
+  key_points:
+  - Define the purpose and boundary of system-prompt leakage and information protection.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Prompt leakage occurs when protected prompt content, secrets or internal configuration is revealed.
+    The strongest control is not to place credentials or unnecessary confidential data in the prompt at all. Restrict
+    access to prompt assets, separate configuration secrets, redact logs and define which internal details may be
+    disclosed. Test direct requests, role-play attempts, encoding tricks and indirect attacks through retrieved
+    material. Also consider leakage through error messages, traces and analytics dashboards. A refusal response
+    is useful, but access control, data minimisation and secure observability are the primary safeguards.
+  formulas: []
+  viz:
+    type: Leakage surface
+    description: secret minimisation; access control; redaction; audit
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Putting API keys or passwords inside a system prompt and asking the model to hide them.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes system-prompt leakage and information protection?
+    options:
+    - It applies prevent confidential instructions and data from being exposed through outputs or logs. through
+      an explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because prevent confidential instructions and data from being exposed through
+      outputs or logs. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying system-prompt leakage and information protection.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to system-prompt leakage and information protection.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply system-prompt leakage and information
+      protection to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for system-prompt leakage and information protection, define expected behaviour,
+    and record one failure mode and one safeguard.

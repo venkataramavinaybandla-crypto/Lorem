@@ -1,0 +1,220 @@
+part:
+  id: CO4-P07
+  co: CO4
+  title: Safe Fallbacks and Controlled Tool Calling
+  order: 7
+  concept_ids:
+  - CO4-P07-C01
+  - CO4-P07-C02
+  - CO4-P07-C03
+concepts:
+- id: CO4-P07-C01
+  code: CO4.7.1
+  title: Tool schemas and function descriptions
+  session: 25
+  skilling_exp: 'CO4 practical focus: safe fallbacks and controlled tool calling'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P06-C03
+  eli5: Describe tools with narrow names, purposes, argument types and expected results.
+  key_points:
+  - Define the purpose and boundary of tool schemas and function descriptions.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Tool calling allows a model to request an application-defined operation. A tool schema should describe
+    a single, narrow capability with typed arguments, required fields and clear constraints. Tool descriptions should
+    state when the tool is appropriate and what it cannot do. Avoid broad tools such as unrestricted shell execution
+    or arbitrary database queries. The model proposes a call; the application remains responsible for validating,
+    authorising and executing it. Return only the result needed for the next step, and treat tool output as data
+    rather than new trusted instructions.
+  formulas: []
+  viz:
+    type: Tool contract
+    description: tool name; description; argument schema; result
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Giving the model an unrestricted tool when a narrow operation would suffice.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes tool schemas and function descriptions?
+    options:
+    - It applies describe tools with narrow names, purposes, argument types and expected results. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because describe tools with narrow names, purposes, argument types and expected
+      results. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying tool schemas and function descriptions.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to tool schemas and function descriptions.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply tool schemas and function descriptions
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for tool schemas and function descriptions, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P07-C02
+  code: CO4.7.2
+  title: Argument validation and allow-lists
+  session: 25
+  skilling_exp: 'CO4 practical focus: safe fallbacks and controlled tool calling'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P07-C01
+  eli5: Validate every proposed tool argument and restrict operations to explicitly permitted choices.
+  key_points:
+  - Define the purpose and boundary of argument validation and allow-lists.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: A model-generated tool call is untrusted input. Validate types, ranges, formats and relationships before
+    execution. Use allow-lists for tool names, resources, actions and permitted enum values. Check user authorisation
+    independently of what the model claims. For example, a valid-looking account identifier does not prove that
+    the current user may access it. Reject unexpected fields and dangerous combinations, and use parameterised database
+    operations rather than concatenated query strings. Record denied calls for monitoring without exposing private
+    values in logs.
+  formulas: []
+  viz:
+    type: Tool authorization gate
+    description: schema validation; allow-list; identity check; parameterisation
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Trusting a model-generated argument because it matches the expected data type.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes argument validation and allow-lists?
+    options:
+    - It applies validate every proposed tool argument and restrict operations to explicitly permitted choices.
+      through an explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because validate every proposed tool argument and restrict operations to
+      explicitly permitted choices. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying argument validation and allow-lists.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to argument validation and allow-lists.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply argument validation and allow-lists to
+      improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for argument validation and allow-lists, define expected behaviour, and
+    record one failure mode and one safeguard.
+- id: CO4-P07-C03
+  code: CO4.7.3
+  title: Execution boundaries and tool result handling
+  session: 25
+  skilling_exp: 'CO4 practical focus: safe fallbacks and controlled tool calling'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P07-C02
+  eli5: Keep tool execution in application code and handle results as untrusted data.
+  key_points:
+  - Define the purpose and boundary of execution boundaries and tool result handling.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: The application should decide whether a proposed call is permitted, execute it with least privilege
+    and constrain its side effects. Use timeouts, rate limits, idempotency controls and audit logs for operations
+    that change state. Confirm high-impact actions when required. Tool results may contain stale, malformed or adversarial
+    text, so label them as returned data and do not let them override system policy. Handle timeouts and partial
+    failures with clear status objects. Separate read-only tools from write operations and make the permission boundary
+    visible in tests and code reviews.
+  formulas: []
+  viz:
+    type: Execution boundary
+    description: least privilege; timeout; idempotency; audit; confirmation
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Allowing tool output to issue new instructions or trigger unchecked follow-up actions.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes execution boundaries and tool result handling?
+    options:
+    - It applies keep tool execution in application code and handle results as untrusted data. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because keep tool execution in application code and handle results as untrusted
+      data. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying execution boundaries and tool result handling.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to execution boundaries and tool result handling.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply execution boundaries and tool result
+      handling to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for execution boundaries and tool result handling, define expected behaviour,
+    and record one failure mode and one safeguard.

@@ -1,0 +1,258 @@
+part:
+  id: co3-part-10
+  co: CO3
+  title: Refusal, Evaluation and Release v0.3
+  order: 10
+  concept_ids:
+  - unsupported-question-detection
+  - refusal-path-and-safe-response
+  - rag-evaluation-report-release-v03
+concepts:
+- id: unsupported-question-detection
+  code: GA-CO3.10.1
+  title: Detecting Unsupported Questions
+  session: 22
+  skilling_exp: 3
+  btl: 6
+  difficulty: 3
+  prereqs: []
+  eli5: A RAG service should recognise when its retrieved sources do not support an answer instead of fabricating
+    a response.
+  key_points:
+  - A query can be in-domain but still unsupported by the available documents.
+  - Similarity score alone is not proof that a passage answers the question.
+  - Use evidence checks and a defined refusal policy.
+  deep_dive: A RAG system should not assume that every query has an answer in its document collection. A query may
+    be unrelated to the course, may ask for a fact absent from the sources or may retrieve only loosely related
+    passages. Similarity scores can help identify weak matches, but they are not universal confidence probabilities
+    and should not be treated as proof of support. Unsupported-question detection should combine retrieval evidence,
+    source coverage and answer-support checks. The application should distinguish 'no relevant source found' from
+    'source found but answer is ambiguous' and 'sources conflict'. These cases may require a refusal, clarification
+    request or qualified response.
+  formulas: []
+  viz:
+    type: support_detection
+    description: Classify query outcomes as supported, unsupported or conflicting based on source evidence.
+    params:
+    - name: case
+      label: Case
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: case
+    compute:
+      case: case
+      labels:
+      - supporting source found
+      - no supporting source
+      - conflicting sources
+    outcomes:
+    - when: case == 1
+      title: Supported
+      explain: Retrieved evidence directly addresses the question.
+      severity: info
+    - when: case == 2
+      title: Unsupported
+      explain: The available sources do not establish an answer.
+      severity: info
+    - when: case == 3
+      title: Conflicting evidence
+      explain: Sources disagree and the conflict must be surfaced.
+      severity: info
+    combos_to_try:
+    - set:
+        case: 1
+      lesson: Prepare ten answerable and ten unanswerable course questions and label their expected evidence status.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Why is a high vector similarity score not sufficient proof that a query is answerable?
+    options:
+    - Similarity indicates closeness, not necessarily factual support
+    - It proves the source is current
+    - It guarantees citation correctness
+    - It replaces human evaluation
+    answer: 0
+    explanation: A close vector can still be irrelevant or insufficient.
+  - type: short_answer
+    question: Distinguish an unsupported query from a query with conflicting sources.
+    answer: Unsupported means no retrieved source establishes an answer; conflicting means available sources disagree.
+    explanation: Define both cases clearly.
+  - type: application
+    question: A user asks for the instructor's phone number, but the course material contains no such information.
+      What should the RAG service do?
+    answer: Decline to provide the number and explain that the available course sources do not contain it.
+    explanation: Avoid inventing personal or missing data.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Prepare ten answerable and ten unanswerable course questions and label their expected evidence status.
+- id: refusal-path-and-safe-response
+  code: GA-CO3.10.2
+  title: Refusal Path and Safe Response
+  session: 22
+  skilling_exp: 3
+  btl: 6
+  difficulty: 3
+  prereqs: []
+  eli5: The refusal path gives a clear response when evidence is insufficient, while preserving transparency about
+    what the system searched.
+  key_points:
+  - Refusal should be based on evidence support, not arbitrary wording.
+  - The response should state the limitation without inventing details.
+  - A refusal can offer a useful next step, such as asking for a source or clarification.
+  deep_dive: A refusal path is an intentional branch in the RAG application. It is used when retrieval and evidence
+    checks do not establish a reliable answer. A useful refusal should be concise, explain that the available sources
+    do not support the requested claim and avoid guessing. Where appropriate, it can ask the user to provide a document,
+    narrow the question or consult an authoritative source. The application should log the reason for refusal and
+    the relevant retrieval diagnostics without exposing sensitive internal data. Refusal behaviour should be tested
+    with both truly unsupported questions and answerable questions that are phrased unusually, to reduce false refusals.
+  formulas: []
+  viz:
+    type: refusal_flow
+    description: Follow the supported-answer and unsupported-answer branches of a RAG endpoint.
+    params:
+    - name: evidence
+      label: Evidence
+      min: 1
+      max: 2
+      step: 1
+      default: 1
+      unit: evidence state
+    compute:
+      evidence: evidence
+      branches:
+      - sufficient supporting evidence
+      - insufficient or conflicting evidence
+    outcomes:
+    - when: evidence == 1
+      title: Generate grounded answer
+      explain: Answer using the retrieved evidence and attach citations.
+      severity: info
+    - when: evidence == 2
+      title: Refuse or clarify
+      explain: Explain the evidence gap and do not fabricate an answer.
+      severity: info
+    combos_to_try:
+    - set:
+        evidence: 1
+      lesson: 'Write three refusal examples: out-of-domain, missing-source and conflicting-source questions.'
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What should a refusal path do when sources do not support an answer?
+    options:
+    - State the evidence limitation and avoid fabricating details
+    - Invent a likely answer
+    - Cite the nearest-looking document regardless of support
+    - Hide the retrieval failure
+    answer: 0
+    explanation: The refusal path should be transparent and grounded.
+  - type: short_answer
+    question: Why should refusal behaviour be tested against answerable questions too?
+    answer: To detect false refusals where the system declines despite sufficient evidence.
+    explanation: Mention both safety and answer availability.
+  - type: application
+    question: The retrieval system finds two contradictory course dates. What is a safer response than choosing
+      one at random?
+    answer: Surface the conflict and request clarification or an authoritative updated source.
+    explanation: Do not silently resolve unsupported conflicts.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: 'Write three refusal examples: out-of-domain, missing-source and conflicting-source questions.'
+- id: rag-evaluation-report-release-v03
+  code: GA-CO3.10.3
+  title: RAG Evaluation Report and Release v0.3
+  session: 22
+  skilling_exp: 3
+  btl: 6
+  difficulty: 3
+  prereqs: []
+  eli5: A release report records retrieval and answer evidence, known limitations and the conditions under which
+    the RAG service is ready to use.
+  key_points:
+  - Evaluate retrieval with Hit Rate@k and MRR on labelled questions.
+  - Inspect citation support and refusal behaviour as well as retrieval scores.
+  - Record configuration, dataset version, limitations and release decision.
+  deep_dive: The CO-3 release should be supported by a reproducible evaluation report. The report records the source
+    collection and version, chunking configuration, embedding model, vector index settings, top-k value and evaluation
+    query set. Retrieval should be measured using Hit Rate@k and MRR, with NDCG awareness when graded relevance
+    is available. The report should also inspect whether generated answers are supported by retrieved sources, whether
+    citations resolve correctly and whether unsupported questions trigger the refusal path. Operational measurements
+    such as latency and context token usage help explain the cost of the selected design. A release decision should
+    state what passed, what remains limited and what must be re-evaluated after data or model changes.
+  formulas: []
+  viz:
+    type: release_report
+    description: Review the evidence categories required for a CO-3 RAG release.
+    params:
+    - name: section
+      label: Section
+      min: 1
+      max: 6
+      step: 1
+      default: 1
+      unit: report section
+    compute:
+      section: section
+      sections:
+      - dataset and versions
+      - ingestion and chunking
+      - embedding and index configuration
+      - retrieval metrics
+      - citation and refusal tests
+      - limitations and release decision
+    outcomes:
+    - when: section <= 3
+      title: Configuration evidence
+      explain: Record the data and system settings needed to reproduce the run.
+      severity: info
+    - when: section >= 4
+      title: Outcome evidence
+      explain: Record measured quality, failure tests and the release decision.
+      severity: info
+    combos_to_try:
+    - set:
+        section: 1
+      lesson: Draft a CO-3 release report with a fixed query set, Hit Rate@k, MRR, citation checks and unsupported-question
+        tests.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Which metric pair is explicitly required in the CO-3 outcome?
+    options:
+    - Hit Rate@k and MRR
+    - BLEU and ROUGE only
+    - Accuracy and perplexity only
+    - Latency and GPU temperature only
+    answer: 0
+    explanation: The course outcome names Hit Rate@k and MRR.
+  - type: short_answer
+    question: Why should a RAG evaluation report include dataset and configuration versions?
+    answer: They make the results reproducible and help explain changes after documents, models or index settings
+      are updated.
+    explanation: Mention reproducibility and comparison.
+  - type: application
+    question: Hit Rate@5 is high, but citation checks fail frequently. Is the service ready to release?
+    answer: Not without addressing citation correctness; retrieval coverage alone does not prove that generated
+      claims are properly supported.
+    explanation: Use multiple release criteria.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Draft a CO-3 release report with a fixed query set, Hit Rate@k, MRR, citation checks and unsupported-question
+    tests.

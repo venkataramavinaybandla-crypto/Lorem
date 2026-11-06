@@ -1,0 +1,220 @@
+part:
+  id: CO4-P09
+  co: CO4
+  title: Prompt Evaluation and LLM-as-a-Judge
+  order: 9
+  concept_ids:
+  - CO4-P09-C01
+  - CO4-P09-C02
+  - CO4-P09-C03
+concepts:
+- id: CO4-P09-C01
+  code: CO4.9.1
+  title: Evaluation rubrics and golden test sets
+  session: 27
+  skilling_exp: 'CO4 practical focus: prompt evaluation and llm-as-a-judge'
+  btl: Understand
+  difficulty: Advanced
+  prereqs:
+  - CO4-P08-C03
+  eli5: Define task-specific scoring criteria and maintain a stable set of representative examples.
+  key_points:
+  - Define the purpose and boundary of evaluation rubrics and golden test sets.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: A prompt should be evaluated against a fixed golden set that reflects real tasks, common cases, edge
+    cases and known failure modes. A rubric defines observable criteria such as factual support, completeness, relevance,
+    format compliance, citation quality and safe handling of unsupported requests. Specify scoring anchors so different
+    reviewers interpret the scale consistently. Keep test data versioned and document its source and limitations.
+    Avoid tuning repeatedly against a tiny public set that may become memorised. Include negative and adversarial
+    examples where relevant, and preserve a holdout set for less biased evaluation.
+  formulas: []
+  viz:
+    type: Evaluation design
+    description: golden set; rubric; scoring anchor; holdout set
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Changing the test set between prompt versions and calling the scores comparable.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes evaluation rubrics and golden test sets?
+    options:
+    - It applies define task-specific scoring criteria and maintain a stable set of representative examples. through
+      an explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because define task-specific scoring criteria and maintain a stable set of
+      representative examples. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying evaluation rubrics and golden test sets.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to evaluation rubrics and golden test sets.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply evaluation rubrics and golden test sets
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for evaluation rubrics and golden test sets, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P09-C02
+  code: CO4.9.2
+  title: LLM-as-a-judge design and calibration
+  session: 27
+  skilling_exp: 'CO4 practical focus: prompt evaluation and llm-as-a-judge'
+  btl: Understand
+  difficulty: Advanced
+  prereqs:
+  - CO4-P09-C01
+  eli5: Use a judge model with a clear rubric and compare its scores against human labels.
+  key_points:
+  - Define the purpose and boundary of llm-as-a-judge design and calibration.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: An LLM judge can help scale evaluation by scoring candidate responses against a defined rubric. The
+    judge prompt should provide criteria, scoring anchors and the evidence it may use. Reduce bias by anonymising
+    candidate labels, randomising response order and asking for structured scores with concise evidence. Judge outputs
+    are themselves model outputs and can be inconsistent or biased toward verbosity, style or a particular answer
+    position. Compare judge labels with human annotations on a shared sample, inspect disagreements and revise the
+    rubric or judge prompt before using it for regression decisions.
+  formulas: []
+  viz:
+    type: Judge calibration
+    description: judge prompt; human labels; agreement; disagreement analysis
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Treating the judge model's score as ground truth without calibration.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes llm-as-a-judge design and calibration?
+    options:
+    - It applies use a judge model with a clear rubric and compare its scores against human labels. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because use a judge model with a clear rubric and compare its scores against
+      human labels. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying llm-as-a-judge design and calibration.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to llm-as-a-judge design and calibration.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply llm-as-a-judge design and calibration
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for llm-as-a-judge design and calibration, define expected behaviour, and
+    record one failure mode and one safeguard.
+- id: CO4-P09-C03
+  code: CO4.9.3
+  title: Agreement, metrics and evaluation reporting
+  session: 27
+  skilling_exp: 'CO4 practical focus: prompt evaluation and llm-as-a-judge'
+  btl: Understand
+  difficulty: Advanced
+  prereqs:
+  - CO4-P09-C02
+  eli5: Report judge-human agreement and task metrics with limitations and failure examples.
+  key_points:
+  - Define the purpose and boundary of agreement, metrics and evaluation reporting.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Evaluation reports should combine quantitative metrics with qualitative inspection. Depending on the
+    task, report exact match, precision/recall/F1, schema-validity rate, citation support, refusal accuracy or pairwise
+    preference. For judge calibration, report an appropriate agreement measure and inspect the confusion matrix
+    or disagreement categories. Include sample size and uncertainty where possible. Segment results by task type
+    and input difficulty to expose regressions hidden by an average. A useful report states what changed, what improved,
+    what worsened and which limitations remain; it does not reduce quality to a single opaque score.
+  formulas: []
+  viz:
+    type: Evaluation report
+    description: agreement; confusion matrix; segment; confidence; limitation
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Reporting one aggregate score without explaining errors or evaluator agreement.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes agreement, metrics and evaluation reporting?
+    options:
+    - It applies report judge-human agreement and task metrics with limitations and failure examples. through an
+      explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because report judge-human agreement and task metrics with limitations and
+      failure examples. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying agreement, metrics and evaluation reporting.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to agreement, metrics and evaluation reporting.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply agreement, metrics and evaluation reporting
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for agreement, metrics and evaluation reporting, define expected behaviour,
+    and record one failure mode and one safeguard.

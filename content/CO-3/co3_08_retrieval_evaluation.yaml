@@ -1,0 +1,255 @@
+part:
+  id: co3-part-08
+  co: CO3
+  title: Retrieval Evaluation
+  order: 8
+  concept_ids:
+  - top-k-retrieval
+  - hit-rate-at-k-and-mrr
+  - ndcg-and-relevance-grades
+concepts:
+- id: top-k-retrieval
+  code: GA-CO3.8.1
+  title: Top-k Retrieval
+  session: 20
+  skilling_exp: 3
+  btl: 5
+  difficulty: 3
+  prereqs: []
+  eli5: Top-k retrieval returns the k highest-ranked candidate chunks for a query.
+  key_points:
+  - k controls the number of returned candidates.
+  - A small k may miss relevant evidence; a large k may add noise and context cost.
+  - k should be selected using a representative evaluation set.
+  deep_dive: After ranking document chunks by a retrieval score, a top-k search returns the first k candidates.
+    The value of k controls how much evidence is made available to downstream context construction. If k is too
+    small, the system may miss a relevant passage. If k is too large, irrelevant or redundant chunks can consume
+    the context budget and distract generation. Top-k is therefore both a retrieval and a system-design parameter.
+    It should be evaluated alongside chunk size, overlap and index configuration. The chosen k should reflect the
+    task's evidence needs, context window and latency budget.
+  formulas: []
+  viz:
+    type: top_k_selection
+    description: Adjust k and inspect how candidate count affects coverage and context size.
+    params:
+    - name: k
+      label: K
+      min: 1
+      max: 10
+      step: 1
+      default: 4
+      unit: results
+    compute:
+      k: k
+      candidate_count: k
+      note: Illustrative; use measured retrieval results for selection.
+    outcomes:
+    - when: k <= 3
+      title: Narrow candidate set
+      explain: Lower context load but potentially lower evidence coverage.
+      severity: info
+    - when: k >= 7
+      title: Broad candidate set
+      explain: More possible evidence but greater context and noise risk.
+      severity: info
+    combos_to_try:
+    - set:
+        k: 4
+      lesson: Evaluate k values 1, 3, 5 and 8 on the same labelled question set.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What does k mean in top-k retrieval?
+    options:
+    - The number of highest-ranked candidates returned
+    - The number of embedding dimensions
+    - The number of MongoDB databases
+    - The number of model layers
+    answer: 0
+    explanation: Top-k returns k ranked candidates.
+  - type: short_answer
+    question: Why can a very large k reduce RAG answer quality?
+    answer: It can introduce irrelevant or redundant chunks that consume context and distract generation.
+    explanation: Mention context noise.
+  - type: application
+    question: A relevant chunk appears at rank 6 but the system retrieves only k=3. What does this reveal?
+    answer: The current k is too small to include that relevant chunk for this query.
+    explanation: Relate rank position to k.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Evaluate k values 1, 3, 5 and 8 on the same labelled question set.
+- id: hit-rate-at-k-and-mrr
+  code: GA-CO3.8.2
+  title: Hit Rate@k and Mean Reciprocal Rank
+  session: 20
+  skilling_exp: 3
+  btl: 5
+  difficulty: 3
+  prereqs: []
+  eli5: Hit Rate@k measures whether at least one relevant item appears in the top k. MRR rewards systems that rank
+    the first relevant item higher.
+  key_points:
+  - Hit Rate@k is based on whether a query has any relevant result in its top-k list.
+  - Reciprocal rank is 1 divided by the rank of the first relevant result.
+  - MRR averages reciprocal rank across queries.
+  deep_dive: 'Retrieval evaluation needs labelled relevance judgements. Hit Rate@k asks whether at least one relevant
+    document appears among the first k retrieved results for a query. It is commonly reported as the fraction of
+    queries with a hit. Mean Reciprocal Rank (MRR) focuses on the position of the first relevant result: if the
+    first relevant item is at rank r, its reciprocal rank is 1/r. MRR averages this value across queries. A system
+    can have a good Hit Rate@k but a lower MRR if relevant chunks are often near the bottom of the top-k list. Both
+    metrics provide useful but different information.'
+  formulas:
+  - HitRate@k = queries_with_relevant_item_in_top_k / total_queries
+  - RR(q) = 1 / rank_of_first_relevant
+  - MRR = (1/N) Σ_q RR(q)
+  viz:
+    type: retrieval_metrics
+    description: Compute Hit Rate@k and reciprocal rank for a small set of ranked results.
+    params:
+    - name: k
+      label: K
+      min: 1
+      max: 5
+      step: 1
+      default: 3
+      unit: k
+    compute:
+      k: k
+      example_ranks:
+      - 1
+      - 3
+      - null
+      - 2
+      note: None means no relevant result in the retrieved list.
+    outcomes:
+    - when: k <= 2
+      title: Strict cutoff
+      explain: Only the earliest ranked candidates count toward Hit Rate@k.
+      severity: info
+    - when: k >= 4
+      title: Broader cutoff
+      explain: More relevant items may be included in the hit calculation.
+      severity: info
+    combos_to_try:
+    - set:
+        k: 3
+      lesson: Calculate Hit Rate@3 and MRR for four queries with first relevant ranks 1, 3, no hit and 2.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: If the first relevant result is at rank 4, what is its reciprocal rank?
+    options:
+    - 1/4
+    - '4'
+    - '0'
+    - '1'
+    answer: 0
+    explanation: Reciprocal rank is one divided by the rank.
+  - type: short_answer
+    question: How do Hit Rate@k and MRR differ?
+    answer: Hit Rate@k checks whether any relevant result appears in the top k; MRR rewards a high rank for the
+      first relevant result.
+    explanation: Contrast hit existence and rank position.
+  - type: application
+    question: Two systems have equal Hit Rate@5, but system A has higher MRR. What does that indicate?
+    answer: Both retrieve at least one relevant result for a similar share of queries, but A tends to rank the first
+      relevant result higher.
+    explanation: Interpret the metric difference.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Calculate Hit Rate@3 and MRR for four queries with first relevant ranks 1, 3, no hit and 2.
+- id: ndcg-and-relevance-grades
+  code: GA-CO3.8.3
+  title: NDCG Awareness and Graded Relevance
+  session: 20
+  skilling_exp: 3
+  btl: 5
+  difficulty: 3
+  prereqs: []
+  eli5: NDCG evaluates ranked results using graded relevance and discounts relevant items that appear lower in the
+    ranking.
+  key_points:
+  - NDCG can represent multiple relevance grades.
+  - Higher-ranked relevant results contribute more due to rank discounting.
+  - NDCG is normalised against an ideal ranking.
+  deep_dive: Normalised Discounted Cumulative Gain (NDCG) is useful when relevance is graded rather than binary.
+    A result may be highly relevant, partially relevant or irrelevant. DCG accumulates relevance gains while discounting
+    items lower in the ranking, and NDCG divides by the ideal DCG for that query to produce a normalised measure.
+    This rewards rankings that place highly relevant results near the top. The course handout explicitly includes
+    NDCG awareness alongside Hit Rate@k and MRR. For a practical first evaluation, Hit Rate@k and MRR may be simpler
+    to implement, while NDCG becomes useful when the relevance labels distinguish degrees of usefulness.
+  formulas:
+  - DCG@k = Σ_i (2^rel_i - 1) / log2(i+1)
+  - NDCG@k = DCG@k / IDCG@k
+  viz:
+    type: ndcg_ranking
+    description: Compare two ranked lists with graded relevance labels.
+    params:
+    - name: rank
+      label: Rank
+      min: 1
+      max: 5
+      step: 1
+      default: 1
+      unit: rank
+    compute:
+      rank: rank
+      relevance_grades:
+      - 3
+      - 2
+      - 1
+      - 0
+      - 0
+      note: Higher relevance grades indicate stronger relevance.
+    outcomes:
+    - when: rank <= 2
+      title: Top-ranked relevance
+      explain: Highly relevant items near the top contribute strongly.
+      severity: info
+    - when: rank >= 4
+      title: Lower-ranked relevance
+      explain: The same relevance contributes less when ranked lower.
+      severity: info
+    combos_to_try:
+    - set:
+        rank: 1
+      lesson: Assign graded relevance labels to five retrieved chunks and explain which ranking has better NDCG.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What additional information can NDCG use beyond a binary relevant/not-relevant label?
+    options:
+    - Graded relevance levels
+    - Only document filenames
+    - Only vector dimensions
+    - Only response latency
+    answer: 0
+    explanation: NDCG can use graded relevance values.
+  - type: short_answer
+    question: Why does NDCG discount lower-ranked results?
+    answer: A relevant result appearing near the top is generally more useful than the same result buried lower
+      in the ranking.
+    explanation: Mention rank-sensitive usefulness.
+  - type: application
+    question: A result list places a highly relevant chunk at rank 1 and a moderately relevant chunk at rank 2.
+      Why might this rank better than the reverse?
+    answer: NDCG gives greater weight to highly relevant items when they appear near the top.
+    explanation: Connect relevance grade and rank discount.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Assign graded relevance labels to five retrieved chunks and explain which ranking has better NDCG.

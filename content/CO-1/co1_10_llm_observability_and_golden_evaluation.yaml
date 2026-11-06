@@ -1,0 +1,272 @@
+part:
+  id: co1-part-10
+  co: CO1
+  title: LLM Observability and Golden-Set Evaluation
+  order: 10
+  concept_ids:
+  - token-latency-cost-logging
+  - golden-set-evaluation-and-comparison
+  - release-review-and-decision-evidence
+concepts:
+- id: token-latency-cost-logging
+  code: GA-CO1.10.1
+  title: Logging Tokens, Latency, and Cost
+  session: 10
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - client-errors-and-observability
+  eli5: Request-level logging records how much a model call used, how long it took and what it cost. These
+    measurements help teams understand a feature's behaviour over time rather than judging it from a few
+    outputs.
+  key_points:
+  - Log input and output token counts separately.
+  - Measure request latency consistently.
+  - Record cost or the assumptions used to estimate it.
+  - Include provider, model, timestamp and outcome for interpretation.
+  deep_dive: 'The CO-1 outcome specifically names token, latency and cost logging. A useful request record
+    should identify the provider and model, capture the request time and completion time, store input
+    and output token counts, and record the request outcome. When provider-reported usage is available,
+    preserve it; when token counts are estimated locally, label them as estimates and record which tokenizer
+    was used. Cost should be linked to the applicable price schedule and its effective date, because provider
+    pricing can change. Latency should use a consistent measurement boundary, such as time from request
+    submission to response receipt. Aggregating these records allows a team to calculate average usage,
+    identify expensive request patterns and detect latency or failure changes. Logging should be designed
+    with privacy in mind: avoid storing credentials and do not retain full prompts or responses unless
+    there is a clear need and appropriate controls. Measurement is the evidence layer for later model
+    and architecture decisions.'
+  formulas: []
+  viz:
+    type: observability-record
+    description: Select which request metrics are included in a standard LLM call record.
+    params:
+    - name: metric_set
+      label: Metric Set
+      min: 1
+      max: 4
+      step: 1
+      default: 4
+      unit: metrics
+    compute:
+      metric_set: metric_set
+      fields:
+      - provider/model
+      - input/output tokens
+      - latency
+      - cost and status
+    outcomes:
+    - when: metric_set == 4
+      title: Core operational record
+      explain: The record includes identity, usage, latency, cost and outcome information.
+      severity: info
+    combos_to_try:
+    - set:
+        metric_set: 4
+      lesson: Create three mock request records and calculate average latency and total token usage.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes logging tokens, latency, and cost?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of logging tokens, latency, and cost in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which logging tokens, latency, and cost matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - practical
+  mini_task: Define a minimal JSON-style logging contract for an LLM request.
+- id: golden-set-evaluation-and-comparison
+  code: GA-CO1.10.2
+  title: Golden Question Set Evaluation
+  session: 10
+  skilling_exp: 3
+  btl: 3
+  difficulty: 2
+  prereqs:
+  - token-latency-cost-logging
+  eli5: Golden-set evaluation runs the same fixed questions against a model client or release and records
+    both answer quality and operational measurements. It helps compare changes using repeatable evidence.
+  key_points:
+  - The golden question set is created in Module I.
+  - The same questions are re-run after each module.
+  - Compare quality and operational measurements across releases.
+  - Keep model, prompt and configuration details with the results.
+  deep_dive: The handout states that the golden question set is written in Module I and re-run after every
+    module. For CO-1, this set establishes a repeatable baseline for the logged LLM client. Each run should
+    preserve the exact question wording and record the model provider, model identifier, relevant configuration,
+    output, token usage, latency, cost and observed failures. Where answer quality is evaluated, use a
+    consistent rubric or expected evidence so that comparisons are not based only on subjective impressions.
+    A model or prompt change may improve one question while worsening another, so results should be reviewed
+    at the question level as well as in aggregate. The handout does not specify a fixed scoring rubric
+    or a required number of golden questions; teams should document the chosen evaluation method. The
+    goal is not to claim that a small set proves universal quality. It is to create a stable, practical
+    test that reveals regressions and supports measured decisions as the course project evolves.
+  formulas: []
+  viz:
+    type: golden-run-comparison
+    description: Compare baseline and current release measurements for the same evaluation question.
+    params:
+    - name: release
+      label: Release
+      min: 1
+      max: 5
+      step: 1
+      default: 2
+      unit: release
+    compute:
+      release: release
+      comparison: Use identical questions and comparable settings when comparing runs.
+    outcomes:
+    - when: release == 1
+      title: Baseline established
+      explain: The first run is the reference point for later releases.
+      severity: info
+    - when: release > 1
+      title: Release comparison
+      explain: Review per-question quality, tokens, latency, cost and failures against the baseline.
+      severity: warn
+    combos_to_try:
+    - set:
+        release: 2
+      lesson: Run the same five questions twice and record output differences and operational metrics.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes golden question set evaluation?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of golden question set evaluation in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which golden question set evaluation matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - practical
+  mini_task: Prepare a golden-set results table and identify one regression that would block release.
+- id: release-review-and-decision-evidence
+  code: GA-CO1.10.3
+  title: Measured Release Review and Evidence
+  session: 10
+  skilling_exp: 3
+  btl: 3
+  difficulty: 2
+  prereqs:
+  - golden-set-evaluation-and-comparison
+  eli5: A measured release review checks whether a change is worth keeping. It uses repeated tests and
+    recorded metrics to decide whether a new version should be accepted, revised or rolled back.
+  key_points:
+  - Each module ends in a measured release.
+  - Design choices should be backed by numbers and recorded as architecture decisions.
+  - The final record documents the v0.1-to-v1.0 evolution.
+  - A release review should consider quality, tokens, latency, cost and failures.
+  deep_dive: The course rationale says every module ends in a measured release and that design choices
+    should be backed by numbers and recorded as architecture decisions. A release review compares the
+    current version with the previous baseline using the golden question set and the operational measurements
+    collected by the client. A change should not be accepted merely because one response looks better.
+    Review whether answer quality changed across representative questions, whether token use or cost increased,
+    whether latency remains acceptable and whether failure behaviour changed. The team should record the
+    evidence, explain trade-offs and identify any known limitations. If a change introduces a serious
+    regression, the release may need revision or rollback. The handout's final evidence is the v0.1-to-v1.0
+    record, so release documentation should accumulate throughout the project rather than being written
+    from memory at the end. This creates a traceable engineering narrative from a simple logged client
+    to a secure and governed application.
+  formulas: []
+  viz:
+    type: release-gate
+    description: Choose a release decision based on quality, cost, latency and reliability checks.
+    params:
+    - name: checks_passed
+      label: Checks Passed
+      min: 0
+      max: 4
+      step: 1
+      default: 3
+      unit: checks
+    compute:
+      checks_passed: checks_passed
+      total_checks: 4
+    outcomes:
+    - when: checks_passed == 4
+      title: All illustrative checks pass
+      explain: The release can proceed to a documented review and approval.
+      severity: info
+    - when: checks_passed >= 2 && checks_passed < 4
+      title: Partial evidence
+      explain: Review failed checks and decide whether changes or further tests are needed.
+      severity: warn
+    - when: checks_passed < 2
+      title: Insufficient evidence
+      explain: Do not treat the release as validated; investigate and rerun the evaluation.
+      severity: fail
+    combos_to_try:
+    - set:
+        checks_passed: 3
+      lesson: Write a release note that cites one quality result, one cost result and one latency result.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes measured release review and evidence?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of measured release review and evidence in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which measured release review and evidence matters when
+      building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - course-project
+  mini_task: Create a v0.1 release review template with evidence, decision, risks and next steps.

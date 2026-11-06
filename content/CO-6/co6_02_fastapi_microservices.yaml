@@ -1,0 +1,229 @@
+part:
+  id: CO6-P02
+  co: CO6
+  title: FastAPI Microservices
+  order: 2
+  concept_ids:
+  - CO6-P02-C01
+  - CO6-P02-C02
+  - CO6-P02-C03
+concepts:
+- id: CO6-P02-C01
+  code: CO6.2.1
+  title: Gateway, RAG service and model service
+  session: 32
+  skilling_exp: 'CO6 practical focus: fastapi microservices'
+  btl: Create
+  difficulty: Intermediate
+  prereqs:
+  - CO6-P01-C03
+  eli5: Divide platform responsibilities into gateway, retrieval and model services with explicit contracts.
+  key_points:
+  - Explain the purpose and boundary of gateway, rag service and model service.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: The course practical identifies a gateway, RAG service and model service as core FastAPI microservices.
+    The gateway handles client-facing requests, authentication, request validation and orchestration. The RAG service
+    manages retrieval and context construction, while the model service handles model invocation and generation
+    configuration. Services communicate through defined request and response contracts rather than reaching into
+    one another's internal state. This separation allows independent testing and scaling, but it introduces network
+    failure, versioning and observability concerns. Keep service responsibilities narrow, set timeouts and define
+    what happens when a downstream service is unavailable. A modular monolith may be simpler initially; use separate
+    deployable services when the operational benefit justifies the complexity.
+  formulas: []
+  viz:
+    type: architecture flow
+    description: Visualise the responsibilities, interfaces and controls involved in gateway, rag service and model
+      service.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes gateway, rag service and model service?
+    options:
+    - Divide platform responsibilities into gateway, retrieval and model services with explicit contracts.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to divide platform responsibilities into gateway, retrieval and model services
+      with explicit contracts.
+  - type: short_answer
+    question: Identify one important design consideration for gateway, rag service and model service.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply gateway, rag service and model service
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for gateway, rag service and model service.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P02-C02
+  code: CO6.2.2
+  title: Pydantic contracts and API validation
+  session: 32
+  skilling_exp: 'CO6 practical focus: fastapi microservices'
+  btl: Create
+  difficulty: Intermediate
+  prereqs:
+  - CO6-P02-C01
+  eli5: Define typed request and response models and validate data at service boundaries.
+  key_points:
+  - Explain the purpose and boundary of pydantic contracts and api validation.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Pydantic models provide typed contracts for API inputs and outputs. A request model can require fields,
+    constrain values and reject malformed payloads before business logic runs. Response models make the public API
+    shape explicit and reduce accidental leakage of internal fields. Validation should include semantic checks beyond
+    type checking, such as verifying that a requested resource belongs to the authenticated user. Keep schemas versioned
+    when clients depend on them, and return consistent error structures that do not expose secrets or stack traces.
+    Validate data again at trust boundaries between services because internal traffic can still be malformed or
+    compromised. Schema validity is not authorisation; permission checks remain a separate responsibility.
+  formulas: []
+  viz:
+    type: sequence diagram
+    description: Visualise the responsibilities, interfaces and controls involved in pydantic contracts and api
+      validation.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes pydantic contracts and api validation?
+    options:
+    - Define typed request and response models and validate data at service boundaries.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to define typed request and response models and validate data at service boundaries.
+  - type: short_answer
+    question: Identify one important design consideration for pydantic contracts and api validation.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply pydantic contracts and api validation
+      and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for pydantic contracts and api validation.
+    Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P02-C03
+  code: CO6.2.3
+  title: Service communication, resilience and API lifecycle
+  session: 32
+  skilling_exp: 'CO6 practical focus: fastapi microservices'
+  btl: Create
+  difficulty: Intermediate
+  prereqs:
+  - CO6-P02-C02
+  eli5: Design service calls with timeouts, error handling, versioning and graceful failure behaviour.
+  key_points:
+  - Explain the purpose and boundary of service communication, resilience and api lifecycle.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Microservices communicate over network boundaries, so a dependency that works locally may fail through
+    latency, timeouts, partial responses or deployment mismatch. Set explicit connection and read timeouts, use
+    bounded retries only for operations that are safe to repeat, and propagate correlation identifiers across service
+    calls. Define stable API versions and make compatibility expectations clear. Avoid retry storms by applying
+    backoff and limits. For user-facing operations, decide whether a degraded response, cached result, fallback
+    model or clear temporary error is appropriate. Health checks should distinguish process liveness from dependency
+    readiness. Record failures in traces while avoiding sensitive request content in logs.
+  formulas: []
+  viz:
+    type: decision flow
+    description: Visualise the responsibilities, interfaces and controls involved in service communication, resilience
+      and api lifecycle.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes service communication, resilience and api lifecycle?
+    options:
+    - Design service calls with timeouts, error handling, versioning and graceful failure behaviour.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to design service calls with timeouts, error handling, versioning and graceful
+      failure behaviour.
+  - type: short_answer
+    question: Identify one important design consideration for service communication, resilience and api lifecycle.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply service communication, resilience and
+      api lifecycle and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for service communication, resilience and
+    api lifecycle. Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.

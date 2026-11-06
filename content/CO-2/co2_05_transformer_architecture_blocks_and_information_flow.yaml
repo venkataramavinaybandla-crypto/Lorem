@@ -1,0 +1,271 @@
+part:
+  id: co2-part-05
+  co: CO2
+  title: 'Transformer Architecture: Blocks and Information Flow'
+  order: 5
+  concept_ids:
+  - transformer-block-overview
+  - feed-forward-network
+  - residual-connections-and-layer-normalisation
+concepts:
+- id: transformer-block-overview
+  code: GA-CO2.5.1
+  title: Transformer Block Overview
+  session: 1
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: A Transformer block updates token representations using attention and a feed-forward network, with residual
+    paths and normalisation.
+  key_points:
+  - Attention mixes information across sequence positions.
+  - The feed-forward network transforms each position's representation.
+  - Residual connections and layer normalisation support stable deep computation.
+  deep_dive: 'A standard Transformer block contains a self-attention sublayer and a position-wise feed-forward sublayer,
+    together with residual connections and layer normalisation. Attention allows information to move between token
+    positions. The feed-forward network then applies learned transformations independently at each position. Residual
+    connections add a sublayer''s input back to its output, creating a path for information and gradients. Layer
+    normalisation stabilises activation scale. Exact ordering varies across architectures: some use normalisation
+    before a sublayer, while others use it after. Students should recognise the components and their roles rather
+    than assuming every implementation uses one identical block diagram.'
+  formulas: []
+  viz:
+    type: transformer_block_flow
+    description: Trace token representations through attention, residual addition, normalisation and feed-forward
+      processing.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 6
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      stages:
+      - Input hidden states
+      - Attention
+      - Residual connection
+      - Normalisation
+      - Feed-forward network
+      - Block output
+    outcomes:
+    - when: stage <= 2
+      title: Context mixing
+      explain: Attention combines information across sequence positions.
+      severity: info
+    - when: stage >= 3 && stage <= 4
+      title: Stabilised update
+      explain: Residual and normalisation operations support the layer transformation.
+      severity: info
+    - when: stage >= 5
+      title: Position-wise transformation
+      explain: The feed-forward sublayer transforms each position's representation.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Draw one Transformer block and label which operation mixes information across tokens and which operates
+        position-wise.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which Transformer component mixes information across sequence positions?
+    options:
+    - Self-attention
+    - Position-wise feed-forward network only
+    - Tokenizer vocabulary
+    - Output stop condition
+    answer: 0
+    explanation: Self-attention combines information from other positions.
+  - type: short_answer
+    question: Name the two main computational sublayers in a standard Transformer block.
+    answer: Self-attention and a position-wise feed-forward network.
+    explanation: Mention both components.
+  - type: application
+    question: A block contains attention but no feed-forward sublayer. Which standard component is missing?
+    answer: The position-wise feed-forward network is missing.
+    explanation: Describe its role after attention.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Draw one Transformer block and label which operation mixes information across tokens and which operates
+    position-wise.
+- id: feed-forward-network
+  code: GA-CO2.5.2
+  title: Feed-Forward Networks
+  session: 2
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - transformer-block-overview
+  eli5: The feed-forward network applies learned transformations to each token position, usually expanding and then
+    projecting the hidden representation.
+  key_points:
+  - The same feed-forward weights are commonly applied independently at each position.
+  - A nonlinear activation helps the network model complex transformations.
+  - The feed-forward network does not itself perform token-to-token attention.
+  deep_dive: After attention has mixed information across positions, the feed-forward network transforms each position's
+    representation. A common structure uses a linear layer that expands the hidden dimension, a nonlinear activation,
+    and a second linear layer that projects back to the model dimension. Because the same feed-forward network is
+    applied at each position, it is often described as position-wise. It does not directly compare one token with
+    another; that cross-position interaction is the role of attention. The feed-forward sublayer adds nonlinear
+    processing capacity to the Transformer block and works together with attention rather than replacing it.
+  formulas:
+  - FFN(x) = W_2 σ(W_1x + b_1) + b_2
+  viz:
+    type: ffn_dimensions
+    description: Adjust the expansion ratio and inspect the intermediate feed-forward width.
+    params:
+    - name: hidden
+      label: Hidden
+      min: 128
+      max: 1024
+      step: 64
+      default: 512
+      unit: hidden dimension
+    - name: ratio
+      label: Ratio
+      min: 2
+      max: 8
+      step: 1
+      default: 4
+      unit: expansion ratio
+    compute:
+      hidden: hidden
+      ratio: ratio
+      intermediate_dimension: hidden * ratio
+    outcomes:
+    - when: ratio <= 4
+      title: Moderate expansion
+      explain: The intermediate representation is a few times wider than the hidden state.
+      severity: info
+    - when: ratio > 4
+      title: Larger expansion
+      explain: The intermediate feed-forward representation is wider and may increase computation.
+      severity: info
+    combos_to_try:
+    - set:
+        hidden: 512
+      lesson: For a hidden dimension of 512 and expansion ratio 4, calculate the intermediate width and describe
+        the two linear projections.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What is a defining feature of the standard Transformer feed-forward sublayer?
+    options:
+    - It applies a learned transformation independently at each position
+    - It computes query-key attention across positions
+    - It tokenises the input text
+    - It selects the next output token
+    answer: 0
+    explanation: The position-wise FFN is applied separately to each position.
+  - type: short_answer
+    question: How does a feed-forward sublayer differ from self-attention?
+    answer: The FFN transforms each position independently, while self-attention mixes information across positions.
+    explanation: Contrast position-wise transformation with cross-position mixing.
+  - type: application
+    question: If hidden size is 256 and the FFN expansion ratio is 4, what is the intermediate width?
+    answer: 256 × 4 = 1024.
+    explanation: Show the multiplication.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: For a hidden dimension of 512 and expansion ratio 4, calculate the intermediate width and describe
+    the two linear projections.
+- id: residual-connections-and-layer-normalisation
+  code: GA-CO2.5.3
+  title: Residual Connections and Layer Normalisation
+  session: 3
+  skilling_exp: 3
+  btl: 4
+  difficulty: 3
+  prereqs:
+  - transformer-block-overview
+  eli5: Residual connections provide a shortcut around a sublayer. Layer normalisation normalises features within
+    a token representation.
+  key_points:
+  - A residual connection adds the sublayer input to its transformed output.
+  - Layer normalisation operates on feature values within a representation.
+  - Pre-norm and post-norm arrangements differ in where normalisation is placed.
+  deep_dive: 'Deep Transformer networks repeatedly transform hidden representations. Residual connections create
+    a direct path that adds the input of a sublayer to its output, helping preserve information and support gradient
+    flow. Layer normalisation normalises a representation across its feature dimension using learned scale and shift
+    parameters. Together, these mechanisms help make deep networks easier to optimise. They are not interchangeable:
+    a residual connection is an additive information path, whereas normalisation controls activation statistics.
+    Implementations may place normalisation before or after attention and feed-forward sublayers, so diagrams and
+    code should be read carefully rather than assuming a universal order.'
+  formulas:
+  - y = x + F(x)
+  viz:
+    type: residual_norm
+    description: Compare a plain transformed output with a residual-added output and identify the normalisation
+      step.
+    params:
+    - name: residual
+      label: Residual
+      min: 0
+      max: 1
+      step: 1
+      default: 1
+      unit: residual enabled
+    compute:
+      residual: residual
+      input: x
+      sublayer_output: F(x)
+      residual_output: x + F(x) when enabled
+    outcomes:
+    - when: residual == 0
+      title: No shortcut addition
+      explain: Only the transformed sublayer output is passed forward.
+      severity: info
+    - when: residual == 1
+      title: Residual path enabled
+      explain: The input is added back to the sublayer output.
+      severity: info
+    combos_to_try:
+    - set:
+        residual: 1
+      lesson: Explain in two separate sentences how residual connections and layer normalisation contribute to a
+        Transformer block.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which expression represents a residual addition?
+    options:
+    - y = x + F(x)
+    - y = softmax(x) only
+    - y = tokenise(x)
+    - y = x / vocabulary_size
+    answer: 0
+    explanation: A residual path adds the input to the sublayer transformation.
+  - type: short_answer
+    question: Why are residual connections and layer normalisation not the same operation?
+    answer: Residual connections add an input path to the transformed output; layer normalisation normalises feature
+      values.
+    explanation: Describe the distinct mathematical roles.
+  - type: application
+    question: A Transformer implementation has normalisation but no skip addition. Which stabilising component is
+      absent?
+    answer: The residual connection or skip path is absent.
+    explanation: Identify the missing additive path.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Explain in two separate sentences how residual connections and layer normalisation contribute to a
+    Transformer block.

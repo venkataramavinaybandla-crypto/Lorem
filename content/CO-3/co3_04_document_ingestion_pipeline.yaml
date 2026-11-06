@@ -1,0 +1,258 @@
+part:
+  id: co3-part-04
+  co: CO3
+  title: Document Ingestion Pipeline
+  order: 4
+  concept_ids:
+  - document-loading
+  - document-cleaning-and-structure
+  - metadata-management
+concepts:
+- id: document-loading
+  code: GA-CO3.4.1
+  title: Document Loading and Source Identity
+  session: 16
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Ingestion begins by loading source files and preserving enough identity and provenance to trace every indexed
+    chunk back to its source.
+  key_points:
+  - Load supported course-material formats through appropriate parsers.
+  - Assign stable source identifiers and record source versions.
+  - Preserve page, heading or section information when available.
+  deep_dive: A document ingestion pipeline turns source material into structured records suitable for later chunking
+    and retrieval. The first stage loads files such as PDFs, text documents or other supported formats. Parsing
+    should preserve useful structure, including headings, page numbers, tables and section boundaries when the parser
+    can extract them reliably. Each source should receive a stable identifier and provenance metadata, such as file
+    name, version, ingestion time and content hash. This makes it possible to trace a retrieved chunk back to its
+    original source and to detect when a source changes. Parsing failures should be recorded rather than silently
+    dropping pages or files. The goal is not merely to extract text, but to create an auditable representation of
+    the source collection.
+  formulas: []
+  viz:
+    type: document_loading
+    description: Follow a source document from file loading to a structured document record.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      steps:
+      - Discover source file
+      - Parse content
+      - Assign source ID and version
+      - Store structured document record
+    outcomes:
+    - when: stage <= 2
+      title: Extraction
+      explain: The source is being loaded and parsed.
+      severity: info
+    - when: stage >= 3
+      title: Provenance
+      explain: The extracted content is linked to a stable source identity.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Load two sample documents and define the metadata needed to trace each extracted passage to its source.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Why assign a stable source ID during ingestion?
+    options:
+    - To trace chunks back to their source document
+    - To make all documents have identical text
+    - To replace document contents with embeddings
+    - To avoid parsing
+    answer: 0
+    explanation: Stable identity supports provenance and updates.
+  - type: short_answer
+    question: What is document provenance in an ingestion pipeline?
+    answer: It is information that records where content came from and how it was obtained or versioned.
+    explanation: Mention source identity and traceability.
+  - type: application
+    question: A PDF is updated but keeps the same filename. How can the ingestion pipeline detect a changed source?
+    answer: Use a content hash or version metadata in addition to the filename.
+    explanation: Explain why filenames alone are insufficient.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Load two sample documents and define the metadata needed to trace each extracted passage to its source.
+- id: document-cleaning-and-structure
+  code: GA-CO3.4.2
+  title: Cleaning and Structural Preservation
+  session: 16
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Cleaning removes extraction noise while preserving meaningful structure such as headings, tables, code and
+    page references.
+  key_points:
+  - Remove repeated headers, footers and extraction artefacts when appropriate.
+  - Do not discard meaningful layout or section boundaries blindly.
+  - Record cleaning rules so ingestion can be reproduced.
+  deep_dive: PDF and document extraction can produce repeated headers, footers, broken line wraps, page numbers
+    and other noise. Cleaning should remove irrelevant artefacts while preserving content that helps retrieval.
+    Headings provide section context; tables may contain relationships that are lost if columns are flattened carelessly;
+    code blocks and mathematical expressions may require special handling. Cleaning rules should be documented and
+    tested on representative pages. A pipeline should retain a link to the raw source and ideally keep the extracted
+    pre-cleaning text for troubleshooting. Over-cleaning can be as damaging as under-cleaning because it may remove
+    information that a user later needs to retrieve or cite.
+  formulas: []
+  viz:
+    type: cleaning_pipeline
+    description: Toggle common extraction artefacts and inspect what should be removed or preserved.
+    params:
+    - name: cleaning
+      label: Cleaning
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: cleaning profile
+    compute:
+      cleaning: cleaning
+      items:
+      - repeated header/footer
+      - broken line wraps
+      - table structure
+    outcomes:
+    - when: cleaning == 1
+      title: Conservative cleaning
+      explain: Remove clear extraction noise while preserving layout cues.
+      severity: info
+    - when: cleaning == 2
+      title: Structural cleaning
+      explain: Normalise text while retaining headings and table relationships.
+      severity: info
+    - when: cleaning == 3
+      title: Aggressive cleaning
+      explain: Requires careful review because meaningful content may be lost.
+      severity: info
+    combos_to_try:
+    - set:
+        cleaning: 1
+      lesson: Inspect one extracted PDF page and list three artefacts to remove and three structural elements to
+        preserve.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Which item should generally be preserved when it carries meaning?
+    options:
+    - A section heading
+    - A duplicated page footer
+    - A random extraction control character
+    - A repeated browser URL banner
+    answer: 0
+    explanation: Headings provide useful context for retrieval.
+  - type: short_answer
+    question: Why can aggressive document cleaning harm retrieval quality?
+    answer: It can remove headings, table relationships, code or other context needed to interpret and retrieve
+      the source accurately.
+    explanation: Give examples of lost structure.
+  - type: application
+    question: A course PDF contains a table mapping CO numbers to outcomes. How should cleaning handle it?
+    answer: Preserve the row and column relationships in a structured or clearly labelled text representation.
+    explanation: Explain the importance of table structure.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Inspect one extracted PDF page and list three artefacts to remove and three structural elements to
+    preserve.
+- id: metadata-management
+  code: GA-CO3.4.3
+  title: Metadata Management
+  session: 16
+  skilling_exp: 3
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Metadata describes a source or chunk, enabling filtering, provenance, versioning and useful citations.
+  key_points:
+  - Metadata may include source ID, title, page, section, version and ingestion time.
+  - Metadata should be consistent and validated.
+  - Metadata filters can restrict retrieval to a course, module or document type.
+  deep_dive: Metadata is information about a document or chunk rather than the chunk's main text. Useful fields
+    include source ID, file name, title, page number, section heading, course code, version, content hash and ingestion
+    timestamp. Consistent metadata allows retrieval to be filtered, results to be grouped by source and citations
+    to point back to the right location. Metadata schemas should define field names and types so that filters behave
+    predictably. Missing or malformed metadata can cause retrieval and citation failures even when the embedding
+    itself is good. Metadata should be treated as part of the data contract between ingestion, storage, retrieval
+    and answer generation.
+  formulas: []
+  viz:
+    type: metadata_schema
+    description: Select metadata fields and inspect how they support filtering and citations.
+    params:
+    - name: filter
+      label: Filter
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: filter
+    compute:
+      filter: filter
+      fields:
+      - source_id
+      - title
+      - page
+      - section
+      - version
+      - course_code
+    outcomes:
+    - when: filter <= 2
+      title: Basic provenance
+      explain: Source ID and title identify the source.
+      severity: info
+    - when: filter >= 3
+      title: Citation-ready metadata
+      explain: Page, section and version support more precise citations.
+      severity: info
+    combos_to_try:
+    - set:
+        filter: 1
+      lesson: Define a metadata schema for course PDFs and validate five example chunk records against it.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Which metadata field is especially useful for citing a specific PDF passage?
+    options:
+    - Page number
+    - Embedding batch size
+    - Temperature
+    - Vector dimension
+    answer: 0
+    explanation: Page number helps readers locate the source passage.
+  - type: short_answer
+    question: How can metadata filtering improve retrieval?
+    answer: It can restrict search to relevant sources or categories before ranking, reducing irrelevant candidates.
+    explanation: Give an example such as course code or module.
+  - type: application
+    question: A retrieved chunk has text but no source ID or page number. What citation problem arises?
+    answer: The answer cannot reliably identify where the passage came from, so a precise citation cannot be produced.
+    explanation: Connect metadata completeness to traceability.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Define a metadata schema for course PDFs and validate five example chunk records against it.

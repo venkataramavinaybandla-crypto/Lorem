@@ -1,0 +1,228 @@
+part:
+  id: CO6-P04
+  co: CO6
+  title: MongoDB and Chroma Integration
+  order: 4
+  concept_ids:
+  - CO6-P04-C01
+  - CO6-P04-C02
+  - CO6-P04-C03
+concepts:
+- id: CO6-P04-C01
+  code: CO6.4.1
+  title: MongoDB as the application system of record
+  session: 34
+  skilling_exp: 'CO6 practical focus: mongodb and chroma integration'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P03-C03
+  eli5: Store durable application entities and metadata in MongoDB with clear ownership and access rules.
+  key_points:
+  - Explain the purpose and boundary of mongodb as the application system of record.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: MongoDB can serve as the system of record for application data such as users, consent settings, conversation
+    metadata, document records and operational state. Design collections around access patterns and define stable
+    identifiers and ownership fields. Validate data before persistence and enforce authorisation in the service
+    layer so one user cannot read another user's records. Store only information needed for the product purpose
+    and establish retention and deletion behaviour. For document ingestion, preserve source metadata and revision
+    information so retrieval results can be traced back to their origin. A database record should remain authoritative
+    for application state even when derived search indexes are rebuilt.
+  formulas: []
+  viz:
+    type: architecture flow
+    description: Visualise the responsibilities, interfaces and controls involved in mongodb as the application
+      system of record.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes mongodb as the application system of record?
+    options:
+    - Store durable application entities and metadata in MongoDB with clear ownership and access rules.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to store durable application entities and metadata in mongodb with clear ownership
+      and access rules.
+  - type: short_answer
+    question: Identify one important design consideration for mongodb as the application system of record.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply mongodb as the application system of
+      record and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for mongodb as the application system of
+    record. Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P04-C02
+  code: CO6.4.2
+  title: Chroma vector store integration
+  session: 34
+  skilling_exp: 'CO6 practical focus: mongodb and chroma integration'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P04-C01
+  eli5: Use Chroma to index and retrieve embedding vectors while preserving document identity and metadata.
+  key_points:
+  - Explain the purpose and boundary of chroma vector store integration.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: Chroma is used in the course architecture as the vector store for semantic retrieval. A typical flow
+    creates embeddings for document chunks, stores vectors with identifiers and metadata, then queries for nearest
+    neighbours using an embedded user question. Keep the original document and authoritative metadata in MongoDB,
+    and treat Chroma as a derived index that can be rebuilt. Use stable chunk identifiers to connect retrieved passages
+    to their source records. Ensure the embedding model and dimensions are consistent between indexing and querying.
+    Handle stale or deleted documents by synchronising index updates, and do not assume a vector result is automatically
+    relevant or authorised for the requesting user.
+  formulas: []
+  viz:
+    type: sequence diagram
+    description: Visualise the responsibilities, interfaces and controls involved in chroma vector store integration.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes chroma vector store integration?
+    options:
+    - Use Chroma to index and retrieve embedding vectors while preserving document identity and metadata.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to use chroma to index and retrieve embedding vectors while preserving document
+      identity and metadata.
+  - type: short_answer
+    question: Identify one important design consideration for chroma vector store integration.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply chroma vector store integration and verify
+      that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for chroma vector store integration. Identify
+    its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P04-C03
+  code: CO6.4.3
+  title: Data consistency, ingestion and retrieval orchestration
+  session: 34
+  skilling_exp: 'CO6 practical focus: mongodb and chroma integration'
+  btl: Create
+  difficulty: Advanced
+  prereqs:
+  - CO6-P04-C02
+  eli5: Coordinate source records and vector indexes so retrieval remains traceable and current.
+  key_points:
+  - Explain the purpose and boundary of data consistency, ingestion and retrieval orchestration.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: The ingestion pipeline should create or update authoritative document records and then maintain corresponding
+    vector chunks. Because MongoDB and Chroma are separate systems, updates may partially succeed. Use idempotent
+    ingestion jobs, status fields, retryable steps and reconciliation checks to detect missing or stale vectors.
+    Preserve document version, chunk position, access metadata and ingestion timestamp. At query time, apply access
+    controls before returning retrieved content to the model. The orchestration layer should record which source
+    chunks were used so citations and debugging are possible. Establish a re-indexing procedure when the embedding
+    model, chunking policy or corpus changes.
+  formulas: []
+  viz:
+    type: decision flow
+    description: Visualise the responsibilities, interfaces and controls involved in data consistency, ingestion
+      and retrieval orchestration.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes data consistency, ingestion and retrieval orchestration?
+    options:
+    - Coordinate source records and vector indexes so retrieval remains traceable and current.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to coordinate source records and vector indexes so retrieval remains traceable
+      and current.
+  - type: short_answer
+    question: Identify one important design consideration for data consistency, ingestion and retrieval orchestration.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply data consistency, ingestion and retrieval
+      orchestration and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for data consistency, ingestion and retrieval
+    orchestration. Identify its inputs, outputs, one trust boundary, one failure case and how you would test it.

@@ -1,0 +1,254 @@
+part:
+  id: co3-part-03
+  co: CO3
+  title: Sentence Transformers
+  order: 3
+  concept_ids:
+  - sentence-transformers-architecture
+  - embedding-preprocessing-and-batching
+  - embedding-evaluation
+concepts:
+- id: sentence-transformers-architecture
+  code: GA-CO3.3.1
+  title: Sentence Transformers and Bi-Encoder Retrieval
+  session: 15
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: Sentence-transformers produce sentence or passage embeddings that can be compared efficiently during retrieval.
+  key_points:
+  - A bi-encoder independently encodes queries and documents.
+  - Document embeddings can be computed and indexed ahead of time.
+  - Similarity search compares a query vector with stored document vectors.
+  deep_dive: Sentence-transformers are commonly used to create dense representations of sentences and passages.
+    In a bi-encoder setup, the query and document are encoded separately into vectors. This enables document embeddings
+    to be generated during ingestion and stored in a vector index. At query time, only the query needs to be encoded
+    before searching the index. This is efficient for large collections because document vectors do not need to
+    be recomputed for every query. The embedding model and its preprocessing must be consistent between ingestion
+    and retrieval. Bi-encoder similarity is a fast first-stage retrieval signal, but it may not capture every fine-grained
+    relevance distinction; a reranker can be used as a later stage when justified.
+  formulas: []
+  viz:
+    type: bi_encoder_flow
+    description: Trace a query and a document through separate encoders into a shared vector space.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      steps:
+      - Document encoding at ingestion
+      - Document vector indexing
+      - Query encoding at search time
+      - Similarity ranking
+    outcomes:
+    - when: stage <= 2
+      title: Offline preparation
+      explain: Document vectors can be prepared before users submit queries.
+      severity: info
+    - when: stage >= 3
+      title: Online retrieval
+      explain: A query vector is compared with indexed document vectors.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Sketch an ingestion-time and query-time timeline for a bi-encoder retrieval system.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What is a key efficiency benefit of a bi-encoder?
+    options:
+    - Document embeddings can be computed and indexed ahead of query time
+    - Every query must re-embed the entire collection
+    - It requires raw text to be passed into the vector index
+    - It avoids all retrieval errors
+    answer: 0
+    explanation: Precomputed document vectors support efficient search.
+  - type: short_answer
+    question: What is the difference between document encoding and query encoding in a bi-encoder pipeline?
+    answer: Documents are embedded during ingestion and stored; a query is embedded at search time and compared
+      with those stored vectors.
+    explanation: Separate offline and online stages.
+  - type: application
+    question: A collection contains 100,000 chunks. Why is precomputing document embeddings useful?
+    answer: It avoids recomputing every document representation for each query and allows vector indexing for efficient
+      retrieval.
+    explanation: Explain amortised ingestion cost.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Sketch an ingestion-time and query-time timeline for a bi-encoder retrieval system.
+- id: embedding-preprocessing-and-batching
+  code: GA-CO3.3.2
+  title: Embedding Input Preparation and Batching
+  session: 15
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: Text preparation, input limits and batching influence embedding quality, throughput and failure handling.
+  key_points:
+  - Use consistent cleaning for indexed documents and queries where appropriate.
+  - Respect the embedding model's maximum input length.
+  - Batching can improve throughput but must respect memory and service limits.
+  deep_dive: Embedding pipelines should prepare text consistently and respect the embedding model's supported input
+    length. Cleaning may remove irrelevant markup or normalise whitespace, but aggressive cleaning can destroy useful
+    structure such as code, headings or tables. If a text exceeds the model's input limit, it may be truncated or
+    rejected; chunking should occur before embedding when necessary. Batching multiple texts into one inference
+    call can improve throughput by reducing per-request overhead, but batch size is constrained by memory and provider
+    limits. A reliable pipeline should record failures, retry transient errors carefully and verify that the number
+    of generated vectors matches the number of input chunks.
+  formulas: []
+  viz:
+    type: embedding_batching
+    description: Compare single-item embedding calls with batched processing.
+    params:
+    - name: batch_size
+      label: Batch Size
+      min: 1
+      max: 64
+      step: 1
+      default: 16
+      unit: batch size
+    compute:
+      batch_size: batch_size
+      checks:
+      - input limit
+      - memory use
+      - throughput
+      - failed-item handling
+    outcomes:
+    - when: batch_size <= 8
+      title: Small batch
+      explain: Lower peak memory but potentially more request overhead.
+      severity: info
+    - when: batch_size > 8
+      title: Larger batch
+      explain: Potentially higher throughput with greater memory and failure-scope considerations.
+      severity: info
+    combos_to_try:
+    - set:
+        batch_size: 16
+      lesson: Design a batch-processing test that records throughput, peak memory and failed input count.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: Why should an embedding pipeline check the model's maximum input length?
+    options:
+    - Inputs may be truncated or rejected when they exceed the supported limit
+    - It determines the MongoDB database name
+    - It changes BM25's IDF formula
+    - It sets the number of citations
+    answer: 0
+    explanation: Embedding models have input limits.
+  - type: short_answer
+    question: What is one benefit and one risk of increasing embedding batch size?
+    answer: It can improve throughput, but it can also increase memory use or the number of items affected by a
+      failed batch.
+    explanation: State both sides.
+  - type: application
+    question: The embedding service returns 98 vectors for a batch of 100 chunks. What should the pipeline do?
+    answer: Detect the mismatch, identify failed inputs, retry or quarantine them and avoid marking the entire ingestion
+      as complete.
+    explanation: Emphasise integrity checks.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Design a batch-processing test that records throughput, peak memory and failed input count.
+- id: embedding-evaluation
+  code: GA-CO3.3.3
+  title: Evaluating Embedding Quality
+  session: 15
+  skilling_exp: 3
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: Embedding quality should be evaluated using representative query-document relevance labels, not just vector
+    visualisations.
+  key_points:
+  - Prepare queries with known relevant chunks.
+  - Measure whether relevant chunks appear near the top of results.
+  - Include language, paraphrase and exact-term cases in the test set.
+  deep_dive: An embedding model should be evaluated on the retrieval task it will support. A useful test set contains
+    queries and labelled relevant document chunks. It should include ordinary questions, paraphrases, technical
+    identifiers, multilingual examples and queries that have no supporting source. The system can then measure whether
+    relevant chunks appear in the top-k results and how high they rank. Visualising vectors can be educational,
+    but a two-dimensional projection may distort the original high-dimensional relationships and should not replace
+    retrieval metrics. Evaluation should also record latency, embedding cost and vector dimensions. Model selection
+    should be based on the quality and operational constraints of the real application.
+  formulas: []
+  viz:
+    type: embedding_eval
+    description: Inspect a small labelled query set and identify whether the relevant document appears in the top
+      results.
+    params:
+    - name: k
+      label: K
+      min: 1
+      max: 10
+      step: 1
+      default: 5
+      unit: top k
+    compute:
+      k: k
+      labels:
+      - query
+      - relevant_chunk_ids
+      - retrieved_chunk_ids
+    outcomes:
+    - when: k <= 3
+      title: Strict top-k
+      explain: Relevant chunks must rank very near the top.
+      severity: info
+    - when: k > 3
+      title: Broader candidate set
+      explain: More candidates can improve coverage but increase downstream context load.
+      severity: info
+    combos_to_try:
+    - set:
+        k: 5
+      lesson: Build a labelled evaluation set of at least 20 course questions and compare two embedding models.
+  common_mistakes:
+  - Treating similarity scores as calibrated probabilities of factual support.
+  - Losing source identity or citation metadata during ingestion and chunking.
+  - Changing chunk size, overlap, embedding model and top-k simultaneously without a controlled evaluation.
+  quiz:
+  - type: mcq
+    question: What is the strongest basis for selecting an embedding model for a RAG application?
+    options:
+    - Measured retrieval performance on representative labelled queries
+    - A 2D scatter plot alone
+    - The largest vector dimension
+    - The model name
+    answer: 0
+    explanation: Task-specific retrieval evaluation is the relevant evidence.
+  - type: short_answer
+    question: Why can a two-dimensional embedding visualisation be misleading?
+    answer: Projection from a high-dimensional space can distort distances and neighbourhoods, so it is not a substitute
+      for retrieval metrics.
+    explanation: Mention projection distortion.
+  - type: application
+    question: A model performs well on English paraphrases but poorly on Telugu course queries. What should be done?
+    answer: Include Telugu examples in the evaluation, compare multilingual embedding options and choose based on
+      measured language-specific retrieval performance.
+    explanation: Use representative language coverage.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO3-creation
+  mini_task: Build a labelled evaluation set of at least 20 course questions and compare two embedding models.

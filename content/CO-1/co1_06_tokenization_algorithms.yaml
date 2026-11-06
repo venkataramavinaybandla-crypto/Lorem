@@ -1,0 +1,278 @@
+part:
+  id: co1-part-06
+  co: CO1
+  title: 'Tokenization Algorithms: BPE, WordPiece, and SentencePiece'
+  order: 6
+  concept_ids:
+  - tokenization-purpose-and-subword-units
+  - byte_pair_encoding
+  - wordpiece-and-sentencepiece
+concepts:
+- id: tokenization-purpose-and-subword-units
+  code: GA-CO1.6.1
+  title: Why Subword Tokenization Is Used
+  session: 6
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs: []
+  eli5: Subword tokenization breaks text into reusable pieces. It helps a tokenizer represent common words
+    efficiently while still handling uncommon words by combining smaller pieces.
+  key_points:
+  - Tokenization defines how text is divided into model units.
+  - Subword pieces help represent rare or unseen word forms.
+  - Token boundaries depend on the tokenizer's learned vocabulary and rules.
+  - Different algorithms can produce different token sequences.
+  deep_dive: 'Tokenization is the process of converting text into the units consumed by a model. A word-level
+    vocabulary would need an entry for every possible word form, including rare spellings, names and newly
+    created terms. Subword tokenization addresses this by representing text with reusable pieces. Common
+    words may be represented as a single token, while less common words can be composed from smaller units.
+    This provides a compromise between very large word vocabularies and character-by-character sequences.
+    The handout names BPE, WordPiece and SentencePiece as the algorithms students should explain. Although
+    these methods differ in how they learn or apply their segmentation rules, all are intended to map
+    text into a manageable sequence of vocabulary units. Their outputs are not interchangeable: token
+    counts and boundaries can differ across tokenizers. For practical work, students should inspect the
+    tokenizer used by the target model and avoid assuming that a token always equals a word or character.'
+  formulas: []
+  viz:
+    type: subword_decomposition
+    description: Compare a whole-word representation with a multi-piece representation of a rare term.
+    params:
+    - name: pieces
+      label: Pieces
+      min: 1
+      max: 5
+      step: 1
+      default: 3
+      unit: pieces
+    compute:
+      pieces: pieces
+      illustration: A rare term can be represented by several reusable subword units.
+    outcomes:
+    - when: pieces == 1
+      title: Single token
+      explain: The term is present as one vocabulary item in this illustration.
+      severity: info
+    - when: pieces > 1
+      title: Multiple subword tokens
+      explain: The tokenizer composes the term from smaller vocabulary pieces.
+      severity: info
+    combos_to_try:
+    - set:
+        pieces: 3
+      lesson: Choose a rare technical term and explain why a subword tokenizer may split it.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes why subword tokenization is used?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of why subword tokenization is used in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which why subword tokenization is used matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Explain the trade-off between whole-word and subword tokenization.
+- id: byte_pair_encoding
+  code: GA-CO1.6.2
+  title: Byte Pair Encoding (BPE)
+  session: 6
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - tokenization-purpose-and-subword-units
+  eli5: BPE starts with smaller units and repeatedly merges frequently occurring neighbouring pairs to
+    build a vocabulary of useful larger pieces. It allows common sequences to become compact tokens while
+    retaining smaller pieces for less common text.
+  key_points:
+  - BPE is a subword tokenization method.
+  - It learns merges from frequently occurring adjacent symbol pairs.
+  - Repeated merges create larger vocabulary units.
+  - The learned merge sequence affects token boundaries.
+  deep_dive: Byte Pair Encoding is a subword tokenization approach in which a vocabulary is built by repeatedly
+    merging adjacent symbol pairs that occur frequently in the training text. A simple illustration starts
+    with characters or byte-level units. The algorithm counts neighbouring pairs, chooses a pair according
+    to its merge criterion, combines it into a new unit and repeats until the desired vocabulary size
+    or stopping condition is reached. During tokenization, the learned merge rules are applied to segment
+    new text. Frequent sequences can become single tokens, while less common sequences may remain represented
+    by multiple pieces. BPE is useful because it can balance vocabulary size and sequence length without
+    requiring every complete word to be stored. The handout specifically asks students to explain BPE
+    and compare it with WordPiece and SentencePiece. Real tokenizer implementations may include additional
+    normalisation and byte-handling details, so the exact behaviour should be checked in the tokenizer
+    implementation rather than inferred from a simplified classroom example.
+  formulas: []
+  viz:
+    type: merge_simulator
+    description: Adjust the number of merge operations and observe how adjacent units can become larger
+      tokens.
+    params:
+    - name: merges
+      label: Merges
+      min: 0
+      max: 6
+      step: 1
+      default: 2
+      unit: merges
+    compute:
+      merges: merges
+      remaining_units: Initial units are progressively combined by selected adjacent-pair merges.
+    outcomes:
+    - when: merges == 0
+      title: Initial segmentation
+      explain: Text remains represented by its initial smaller units.
+      severity: info
+    - when: merges > 0
+      title: Merged vocabulary units
+      explain: Repeated pair merges can reduce the number of pieces for frequent sequences.
+      severity: info
+    combos_to_try:
+    - set:
+        merges: 2
+      lesson: Manually perform two pair merges on a short character sequence and record the resulting
+        units.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes byte pair encoding (bpe)?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of byte pair encoding (bpe) in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which byte pair encoding (bpe) matters when building an
+      LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Demonstrate two BPE merges on a short example and explain why merge order matters.
+- id: wordpiece-and-sentencepiece
+  code: GA-CO1.6.3
+  title: WordPiece and SentencePiece
+  session: 6
+  skilling_exp: 2
+  btl: 3
+  difficulty: 2
+  prereqs:
+  - byte_pair_encoding
+  eli5: WordPiece and SentencePiece are other approaches to subword tokenization. They differ from BPE
+    in their vocabulary-learning or text-processing procedures, but all help represent words using reusable
+    pieces.
+  key_points:
+  - WordPiece is a subword tokenization method associated with vocabulary selection using a likelihood-oriented
+    criterion.
+  - SentencePiece is a tokenizer framework that can train directly from raw sentences.
+  - SentencePiece commonly supports subword algorithms such as BPE and Unigram.
+  - Tokenization output depends on the model's tokenizer configuration.
+  deep_dive: 'WordPiece and SentencePiece are included alongside BPE in the handout''s tokenization objectives.
+    WordPiece builds a subword vocabulary using a criterion commonly described in terms of improving the
+    likelihood of training text under the vocabulary; implementations also use conventions to mark continuation
+    pieces. SentencePiece is a tokenizer framework designed to operate directly on raw sentences without
+    requiring language-specific pre-tokenisation in the same way as many whitespace-based pipelines. It
+    supports subword segmentation approaches, including BPE and Unigram language-model tokenization. These
+    names should not be treated as three identical algorithms: WordPiece describes a particular subword
+    tokenization approach, while SentencePiece is a framework that can implement different segmentation
+    algorithms. Their handling of whitespace, normalisation and vocabulary units can differ. For model
+    integration, the practical rule is to load the tokenizer intended for the model and use it consistently.
+    Comparing token counts across implementations is meaningful only when the text and measurement procedure
+    are held constant.'
+  formulas: []
+  viz:
+    type: tokenizer_comparison
+    description: Select a tokenizer family and inspect the implementation characteristic highlighted in
+      the comparison.
+    params:
+    - name: method
+      label: Method
+      min: 1
+      max: 3
+      step: 1
+      default: 1
+      unit: method
+    compute:
+      method: method
+      labels:
+      - BPE
+      - WordPiece
+      - SentencePiece
+    outcomes:
+    - when: method == 1
+      title: BPE
+      explain: Repeated adjacent-pair merges form larger subword units.
+      severity: info
+    - when: method == 2
+      title: WordPiece
+      explain: Vocabulary construction uses a likelihood-oriented criterion and continuation conventions.
+      severity: info
+    - when: method == 3
+      title: SentencePiece
+      explain: A framework that can train from raw sentences and supports multiple subword algorithms.
+      severity: info
+    combos_to_try:
+    - set:
+        method: 1
+      lesson: Write a comparison table with the basic idea, text handling and one practical consideration
+        for each method.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes wordpiece and sentencepiece?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of wordpiece and sentencepiece in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which wordpiece and sentencepiece matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Compare BPE, WordPiece and SentencePiece without claiming that their token IDs are interchangeable.

@@ -1,0 +1,223 @@
+part:
+  id: CO4-P02
+  co: CO4
+  title: Prompt Structure and Design
+  order: 2
+  concept_ids:
+  - CO4-P02-C01
+  - CO4-P02-C02
+  - CO4-P02-C03
+concepts:
+- id: CO4-P02-C01
+  code: CO4.2.1
+  title: Instruction hierarchy and conflict handling
+  session: 20
+  skilling_exp: 'CO4 practical focus: prompt structure and design'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P01-C03
+  eli5: Organise instructions by authority and define behaviour when requests conflict.
+  key_points:
+  - Define the purpose and boundary of instruction hierarchy and conflict handling.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: 'Prompt design must account for instructions that disagree. Application-level rules and safety constraints
+    should not be silently overridden by text supplied as task data. A robust prompt explicitly labels untrusted
+    content, states which sources may provide instructions, and explains how to handle conflicts. The model can
+    still make mistakes, so critical enforcement belongs in application code rather than relying only on wording.
+    Test conflict cases: a user asks for a prohibited format, a document contains an instruction addressed to the
+    model, or a request conflicts with a required output schema. Record expected behaviour for each case and keep
+    the test examples with the prompt version.'
+  formulas: []
+  viz:
+    type: Instruction hierarchy
+    description: trusted instruction; untrusted content; conflict; precedence
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Assuming that a strongly worded prompt guarantees policy enforcement.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes instruction hierarchy and conflict handling?
+    options:
+    - It applies organise instructions by authority and define behaviour when requests conflict. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because organise instructions by authority and define behaviour when requests
+      conflict. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying instruction hierarchy and conflict handling.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to instruction hierarchy and conflict handling.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply instruction hierarchy and conflict handling
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for instruction hierarchy and conflict handling, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P02-C02
+  code: CO4.2.2
+  title: Prompt decomposition and task sequencing
+  session: 20
+  skilling_exp: 'CO4 practical focus: prompt structure and design'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P02-C01
+  eli5: Break complex requests into clear stages with explicit intermediate goals.
+  key_points:
+  - Define the purpose and boundary of prompt decomposition and task sequencing.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Complex tasks become easier to evaluate when divided into stages such as classify, extract, compare,
+    decide and format. Each stage should have a clear input and output, and the overall prompt should explain how
+    the stages connect. Decomposition reduces ambiguity and makes failures easier to locate. It does not require
+    exposing private internal reasoning; a system can request concise evidence, intermediate structured fields or
+    a final rationale appropriate to the task. Keep stages proportional to the problem. Too many artificial steps
+    increase latency and can create more opportunities for errors. Evaluate whether decomposition improves accuracy
+    on a fixed test set rather than assuming that longer prompts are better.
+  formulas: []
+  viz:
+    type: Task decomposition
+    description: subtask; dependency; intermediate result; final synthesis
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Adding elaborate stages that do not improve measured task performance.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes prompt decomposition and task sequencing?
+    options:
+    - It applies break complex requests into clear stages with explicit intermediate goals. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because break complex requests into clear stages with explicit intermediate
+      goals. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying prompt decomposition and task sequencing.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to prompt decomposition and task sequencing.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply prompt decomposition and task sequencing
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for prompt decomposition and task sequencing, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P02-C03
+  code: CO4.2.3
+  title: Context selection and prompt efficiency
+  session: 20
+  skilling_exp: 'CO4 practical focus: prompt structure and design'
+  btl: Understand
+  difficulty: Intermediate
+  prereqs:
+  - CO4-P02-C02
+  eli5: Include relevant context while controlling noise, duplication and token use.
+  key_points:
+  - Define the purpose and boundary of context selection and prompt efficiency.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Prompt context should be selected for relevance, authority, freshness and coverage. Large prompts can
+    contain duplicated or contradictory facts, distract the model, increase latency and raise cost. Organise context
+    with clear labels, source identifiers and boundaries. Prefer the smallest evidence set that supports the task,
+    while retaining information needed to resolve ambiguity. If context is truncated, the application should detect
+    or prevent silent loss of critical sections. Evaluate context changes using the same questions and compare answer
+    quality, token usage and latency. Prompt efficiency is not simply minimising tokens; it is achieving the required
+    quality with a defensible context budget.
+  formulas: []
+  viz:
+    type: Context management
+    description: relevance; freshness; source labels; token budget
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Pasting every available document into the prompt without filtering.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes context selection and prompt efficiency?
+    options:
+    - It applies include relevant context while controlling noise, duplication and token use. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because include relevant context while controlling noise, duplication and
+      token use. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying context selection and prompt efficiency.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to context selection and prompt efficiency.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply context selection and prompt efficiency
+      to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for context selection and prompt efficiency, define expected behaviour,
+    and record one failure mode and one safeguard.

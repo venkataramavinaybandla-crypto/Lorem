@@ -1,0 +1,224 @@
+part:
+  id: CO5-P05
+  co: CO5
+  title: Supervised Fine-Tuning
+  order: 5
+  concept_ids:
+  - CO5-P05-C01
+  - CO5-P05-C02
+  - CO5-P05-C03
+concepts:
+- id: CO5-P05-C01
+  code: CO5.5.1
+  title: Supervised fine-tuning objective
+  session: 29
+  skilling_exp: 'CO5 practical focus: supervised fine-tuning'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P04-C03
+  eli5: Explain how labelled input-output examples update a pretrained model's behaviour.
+  key_points:
+  - Explain the purpose and boundary of supervised fine-tuning objective.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: Supervised fine-tuning trains a pretrained model on examples of desired inputs and outputs. During
+    training, the model predicts target tokens and the optimisation process adjusts trainable parameters to reduce
+    the training objective, commonly token-level cross-entropy for causal language modelling. The model begins with
+    general capabilities learned during pretraining; fine-tuning nudges its behaviour toward the supplied task distribution.
+    The quality of the targets, formatting and coverage matters greatly. Fine-tuning does not simply store each
+    example as a fact, nor does it guarantee that the model will follow every instruction. It can overfit, forget
+    some prior behaviour or learn unwanted patterns if the dataset is poor.
+  formulas: []
+  viz:
+    type: SFT learning loop
+    description: pretrained weights; examples; target tokens; loss; update
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming supervised fine-tuning objective automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents supervised fine-tuning objective?
+    options:
+    - Explain how labelled input-output examples update a pretrained model's behaviour.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Explain how labelled input-output examples update a pretrained model''s
+      behaviour.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in supervised fine-tuning objective.
+    expected_answer: A correct answer should explain the central idea of supervised fine-tuning objective and connect
+      it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply supervised fine-tuning objective
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for supervised fine-tuning objective. State the inputs, baseline,
+    two metrics, one likely failure and how you would document the result.
+- id: CO5-P05-C02
+  code: CO5.5.2
+  title: Preparing a model and training configuration
+  session: 29
+  skilling_exp: 'CO5 practical focus: supervised fine-tuning'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P05-C01
+  eli5: Choose a compatible base model, tokenizer, chat template and training setup.
+  key_points:
+  - Explain the purpose and boundary of preparing a model and training configuration.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: A training run must align the base model, tokenizer, conversation format and objective. Confirm model
+    architecture and supported context length, tokenizer revision, special tokens and chat template before preparing
+    examples. Configure batch size, gradient accumulation, learning rate, epochs, sequence length, optimiser and
+    checkpointing according to the available hardware. Begin with a small smoke test that verifies batches, loss
+    computation and checkpoint saving. Track random seeds and software versions where practical. Training settings
+    should be chosen through controlled experiments, not copied blindly from another model whose size, data or hardware
+    differs.
+  formulas: []
+  viz:
+    type: training configuration
+    description: base model; tokenizer; chat template; hyperparameters
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming preparing a model and training configuration automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents preparing a model and training configuration?
+    options:
+    - Choose a compatible base model, tokenizer, chat template and training setup.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Choose a compatible base model, tokenizer, chat template and training setup.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in preparing a model and training configuration.
+    expected_answer: A correct answer should explain the central idea of preparing a model and training configuration
+      and connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply preparing a model and training configuration
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for preparing a model and training configuration. State the
+    inputs, baseline, two metrics, one likely failure and how you would document the result.
+- id: CO5-P05-C03
+  code: CO5.5.3
+  title: Training diagnostics and overfitting
+  session: 29
+  skilling_exp: 'CO5 practical focus: supervised fine-tuning'
+  btl: Apply
+  difficulty: Intermediate
+  prereqs:
+  - CO5-P05-C02
+  eli5: Monitor loss and held-out performance to identify undertraining or overfitting.
+  key_points:
+  - Explain the purpose and boundary of training diagnostics and overfitting.
+  - Identify required data, model and configuration assumptions.
+  - Use a fair baseline and task-relevant measurements.
+  - Document limitations, resource use and failure cases.
+  deep_dive: Training loss indicates how well the model fits the examples it sees, but it is not sufficient evidence
+    of useful adaptation. Validation loss and task-specific evaluation reveal whether improvements transfer to unseen
+    examples. A widening gap between training and validation performance can indicate overfitting. Other warning
+    signs include repetitive outputs, degraded general ability, unstable loss or poor handling of examples outside
+    the training distribution. Inspect generated samples at checkpoints and compare them with the original model
+    on the shared test set. Use early stopping or adjust data and training settings when evidence shows that additional
+    training is harming generalisation.
+  formulas: []
+  viz:
+    type: training curves
+    description: training loss; validation loss; checkpoint; generalisation
+    params:
+    - data or request
+    - method/configuration
+    - evaluation set
+    - quality
+    - latency and cost
+    compute: Trace one example through the method, identify its resource requirements, and record the evaluation
+      evidence needed to justify the choice.
+    outcomes:
+    - The method's role is clear.
+    - Trade-offs are measurable.
+    - A failure mode and mitigation can be stated.
+  common_mistakes:
+  - Assuming training diagnostics and overfitting automatically improves every task.
+  - Ignoring data leakage or incompatible model and tokenizer versions.
+  - Treating one metric as a complete measure of deployment quality.
+  quiz:
+  - type: mcq
+    question: Which option best represents training diagnostics and overfitting?
+    options:
+    - Monitor loss and held-out performance to identify undertraining or overfitting.
+    - It removes the need for a held-out evaluation set.
+    - It guarantees a model will never hallucinate.
+    - It makes dataset and model versions irrelevant.
+    answer: 0
+    explanation: 'The defining idea is: Monitor loss and held-out performance to identify undertraining or overfitting.'
+  - type: short_answer
+    question: Explain one important distinction or design consideration in training diagnostics and overfitting.
+    expected_answer: A correct answer should explain the central idea of training diagnostics and overfitting and
+      connect it to a relevant data, model, evaluation or operational consideration.
+    explanation: The response should be specific to the method and should not rely on unsupported guarantees.
+  - type: application
+    question: You are adapting a course assistant. Describe how you would apply training diagnostics and overfitting
+      and how you would verify the result.
+    expected_answer: A strong response identifies the data or configuration, a fair baseline, at least two relevant
+      measurements, one likely failure mode and a mitigation.
+    explanation: The task tests practical transfer and evidence-based engineering judgement.
+  exam_tags:
+  - CO5
+  - Fine-Tuning
+  - Adaptation
+  - Evaluation
+  - Practical
+  mini_task: Create a small experiment or design note for training diagnostics and overfitting. State the inputs,
+    baseline, two metrics, one likely failure and how you would document the result.

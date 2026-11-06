@@ -1,0 +1,273 @@
+part:
+  id: co1-part-03
+  co: CO1
+  title: Modalities, LLMs, Foundation Models, and Next-Token Prediction
+  order: 3
+  concept_ids:
+  - generative-ai-modalities
+  - large-language-models
+  - foundation-models-and-next-token-prediction
+concepts:
+- id: generative-ai-modalities
+  code: GA-CO1.3.1
+  title: Generative AI Modalities
+  session: 3
+  skilling_exp: 2
+  btl: 1
+  difficulty: 2
+  prereqs: []
+  eli5: A modality is the form of information a model receives or produces. Text, images and audio are
+    examples. Knowing the modality helps identify what kind of model interface and evaluation a task needs.
+  key_points:
+  - Modalities describe information forms.
+  - The course handout explicitly includes modalities in Module I.
+  - A model may accept, produce or work across modalities.
+  - Task requirements should specify input and output forms.
+  deep_dive: 'A modality is a representation or form of information handled by a model. In the Generative
+    AI context, examples include text, images and audio. A system may accept one modality and produce
+    another, or it may process and generate within the same modality. The course handout lists modalities
+    alongside LLMs and foundation models as part of the introductory landscape. This is important because
+    the word Generative AI refers to a broader set of systems than text-only chatbots. When selecting
+    a model, identify the modality of the user input, the modality of the required output and any transformations
+    expected between them. Evaluation must also match the modality: text can be assessed for relevance
+    and factual support, while image or audio generation requires criteria suited to those outputs. The
+    handout does not prescribe a detailed catalogue of modality-specific architectures in CO-1, so the
+    focus here is recognising modalities and connecting them to task requirements.'
+  formulas: []
+  viz:
+    type: modality_map
+    description: Map a task's input and output to their corresponding modalities.
+    params:
+    - name: input_modality
+      label: Input Modality
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: modality
+    compute:
+      input_modality: input_modality
+      output_modality: output_modality
+      examples: Text, image and audio are common modality examples.
+    outcomes:
+    - when: input_modality == output_modality
+      title: Same-modality task
+      explain: The system processes and produces the same broad form of information.
+      severity: info
+    - when: input_modality != output_modality
+      title: Cross-modality task
+      explain: The system transforms or conditions one modality to produce another.
+      severity: info
+    combos_to_try:
+    - set:
+        input_modality: 1
+      lesson: Describe a text-to-image task and an audio-to-text task by their input and output modalities.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes generative ai modalities?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of generative ai modalities in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which generative ai modalities matters when building an
+      LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Create a two-row modality table for two generative AI applications.
+- id: large-language-models
+  code: GA-CO1.3.2
+  title: Large Language Models (LLMs)
+  session: 3
+  skilling_exp: 2
+  btl: 1
+  difficulty: 2
+  prereqs:
+  - generative-ai-modalities
+  eli5: An LLM is a model trained to work with language at scale. It receives text as tokens and can predict
+    or generate language sequences, making it useful for tasks such as answering, drafting and summarising.
+  key_points:
+  - LLMs are a central model category in the handout.
+  - Language is represented as tokens for model processing.
+  - Many LLM interactions involve predicting a next token.
+  - An LLM's output quality depends on prompt, context and model limitations.
+  deep_dive: Large language models are models designed to process and generate language using learned
+    statistical patterns from training data. In practical use, text is converted into tokens that the
+    model can process. A prompt supplies context, and an autoregressive language model commonly generates
+    a response by predicting one token at a time. LLMs can support tasks such as drafting, summarisation,
+    question answering and transformation of text, but these capabilities should not be confused with
+    guaranteed correctness. Their behaviour depends on the model, the supplied context, the prompt and
+    the generation configuration. The handout places LLMs in the introductory Generative AI landscape
+    and later treats them as external dependencies that an application must select and monitor. Students
+    should therefore understand both what an LLM can do and what an application must measure around it,
+    including token usage, latency, cost and failures.
+  formulas: []
+  viz:
+    type: llm_request_flow
+    description: Follow a user prompt through tokenisation, model processing and generated response.
+    params:
+    - name: step
+      label: Step
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: step
+    compute:
+      step: step
+      steps:
+      - Prompt received
+      - Text tokenised
+      - Model predicts tokens
+      - Response returned
+    outcomes:
+    - when: step <= 2
+      title: Input preparation
+      explain: The request is being represented in a form the model can process.
+      severity: info
+    - when: step == 3
+      title: Generation
+      explain: The model produces output tokens sequentially.
+      severity: info
+    - when: step == 4
+      title: Response complete
+      explain: The generated response is returned to the application.
+      severity: info
+    combos_to_try:
+    - set:
+        step: 1
+      lesson: Explain why an LLM response can be useful but still require verification.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes large language models (llms)?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of large language models (llms) in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which large language models (llms) matters when building
+      an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Draw the request path for a user question sent to an LLM.
+- id: foundation-models-and-next-token-prediction
+  code: GA-CO1.3.3
+  title: Foundation Models and Next-Token Prediction
+  session: 3
+  skilling_exp: 2
+  btl: 2
+  difficulty: 2
+  prereqs:
+  - large-language-models
+  eli5: A foundation model is a broadly trained model that can be adapted or prompted for many downstream
+    tasks. In a next-token prediction setup, the model uses the preceding context to estimate which token
+    is likely to come next.
+  key_points:
+  - Foundation models provide broad capabilities that can be reused across tasks.
+  - Next-token prediction estimates a distribution over possible next tokens.
+  - Generation repeatedly selects a token and appends it to context.
+  - A predicted token is not necessarily the only possible continuation.
+  deep_dive: The handout introduces foundation models and next-token prediction together. A foundation
+    model is trained on broad data and can serve as a base for multiple downstream applications rather
+    than being built for only one narrow task. For an autoregressive language model, the central prediction
+    step is to estimate a probability distribution over the next token given the tokens already seen.
+    The model then selects a token according to its decoding procedure, appends it to the context and
+    repeats the process. This sequential mechanism explains how a model can generate a response longer
+    than the original prompt. The next-token distribution may assign different probabilities to several
+    plausible continuations; the generation configuration determines how a token is selected. Next-token
+    prediction describes the immediate modelling operation, not a guarantee that the model has verified
+    the truth of its output. This distinction prepares students for later study of Transformer generation
+    and decoding strategies in CO-2.
+  formulas: []
+  viz:
+    type: token_sequence
+    description: Change the number of generated steps and observe how each selected token becomes part
+      of the next context.
+    params:
+    - name: steps
+      label: Steps
+      min: 1
+      max: 8
+      step: 1
+      default: 3
+      unit: tokens
+    compute:
+      steps: steps
+      process: At each step, predict a next token and append it to the running context.
+    outcomes:
+    - when: steps == 1
+      title: Single prediction
+      explain: Only one next-token decision is made.
+      severity: info
+    - when: steps > 1
+      title: Autoregressive sequence
+      explain: Each generated token conditions the following prediction.
+      severity: info
+    combos_to_try:
+    - set:
+        steps: 3
+      lesson: Explain next-token prediction using a four-token prompt and three generated tokens.
+  common_mistakes:
+  - Assuming a token is always the same as a word.
+  - Treating a model's fluent output as proof that the answer is correct.
+  - Ignoring the model, tokenizer, provider or measurement conditions when comparing results.
+  quiz:
+  - type: mcq
+    question: Which statement best describes foundation models and next-token prediction?
+    options:
+    - It should be understood in the context of the model, task and stated assumptions.
+    - It is identical across every provider and model.
+    - It can be evaluated without considering the input or output.
+    - It removes the need to measure system behaviour.
+    answer: 0
+    explanation: The correct interpretation depends on the concept's role in the course and the stated
+      conditions.
+  - type: short_answer
+    question: Explain the main idea of foundation models and next-token prediction in your own words.
+    answer: A clear answer should define the concept, explain its role and connect it to the CO-1 application.
+    explanation: Look for a correct definition and a relevant practical implication.
+  - type: application
+    question: Give one practical situation in which foundation models and next-token prediction matters
+      when building an LLM application.
+    answer: A suitable answer identifies a concrete request or design decision and explains how the concept
+      affects it.
+    explanation: The response should connect the concept to a measurable application behaviour or engineering
+      choice.
+  exam_tags:
+  - mid-term
+  - end-sem
+  mini_task: Write a short token-by-token trace showing how an autoregressive response grows.

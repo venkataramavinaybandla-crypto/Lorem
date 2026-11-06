@@ -1,0 +1,226 @@
+part:
+  id: CO6-P07
+  co: CO6
+  title: Guardrails and Human Oversight
+  order: 7
+  concept_ids:
+  - CO6-P07-C01
+  - CO6-P07-C02
+  - CO6-P07-C03
+concepts:
+- id: CO6-P07-C01
+  code: CO6.7.1
+  title: Input and output guardrails
+  session: 37
+  skilling_exp: 'CO6 practical focus: guardrails and human oversight'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO6-P06-C03
+  eli5: Apply layered checks to requests and generated responses without relying on prompts alone.
+  key_points:
+  - Explain the purpose and boundary of input and output guardrails.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: 'Guardrails can inspect inputs, retrieved context, tool requests and model outputs for policy violations,
+    unsafe content, privacy exposure or invalid formats. Use the right control at the right layer: authentication
+    and authorisation before data access, schema validation before processing, and output checks before display
+    or downstream action. Prompt instructions can guide behaviour but cannot replace deterministic application controls.
+    Avoid simplistic keyword filters as the only defence because they can miss paraphrases and create false positives.
+    Define what happens when a guardrail is uncertain or unavailable, and measure both false acceptance and false
+    rejection rates.'
+  formulas: []
+  viz:
+    type: architecture flow
+    description: Visualise the responsibilities, interfaces and controls involved in input and output guardrails.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes input and output guardrails?
+    options:
+    - Apply layered checks to requests and generated responses without relying on prompts alone.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to apply layered checks to requests and generated responses without relying
+      on prompts alone.
+  - type: short_answer
+    question: Identify one important design consideration for input and output guardrails.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply input and output guardrails and verify
+      that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for input and output guardrails. Identify
+    its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P07-C02
+  code: CO6.7.2
+  title: Human-in-the-loop review queues
+  session: 37
+  skilling_exp: 'CO6 practical focus: guardrails and human oversight'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO6-P07-C01
+  eli5: Route uncertain or high-impact cases to trained reviewers with context and auditability.
+  key_points:
+  - Explain the purpose and boundary of human-in-the-loop review queues.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: 'Human-in-the-loop mechanisms allow a person to review cases that exceed risk or uncertainty thresholds.
+    A review queue should include the minimum information needed to assess the case, the reason for escalation,
+    relevant evidence and an audit trail of decisions. Protect reviewer access and avoid exposing unnecessary personal
+    information. Define service-level expectations, escalation paths and what the application tells the user while
+    a case is pending. Human review is not automatically effective: reviewers need training, clear rubrics and authority
+    to reject or correct outputs. Track review outcomes to identify recurring system failures and improve controls.'
+  formulas: []
+  viz:
+    type: sequence diagram
+    description: Visualise the responsibilities, interfaces and controls involved in human-in-the-loop review queues.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes human-in-the-loop review queues?
+    options:
+    - Route uncertain or high-impact cases to trained reviewers with context and auditability.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to route uncertain or high-impact cases to trained reviewers with context and
+      auditability.
+  - type: short_answer
+    question: Identify one important design consideration for human-in-the-loop review queues.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply human-in-the-loop review queues and verify
+      that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for human-in-the-loop review queues. Identify
+    its inputs, outputs, one trust boundary, one failure case and how you would test it.
+- id: CO6-P07-C03
+  code: CO6.7.3
+  title: Kill switches, incident response and safety operations
+  session: 37
+  skilling_exp: 'CO6 practical focus: guardrails and human oversight'
+  btl: Evaluate
+  difficulty: Advanced
+  prereqs:
+  - CO6-P07-C02
+  eli5: Provide a controlled way to disable risky capabilities and recover from incidents.
+  key_points:
+  - Explain the purpose and boundary of kill switches, incident response and safety operations.
+  - Identify the component interfaces and trust boundaries.
+  - Apply security, validation and failure handling at the appropriate layer.
+  - Verify behaviour with integration tests and operational evidence.
+  deep_dive: A kill switch can disable a model, tool, feature or entire AI workflow when a serious issue is detected.
+    It should be accessible to authorised operators, logged, tested and designed to fail safely. Define the scope
+    of each switch and the user-facing fallback behaviour. An incident plan should identify owners, severity levels,
+    evidence collection, communication and rollback steps. Do not rely on a hidden prompt instruction as a kill
+    switch. Test emergency disablement in a controlled environment and ensure it does not accidentally remove essential
+    authentication, logging or data-protection controls.
+  formulas: []
+  viz:
+    type: decision flow
+    description: Visualise the responsibilities, interfaces and controls involved in kill switches, incident response
+      and safety operations.
+    params:
+    - component
+    - request/data
+    - contract
+    - control
+    - observable outcome
+    compute: Trace one user request through the relevant components. Mark the data boundary, the validation or security
+      control, and the evidence that confirms success.
+    outcomes:
+    - Responsibilities and interfaces are explicit.
+    - A failure path and mitigation are identified.
+    - The design can be tested and operated.
+  common_mistakes:
+  - Putting every responsibility into one endpoint or component.
+  - Assuming internal services, model output or retrieved data are automatically trusted.
+  - Treating a successful local demo as proof of production readiness.
+  quiz:
+  - type: mcq
+    question: Which statement best describes kill switches, incident response and safety operations?
+    options:
+    - Provide a controlled way to disable risky capabilities and recover from incidents.
+    - It removes the need for testing and monitoring.
+    - It guarantees the application is secure by itself.
+    - It makes service contracts and access controls unnecessary.
+    answer: 0
+    explanation: The central idea is to provide a controlled way to disable risky capabilities and recover from
+      incidents.
+  - type: short_answer
+    question: Identify one important design consideration for kill switches, incident response and safety operations.
+    expected_answer: A good answer identifies a relevant boundary, contract, security control, operational concern
+      or measurable test.
+    explanation: The answer should connect the concept to observable application behaviour.
+  - type: application
+    question: You are building the course AI platform. How would you apply kill switches, incident response and
+      safety operations and verify that it works?
+    expected_answer: A strong answer describes the component or workflow, its inputs and outputs, a failure case,
+      a safeguard and a measurable validation step.
+    explanation: This checks practical application within the integrated platform.
+  exam_tags:
+  - CO6
+  - AI Platform Engineering
+  - Architecture
+  - Security
+  - Practical
+  mini_task: Create a small architecture sketch or implementation note for kill switches, incident response and
+    safety operations. Identify its inputs, outputs, one trust boundary, one failure case and how you would test
+    it.

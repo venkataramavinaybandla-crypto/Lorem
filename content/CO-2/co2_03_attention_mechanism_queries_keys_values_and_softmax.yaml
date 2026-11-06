@@ -1,0 +1,264 @@
+part:
+  id: co2-part-03
+  co: CO2
+  title: 'Attention Mechanism: Queries, Keys, Values and Softmax'
+  order: 3
+  concept_ids:
+  - query-key-value-roles
+  - scaled-dot-product-attention
+  - softmax-attention-weights
+concepts:
+- id: query-key-value-roles
+  code: GA-CO2.3.1
+  title: Query, Key and Value Roles
+  session: 1
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs: []
+  eli5: Attention compares what a token is looking for (query) with what other tokens offer (keys), then uses the
+    matching weights to combine values.
+  key_points:
+  - Queries represent the current token's information needs in the attention calculation.
+  - Keys are compared with queries to produce compatibility scores.
+  - Values contain the information that is mixed using the attention weights.
+  deep_dive: Within an attention layer, input representations are projected into query, key and value vectors. For
+    a particular token, its query is compared with the keys of available tokens. These comparisons produce scores
+    that indicate compatibility. After normalisation, the resulting weights determine how much each value contributes
+    to the output for that token. Query, key and value are learned projections of the input representations; they
+    are not three separate text fields or manually assigned labels. The same input sequence can generate different
+    queries, keys and values at different layers or attention heads. This mechanism lets each position construct
+    a context-aware representation by selectively combining information from other positions.
+  formulas: []
+  viz:
+    type: qkv_flow
+    description: Follow one token through query-key comparison and value aggregation.
+    params:
+    - name: stage
+      label: Stage
+      min: 1
+      max: 4
+      step: 1
+      default: 1
+      unit: stage
+    compute:
+      stage: stage
+      stages:
+      - Input representation
+      - Project to Q, K, V
+      - Compare Q with K
+      - Weight and combine V
+    outcomes:
+    - when: stage <= 2
+      title: Projection stage
+      explain: The input is transformed into query, key and value representations.
+      severity: info
+    - when: stage >= 3
+      title: Attention aggregation
+      explain: Scores determine how values contribute to the output.
+      severity: info
+    combos_to_try:
+    - set:
+        stage: 1
+      lesson: Explain the Q, K and V roles using a library-search analogy, then map each analogy component to the
+        mathematical operation.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Which vectors are combined using attention weights to produce the attention output?
+    options:
+    - Values
+    - Queries only
+    - Token IDs
+    - Position indices
+    answer: 0
+    explanation: The weights are applied to value vectors.
+  - type: short_answer
+    question: Describe the distinct roles of queries, keys and values.
+    answer: Queries are compared with keys to calculate compatibility; values carry the information combined using
+      the resulting weights.
+    explanation: Keep matching and content aggregation distinct.
+  - type: application
+    question: If a token should gather information from another token, which operation determines how strongly that
+      other token contributes?
+    answer: The query-key score after normalisation determines the attention weight applied to the other token's
+      value.
+    explanation: Mention score, softmax weight and value.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Explain the Q, K and V roles using a library-search analogy, then map each analogy component to the
+    mathematical operation.
+- id: scaled-dot-product-attention
+  code: GA-CO2.3.2
+  title: Scaled Dot-Product Attention
+  session: 2
+  skilling_exp: 3
+  btl: 4
+  difficulty: 3
+  prereqs:
+  - query-key-value-roles
+  eli5: Scaled dot-product attention uses query-key dot products to calculate scores, scales them, applies softmax
+    and combines the values.
+  key_points:
+  - Dot products measure compatibility between query and key vectors.
+  - Dividing by the square root of key dimension controls score scale.
+  - Softmax turns scores into weights used to combine values.
+  deep_dive: The scaled dot-product attention operation begins by multiplying queries by the transpose of keys.
+    The resulting score matrix represents query-key compatibility for each pair of positions. Scores are divided
+    by the square root of the key dimension, d_k. This scaling helps prevent dot products from becoming excessively
+    large as vector dimension grows, which can make softmax distributions overly concentrated and gradients less
+    useful. A softmax is then applied across the relevant key positions to obtain attention weights. Finally, the
+    weights multiply the value matrix to produce context-aware outputs. In matrix notation, this is Attention(Q,K,V)
+    = softmax(QK^T / sqrt(d_k))V. Masking may be applied before softmax when some positions must not be attended
+    to.
+  formulas:
+  - Attention(Q,K,V) = softmax(QK^T / √d_k)V
+  viz:
+    type: attention_score
+    description: Change an illustrative score scale and inspect the effect on the normalised weights.
+    params:
+    - name: scale
+      label: Scale
+      min: 0.5
+      max: 2.0
+      step: 0.1
+      default: 1.0
+      unit: scale factor
+    compute:
+      scale: scale
+      raw_scores:
+      - 2.0
+      - 1.0
+      - 0.0
+      note: Illustrative scores; production scaling uses 1/sqrt(d_k).
+    outcomes:
+    - when: scale < 1
+      title: Sharper score gaps
+      explain: Larger score differences can make the softmax distribution more concentrated.
+      severity: info
+    - when: scale >= 1
+      title: Less compressed scores
+      explain: The relative score gaps are retained or enlarged before softmax.
+      severity: info
+    combos_to_try:
+    - set:
+        scale: 1.0
+      lesson: Write the four steps of scaled dot-product attention in order and state where the scale factor is
+        applied.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: Where is the scaling factor applied in scaled dot-product attention?
+    options:
+    - To the query-key score matrix before softmax
+    - To the final output after value aggregation
+    - To the token IDs before embedding
+    - To the vocabulary after decoding
+    answer: 0
+    explanation: The scores are divided by sqrt(d_k) before softmax.
+  - type: short_answer
+    question: Why divide query-key dot products by the square root of the key dimension?
+    answer: To control score magnitude as dimensionality grows and avoid excessively sharp softmax distributions.
+    explanation: Explain the relationship between dimension, score scale and softmax.
+  - type: application
+    question: An implementation applies softmax before scaling the attention scores. What is wrong with this order?
+    answer: Scaling should occur before softmax because it changes the distribution of attention weights.
+    explanation: Identify the correct operation order.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Write the four steps of scaled dot-product attention in order and state where the scale factor is applied.
+- id: softmax-attention-weights
+  code: GA-CO2.3.3
+  title: Softmax and Attention Weights
+  session: 3
+  skilling_exp: 2
+  btl: 3
+  difficulty: 3
+  prereqs:
+  - scaled-dot-product-attention
+  eli5: Softmax converts attention scores into weights. Those weights describe how much each allowed position contributes
+    to the current token's output.
+  key_points:
+  - Weights are non-negative and sum to one across the normalised positions.
+  - A larger score generally receives a larger softmax weight.
+  - Masks can prevent disallowed positions from receiving attention.
+  deep_dive: Attention scores are not yet mixture weights. Softmax transforms them into a normalised distribution
+    over the positions available to a query. A high weight means the corresponding value contributes more strongly
+    to the weighted sum. A low weight means it contributes less, though it may not be exactly zero. In causal language
+    generation, a mask prevents a position from attending to future tokens. Masked scores are typically set to a
+    very negative value before softmax so their resulting weights are effectively zero. The attention map can help
+    inspect patterns, but it should not automatically be treated as a complete explanation of the model's reasoning.
+  formulas:
+  - Σ_j α_ij = 1
+  - output_i = Σ_j α_ij v_j
+  viz:
+    type: attention_weights
+    description: Inspect how changing one score redistributes weights across available positions.
+    params:
+    - name: score_gap
+      label: Score Gap
+      min: 0
+      max: 5
+      step: 0.5
+      default: 2
+      unit: score gap
+    compute:
+      score_gap: score_gap
+      positions:
+      - token A
+      - token B
+      - token C
+      masked_positions: []
+    outcomes:
+    - when: score_gap >= 3
+      title: Concentrated attention
+      explain: One position receives a larger share of the normalised weight.
+      severity: info
+    - when: score_gap < 3
+      title: Distributed attention
+      explain: Several positions can retain meaningful weight.
+      severity: info
+    combos_to_try:
+    - set:
+        score_gap: 2
+      lesson: Given three attention scores, compute the softmax weights and calculate a weighted sum of three value
+        vectors.
+  common_mistakes:
+  - Treating attention scores as probabilities before applying softmax.
+  - Assuming every Transformer family uses the same attention mask.
+  - Changing multiple decoding settings at once and attributing the result to only one.
+  quiz:
+  - type: mcq
+    question: What property must a softmax attention-weight row satisfy?
+    options:
+    - Its weights sum to one
+    - All weights are equal
+    - It contains negative probabilities
+    - It has one entry per model layer
+    answer: 0
+    explanation: Softmax normalises across the positions in the row.
+  - type: short_answer
+    question: What does an attention weight represent?
+    answer: It represents the relative contribution assigned to a value position when constructing the current token's
+      output.
+    explanation: Mention its role in the weighted sum.
+  - type: application
+    question: A future token receives non-zero attention in a causal decoder. What should you inspect?
+    answer: Inspect whether the causal attention mask is applied before softmax.
+    explanation: Explain why future positions must be masked.
+  exam_tags:
+  - mid-term
+  - end-sem
+  - CO2-analysis
+  mini_task: Given three attention scores, compute the softmax weights and calculate a weighted sum of three value
+    vectors.

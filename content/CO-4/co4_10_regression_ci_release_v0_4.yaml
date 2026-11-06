@@ -1,0 +1,220 @@
+part:
+  id: CO4-P10
+  co: CO4
+  title: Regression Testing and CI — Release v0.4
+  order: 10
+  concept_ids:
+  - CO4-P10-C01
+  - CO4-P10-C02
+  - CO4-P10-C03
+concepts:
+- id: CO4-P10-C01
+  code: CO4.10.1
+  title: Prompt regression test design
+  session: 28
+  skilling_exp: 'CO4 practical focus: regression testing and ci — release v0.4'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO4-P09-C03
+  eli5: Turn golden examples, safety cases and output contracts into repeatable automated tests.
+  key_points:
+  - Define the purpose and boundary of prompt regression test design.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Prompt regression tests check whether a new prompt version preserves required behaviour and improves
+    or at least maintains important quality measures. Tests can cover output parsing, required fields, task accuracy,
+    citation support, refusal behaviour, tool-call permissions and injection resistance. Separate deterministic
+    checks from model-judged checks and retain representative failure examples. Because hosted model outputs can
+    vary, use tolerances, repeated runs or rubric-based comparisons where appropriate. A regression suite should
+    detect meaningful degradation without failing unpredictably on harmless wording differences.
+  formulas: []
+  viz:
+    type: Regression suite
+    description: golden case; assertion; threshold; safety test
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Using exact string matching for outputs whose wording is naturally variable.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes prompt regression test design?
+    options:
+    - It applies turn golden examples, safety cases and output contracts into repeatable automated tests. through
+      an explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because turn golden examples, safety cases and output contracts into repeatable
+      automated tests. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying prompt regression test design.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to prompt regression test design.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply prompt regression test design to improve
+      reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for prompt regression test design, define expected behaviour, and record
+    one failure mode and one safeguard.
+- id: CO4-P10-C02
+  code: CO4.10.2
+  title: GitHub Actions integration and release gates
+  session: 28
+  skilling_exp: 'CO4 practical focus: regression testing and ci — release v0.4'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO4-P10-C01
+  eli5: Run prompt evaluation automatically and block releases when critical checks fail.
+  key_points:
+  - Define the purpose and boundary of github actions integration and release gates.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: A CI workflow can validate prompt files, check schemas, run deterministic tests and execute a controlled
+    model evaluation job. Store API credentials as repository secrets, never in YAML prompt assets or logs. Define
+    release gates for critical conditions such as invalid structured output, unauthorised tool calls or severe safety
+    regression. Keep expensive evaluation jobs scoped and reproducible, and publish a concise report as a build
+    artifact. A passing CI job does not prove the system is safe, but it provides repeatable evidence that specified
+    checks were run against the candidate version.
+  formulas: []
+  viz:
+    type: CI pipeline
+    description: workflow; secret; test job; release gate; artifact
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Printing API keys or user content in CI logs.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes github actions integration and release gates?
+    options:
+    - It applies run prompt evaluation automatically and block releases when critical checks fail. through an explicit,
+      testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because run prompt evaluation automatically and block releases when critical
+      checks fail. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying github actions integration and release gates.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to github actions integration and release gates.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply github actions integration and release
+      gates to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for github actions integration and release gates, define expected behaviour,
+    and record one failure mode and one safeguard.
+- id: CO4-P10-C03
+  code: CO4.10.3
+  title: Release v0.4 and operational decision record
+  session: 28
+  skilling_exp: 'CO4 practical focus: regression testing and ci — release v0.4'
+  btl: Apply
+  difficulty: Advanced
+  prereqs:
+  - CO4-P10-C02
+  eli5: Ship a traceable prompt release with evaluation evidence, known limitations and rollback instructions.
+  key_points:
+  - Define the purpose and boundary of release v0.4 and operational decision record.
+  - Identify inputs, outputs and assumptions explicitly.
+  - Use application-side validation for critical requirements.
+  - Evaluate behaviour with representative and edge-case examples.
+  deep_dive: Release v0.4 should identify the prompt versions, model configuration, test-set revision, evaluation
+    results and security checks that were executed. The release record should explain why the chosen zero-shot or
+    few-shot design was selected, how structured outputs and tools are constrained, and how judge scores were calibrated
+    against human labels. Document unresolved risks, monitoring signals and rollback steps. A release is not complete
+    merely because the prompt works in a local demonstration; it should be reproducible in CI and observable in
+    the deployed application. Preserve prior versions so a regression can be reversed quickly.
+  formulas: []
+  viz:
+    type: Release record
+    description: version tag; evidence; known risk; rollback; monitoring
+    params:
+    - input
+    - instruction
+    - context
+    - output
+    - evaluation
+    compute: Trace one representative example through the stages and record where validation or evaluation occurs.
+    outcomes:
+    - Expected behaviour is explicit.
+    - Failure cases can be identified.
+    - The design can be tested and improved.
+  common_mistakes:
+  - Releasing based on a successful demo without regression evidence.
+  - Relying on prompt wording when an application-level control is required.
+  - Evaluating only successful examples.
+  quiz:
+  - type: mcq
+    question: Which statement best describes release v0.4 and operational decision record?
+    options:
+    - It applies ship a traceable prompt release with evaluation evidence, known limitations and rollback instructions.
+      through an explicit, testable design.
+    - It removes the need to evaluate model behaviour.
+    - It guarantees that the model cannot make mistakes.
+    - It replaces application-level validation.
+    answer: 0
+    explanation: The concept is useful because ship a traceable prompt release with evaluation evidence, known limitations
+      and rollback instructions. should be specified and evaluated rather than assumed.
+  - type: short_answer
+    question: State one important design consideration when applying release v0.4 and operational decision record.
+    expected_answer: Answers should identify a concrete constraint, validation step or evaluation criterion relevant
+      to release v0.4 and operational decision record.
+    explanation: A good answer connects the concept to observable application behaviour.
+  - type: application
+    question: You are implementing a course assistant. How would you apply release v0.4 and operational decision
+      record to improve reliability?
+    expected_answer: A strong response describes the relevant design, a failure case, a safeguard and a measurable
+      test.
+    explanation: Application questions assess whether the learner can transfer the concept into a practical system.
+  exam_tags:
+  - CO4
+  - Prompt Engineering
+  - In-Context Learning
+  - Practical
+  mini_task: Create a small test example for release v0.4 and operational decision record, define expected behaviour,
+    and record one failure mode and one safeguard.
