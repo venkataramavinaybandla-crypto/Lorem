@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 const Home = lazy(() => import('./pages/Home'));
 const COPage = lazy(() => import('./pages/COPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const CheatSheet = lazy(() => import('./pages/CheatSheet'));
 
 function PageFallback() {
   return (
@@ -22,6 +23,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path="co/:id/cheat-sheet"
+          element={
+            <Suspense fallback={<PageFallback />}>
+              <CheatSheet />
+            </Suspense>
+          }
+        />
         <Route element={<Layout />}>
           <Route
             index

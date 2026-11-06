@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { getCO } from '../content';
+import type { Part } from '../content';
 import { coTitles, coDescriptions } from '../coTitles';
 import CodeBlock from '../components/CodeBlock';
 import GenericBlock from '../components/GenericBlock';
 import VizRenderer from '../components/viz/VizRenderer';
 import { useProgress } from '../utils/useProgress';
+import SelfTestModal from '../components/SelfTestModal';
 
 export default function COPage() {
   const { id } = useParams<{ id: string }>();
@@ -13,6 +15,7 @@ export default function COPage() {
   const { toggleConcept, isConceptCompleted, getCOProgress } = useProgress();
   const { hash } = useLocation();
   const [activeOrder, setActiveOrder] = useState<number | null>(null);
+  const [activeTestPart, setActiveTestPart] = useState<Part | null>(null);
   const partRefs = useRef(new Map<number, HTMLElement>());
 
   // Deep links from search results (#concept-id or #part-N)
@@ -75,7 +78,7 @@ export default function COPage() {
         {/* Soft decorative gradient wash */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#38bdf8]/15 via-[#c084fc]/10 to-[#ff8a65]/15 rounded-full blur-3xl -z-10 pointer-events-none" />
 
-        <div className="flex items-center justify-between gap-4 mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-2 text-xs font-semibold">
             <Link to="/" className="text-[#89726b] hover:text-[#9f4122] transition-colors focus-visible:outline-2 focus-visible:outline-[#9f4122]">
               Overview
@@ -84,12 +87,22 @@ export default function COPage() {
             <span className="text-[#9f4122] font-bold">{co.id}</span>
           </div>
 
-          {/* Module Completion Meter */}
-          <div className="flex items-center gap-2 bg-[#f3effb] px-3.5 py-1.5 rounded-full border border-[#ddc0b8] text-xs font-mono font-bold text-[#9f4122]">
-            <span className="material-symbols-outlined text-[16px]">
-              {progress.percentage === 100 ? 'task_alt' : 'incomplete_circle'}
-            </span>
-            <span>{progress.completed}/{progress.total} Completed ({progress.percentage}%)</span>
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <Link
+              to={`/co/${co.id}/cheat-sheet`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border border-[#ddc0b8] bg-white/80 text-[#56423c] hover:border-[#9f4122] hover:text-[#9f4122] transition-all focus-visible:outline-2 focus-visible:outline-[#9f4122]"
+            >
+              <span className="material-symbols-outlined text-[14px]">print</span>
+              Print cheat sheet
+            </Link>
+
+            {/* Module Completion Meter */}
+            <div className="flex items-center gap-2 bg-[#f3effb] px-3.5 py-1.5 rounded-full border border-[#ddc0b8] text-xs font-mono font-bold text-[#9f4122]">
+              <span className="material-symbols-outlined text-[16px]">
+                {progress.percentage === 100 ? 'task_alt' : 'incomplete_circle'}
+              </span>
+              <span>{progress.completed}/{progress.total} Completed ({progress.percentage}%)</span>
+            </div>
           </div>
         </div>
 
@@ -270,8 +283,8 @@ export default function COPage() {
               }}
               className="space-y-5 scroll-mt-28"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-[#89726b]/20">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#89726b]/20">
+                <div className="flex items-center gap-3 min-w-0">
                   <span className="bg-[#ff8a65]/20 text-[#752305] text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider font-mono">
                     Part {part.part.order}
                   </span>
@@ -279,9 +292,19 @@ export default function COPage() {
                     {part.part.title}
                   </h2>
                 </div>
-                <span className="text-xs font-mono text-[#89726b]">
-                  {cText}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTestPart(part)}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[11px] font-bold border border-[#ddc0b8] bg-white/80 text-[#56423c] hover:border-[#9f4122] hover:text-[#9f4122] transition-all cursor-pointer focus-visible:outline-2 focus-visible:outline-[#9f4122]"
+                  >
+                    <span className="material-symbols-outlined text-[14px]">quiz</span>
+                    Test yourself
+                  </button>
+                  <span className="text-xs font-mono text-[#89726b]">
+                    {cText}
+                  </span>
+                </div>
               </div>
 
               {part.loadError && (
@@ -318,6 +341,15 @@ export default function COPage() {
           );
         })}
       </div>
+
+      {activeTestPart && (
+        <SelfTestModal
+          key={activeTestPart.part.id}
+          coId={co.id}
+          part={activeTestPart}
+          onClose={() => setActiveTestPart(null)}
+        />
+      )}
     </div>
   );
 }

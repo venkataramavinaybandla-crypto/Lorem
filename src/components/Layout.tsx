@@ -3,6 +3,7 @@ import { allCOs } from '../content';
 import { coTitles } from '../coTitles';
 import { useState, useEffect } from 'react';
 import SearchModal from './SearchModal';
+import LogoMark from './LogoMark';
 import { useProgress } from '../utils/useProgress';
 
 export default function Layout() {
@@ -35,13 +36,8 @@ export default function Layout() {
           to="/"
           className="flex items-center gap-2.5 no-underline focus-visible:outline-2 focus-visible:outline-[#9f4122] rounded-full"
         >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#9f4122] to-[#ff8a65] flex items-center justify-center text-white font-bold text-sm shadow-sm">
-            L
-          </div>
+          <LogoMark size={38} />
           <span className="font-extrabold text-xl tracking-tight text-[#1d1c15]">Lorem</span>
-          <span className="hidden sm:inline-block text-[11px] font-bold text-[#9f4122] bg-[#ff8a65]/15 border border-[#9f4122]/20 px-2.5 py-0.5 rounded-full ml-1">
-            25CS2207E
-          </span>
         </Link>
 
         {/* Center Search Pill + Desktop Links */}
@@ -258,6 +254,7 @@ export default function Layout() {
       <footer className="w-full py-10 border-t border-[#89726b]/15 text-[#89726b] text-xs mt-16 bg-[#f3effb]">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div className="flex items-center gap-2">
+            <LogoMark size={20} />
             <span className="font-extrabold text-[#1d1c15]">Lorem</span>
             <span>· Generative AI and AI Platform Engineering (25CS2207E)</span>
           </div>

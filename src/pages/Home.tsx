@@ -2,9 +2,13 @@ import { Link } from 'react-router-dom';
 import { allCOs } from '../content';
 import { coTitles, coDescriptions } from '../coTitles';
 import { useProgress } from '../utils/useProgress';
+import { useMasteryRecords, masteryPercentage } from '../utils/selfTest';
+import ExamDashboard from '../components/ExamDashboard';
+import MasteryRing from '../components/MasteryRing';
 
 export default function Home() {
   const { getCOProgress } = useProgress();
+  const masteryRecords = useMasteryRecords();
 
   const totalParts = allCOs.reduce((acc, co) => acc + co.parts.length, 0);
   const totalConcepts = allCOs.reduce(
@@ -120,6 +124,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Exam countdown */}
+      <ExamDashboard />
+
       {/* 6 CO Feature Cards */}
       <section className="max-w-6xl mx-auto px-6 space-y-10">
         <div className="flex items-center justify-between pb-2 border-b border-[#89726b]/15">
@@ -157,10 +164,13 @@ export default function Home() {
                         </span>
                       </div>
 
-                      {/* Progress Badge */}
-                      <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-[#f3effb] text-[#9f4122] border border-[#ddc0b8]">
-                        {progress.completed}/{progress.total} done ({progress.percentage}%)
-                      </span>
+                      {/* Progress + mastery */}
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-[#f3effb] text-[#9f4122] border border-[#ddc0b8]">
+                          {progress.completed}/{progress.total} done ({progress.percentage}%)
+                        </span>
+                        <MasteryRing percentage={masteryPercentage(masteryRecords[co.id])} />
+                      </div>
                     </div>
 
                     <h3 className="text-2xl sm:text-3xl font-bold text-[#1d1c15] mb-4 tracking-tight leading-tight group-hover:text-[#9f4122] transition-colors">
